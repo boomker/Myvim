@@ -19,8 +19,8 @@ endif
 if has("gui_running")
     let g:isGUI = 1
     set background=dark
-    " colorscheme solarized
     colorscheme lucius
+    " colorscheme solarized
     " let g:solarized_termtrans=1
     au GUIEnter * simalt ~x                               "窗口启动时自动最大化
     set guiheadroom=0                                     "禁止GTK填充窗口底部为主题背景色，此设置会消除底部的水平滚动条"
@@ -33,47 +33,19 @@ if (g:isWin && g:isGUI)
     source $VIMRUNTIME/vimrc_example.vim
     "在Linux里把mswin里C-v注释掉
     source $VIMRUNTIME/mswin.vim
-    behave mswin
+    " behave mswin
     language messages zh_CN.utf-8                           "解决状态信息栏乱码问题
     set iminsert=2                                          "输入法设置"
     set mousef                                              "启用光标激活pane
-
-    set diffexpr=MyDiff()
-    function! MyDiff()
-          let opt = '-a --binary '
-          if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-          if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-          let arg1 = v:fname_in
-          if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-          let arg2 = v:fname_new
-          if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-          let arg3 = v:fname_out
-          if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-          let eq = ''
-              if $VIMRUNTIME =~ ' '
-            if &sh =~ '\<cmd'
-              let cmd = '""' . $VIMRUNTIME . '\diff"'
-              let eq = '"'
-            else
-              let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-            endif
-          else
-            let cmd = $VIMRUNTIME . '\diff'
-          endif
-          silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-    endfunction
 endif
 
 if g:isLinux
-    let $VIM = $HOME
-    let $VIMFILES = $HOME.'~/.vim'
+    let $VIMRUNTIME = '$VIM/vim80'
+    let $VIMFILES = '/usr/local/share/vim80/vimfiles'
     " set mouse=a                    " 在任何模式下启用鼠标,但是右键用不了
-    colorscheme desert
+    colorscheme solarized
     set background=dark
     set t_Co=256                   " 在终端启用256色
-    " Source a global configuration file if available
-    " Uncomment the following to have Vim jump to the last position when
-    " reopening a file
     if has("autocmd")
         au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
     endif
@@ -85,14 +57,12 @@ if g:isLinux
             nmap so :so ~/.vimrc<CR>:nohl<CR>
         endif
     else
-        " Vim5 and later versions support syntax highlighting. Uncommenting the next
-        " line enables syntax highlighting by default.
         if has("syntax")
             syntax on
         endif
 
-        if filereadable("~/_vimrc")
-            source ~/_vimrc
+        if filereadable("~/.vimrc")
+            source ~/.vimrc
         endif
     endif
 endif
@@ -131,7 +101,7 @@ set nobomb
 set encoding=utf-8                                      "设置gvim内部编码
 set fileencoding=utf-8                                  "设置此缓冲区所在文件的字符编码
 set fileencodings=utf-8,cp936,ucs-bom,gb18030,gb2312    "设置支持打开的文件的编码
-set termencoding=cp936
+set termencoding=utf-8
 set fileformat=unix                                     "设置新文件的<EOL>格式
 set fileformats=unix,dos,mac                            "给出文件的<EOL>格式类型
 " 下面两行至于此是为解决右键菜单乱码问题
@@ -187,22 +157,21 @@ set nowritebackup                           "无写入备份
 "===============< 我定义的一些快捷键 >======================
 let mapleader = ","
 inoremap <ESC> <ESC>
-" snoremap <ESC> <Up>
 nnoremap <ESC> <ESC>:nohl<CR>
 
 noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
 noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
 nmap J gJ
-"保存的同时也备份一份到指定位置
+nmap sf :w!<CR>
+
+" reload configure and edit configure 保存的同时也备份一份到指定位置
 if g:isWin
-    nmap <leader>sf :w!<CR>:w! d:\Download\Documents\Vim_backupdir\/%.bak<CR>
+    " nmap <leader>sf :w!<CR>:w! $VIM\tmp\Vim_backupdir\/%.bak<CR>
+    nmap <Leader>rc :so $VIM/_vimrc<CR>:nohl<CR>
 else
-    nmap <leader>sf :w!<CR>:w! ~/Vim_backupdir\/%.bak<CR>
+    " nmap <leader>sf :w!<CR>:w! ~/Vim_backupdir\/%.bak<CR>
+    nmap <Leader>rc :so $HOME/.vimrc<CR>:nohl<CR>
 endif
-noremap sf :w!<CR>
-"reload configure and edit configure
-nmap <Leader>rc :so $VIM/_vimrc<CR>:nohl<CR>
-nmap <Leader>ec :tabnew $VIM/_vimrc<CR>:nohl<CR>
 
 "复制到行未.
 nmap ye y$
@@ -319,8 +288,8 @@ nmap <C-h> <C-W>h
 nmap <C-l> <C-W>l
 
 cnoremap <C-a> <Home>
-cnoremap <C-h> <Left>
-cnoremap <C-l> <Right>
+" cnoremap <C-h> <Left>
+" cnoremap <C-l> <Right>
 cnoremap <c-v> <C-r>"
 
 inoremap <A-h> <Home>
@@ -332,18 +301,13 @@ inoremap <c-k> <Up>
 inoremap <c-h> <Left>
 inoremap <c-l> <Right>
 
-nnoremap <C-e> 2<C-e>
-nnoremap <c-s> mz<<`zhhhh
-inoremap <c-s> <esc>mz<<`zhhhi
 nnoremap <c-t> mz>>`zllll
 inoremap <c-t> <esc>mz>>`zllllli
-nnoremap <c-a> mz:m-2<cr>`z
-inoremap <c-a> <esc>mz:m-2<cr>`zli
 " nnoremap <c-x> mz:m+<cr>`z
 " inoremap <c-x> <esc>mz:m+<cr>`zli
 
-:inoremap < <><ESC>i
-
+" :inoremap < <><ESC>i
+" {[( rigTab补全 )]}
 :ab rig Right
 :ab del Delete
 :ab spa Space
@@ -367,9 +331,6 @@ noremap <leader>bm :tabmove
 
 "noremap <leader>sv ggvG
 onoremap af :<C-u>normal! ggVG<CR>''
-noremap <leader>sc :!
-"nmap <silent> <Leader>dt <Plug>DictSearch
-"vmap <silent> <Leader>dt <Plug>DictVSearch
 
 " 常规模式下输入 cS 清除行尾空格
 nnoremap <Leader>ds :%s/\s\+$//g<cr>:w!<CR>''
@@ -425,25 +386,25 @@ autocmd BufNewFile *.sh,*.py exec ":call SetFileHeadTitle()"
 func! SetFileHeadTitle()
     if &filetype == 'python'
         call setline(1, "\#!/usr/bin/python")
-        call setline(2, "\#Description: ")
-        call setline(3, "\#Author: boomker")
-        call setline(4, "\#Mail: 15800545854@139.com")
-        call setline(5, "\#Date: strftime("%Y-%m-%d %H:%M")")
+        call setline(2, "\# Description: ")
+        call setline(3, "\# Author: boomker")
+        call setline(4, "\# Mail: 15800545854@139.com")
+        call setline(5, "\# Date: strftime("%Y-%m-%d %H:%M")")
         normal Go
     endif
     if &filetype == 'sh'
         call setline(1, "\#!/bin/bash")
-        call setline(2, "\#Description: ")
-        call setline(3, "\#Author: boomker")
-        call setline(4, "\#Mail: 15800545854@139.com")
-        call setline(5, "\#Date: strftime("%Y-%m-%d %H:%M")")
+        call setline(2, "\# Description: ")
+        call setline(3, "\# Author: boomker")
+        call setline(4, "\# Mail: 15800545854@139.com")
+        call setline(5, "\# Date: strftime("%Y-%m-%d %H:%M")")
         normal Go
     endif
 endfunction
 
 au FileType python call AddPythonDict_txt()
 function! AddPythonDict_txt()
-    set dict+=$VIM/vimfiles/dict/python.txt
+    set dict+=$VIMFILES/dict/python.txt
     set complete+=k
 endfunction
 
@@ -476,18 +437,10 @@ autocmd FileType c,cpp,java,go,php,javascript,puppet,python,xml,yml,perl autocmd
 " 对浏览代码非常的方便,可以在函数,变量之间跳转等
 " set tags=./tags;                            "向上级目录递归查找tags文件（好像只有在Windows下才有用）
 
-" -----------------------------------------------------------------------------
-"  < gvimfullscreen 工具配置 > 请确保已安装了工具
-" -----------------------------------------------------------------------------
-" 用于 Windows Gvim 全屏窗口，可用 F11 切换
-" 全屏后再隐藏菜单栏、工具栏、滚动条效果更好
-if (g:isWin && g:isGUI)
-    nmap <F11> <Esc>:call libcallnr("gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
-endif
 
 "==============< 插件配置 >================
-"透明+置顶插件的配置:
 
+"透明+置顶插件的配置:
 if (g:isWin && g:isGUI)
     let g:Current_Alpha = 255
     let g:Top_Most = 0
@@ -516,43 +469,38 @@ if (g:isWin && g:isGUI)
     endfunc
 
     "透明&置顶的快捷键设置
-    map <leader>ta :call Alpha_add()<CR>
-    map <leader>td :call Alpha_sub()<CR>
-    map <leader>tt :call Top_window()<CR>
+    nmap <leader>ta :call Alpha_add()<CR>
+    nmap <leader>td :call Alpha_sub()<CR>
+    nmap <leader>tt :call Top_window()<CR>
+    " 用于 Windows Gvim 全屏窗口，可用 F11 切换 全屏后再隐藏菜单栏、工具栏、滚动条效果更好
+    nmap <F11> <Esc>:call libcallnr("gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
 endif
 
-"easy_align configure
+" easy_align configure:
     vmap <Enter> <Plug>(EasyAlign)
     nmap ga <Plug>(EasyAlign)
     xmap ga <Plug>(EasyAlign)
 
-"ctrlP configure
+" ctrlP configure:
     let g:ctrlp_map = '<Leader>gf'
     map <leader>sm :CtrlPMRU<CR>
     let g:ctrlp_by_filename = 1
     let g:ctrlp_mruf_case_sensitive = 1
-    let g:ctrlp_cache_dir = '$VIM/vimfiles/tmp/ctrlp'
+    let g:ctrlp_cache_dir = '$VIMFILES/tmp/ctrlp'
     let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
     let g:ctrlp_custom_ignore = '\v[\/]\.(exe|so|dll|tar|tar.gz|iso|ipk)$'
     set wildignore+=*\\tmp\\*,*.swp,*.zip,*.rar,*.7z,*.dat,*.ico,*pyc
 
-"vim easymotion--改标记按键顺序"
+" vim easymotion configure: --改标记按键顺序
     let g:EasyMotion_smartcase = 1
     let g:EasyMotion_leader_key = 'f'
     let g:EasyMotion_startofline = '0'
     map fu <Plug>(easymotion-F)
-    map fs <Plug>(easymotion-sn)
     map f/ <Plug>(easymotion-tn)
-    map fz <Plug>(easymotion-s2)
-    map ft <Plug>(easymotion-t2)
-    " map n <Plug>(easymotion-vim-n)
-    " map N <Plug>(easymotion-vim-N)
-    map fp <Plug>(easymotion-vim-N)
     map fl <Plug>(easymotion-lineforward)
     map fh <Plug>(easymotion-linebackward)
-    map fa <Plug>(easymotion-iskeyword-b)
 
-"txtBrowser插件配置:
+" txtBrowser configure:
     let tlist_txt_settings = 'txt;c:content;f:figures;t:tables'
     au BufRead,BufNewFile *.txt setlocal ft=txt
     " nmap <silent> <leader>tf <ESC>:TFind<RETURN>
@@ -560,32 +508,31 @@ endif
     nmap <silent> <leader>tg <ESC>:TGoto<RETURN>
     nmap <silent> <leader>th <ESC>:TBMatch<RETURN>
 
-"airline configure
-    if g:isWin
-        set guitablabel=%f
-        let g:airline_theme = 'solarized'                " 设置主题
-        let g:airline_powerline_fonts = 1
-        let g:airline_right_sep = '◀'
-        let g:airline#extensions#tabline#enabled = 1
-        let g:airline#extensions#tavline#enabled = 1
-        let g:airline#extensions#syntastic#enabled = 1
-        let g:airline#extensions#tagbar#enabled = 1
-        let g:airline#extensions#tagbar#flags = 'f'
-        let g:airline#extensions#tabline#show_close_button = 0
-        let g:airline#extensions#tabline#fnametruncate = 1
-        let g:airline#extensions#tabline#formatter = 'unique_tail'
-        let g:airline#extensions#tabline#tab_nr_type = 1
-        " let g:airline#extensions#tabline#tab_nr_type = 2 " splits and tab number
-        let g:airline#extensions#whitespace#symbol = '!'
-        let g:airline#extensions#whitespace#enabled = 1
-        let g:airline_section_b = '%{strftime("%H:%M")}'
-        let g:airline_section_c = '%{CurDir()}\%t'
-        let g:airline_section_y = 'BN: %{bufnr("%")}'
-    else
-        let w:airline_disabled = 1
-    endif
+" airline configure:
+    " if g:isWin
+    let g:airline_theme = 'solarized'                " 设置主题
+    let g:airline_powerline_fonts = 1
+    let g:airline_right_sep = '◀'
+    let g:airline#extensions#tabline#enabled = 1
+    let g:airline#extensions#tavline#enabled = 1
+    let g:airline#extensions#syntastic#enabled = 1
+    let g:airline#extensions#tagbar#enabled = 1
+    let g:airline#extensions#tagbar#flags = 'f'
+    let g:airline#extensions#tabline#show_close_button = 0
+    let g:airline#extensions#tabline#fnametruncate = 1
+    let g:airline#extensions#tabline#formatter = 'unique_tail'
+    let g:airline#extensions#tabline#tab_nr_type = 1
+    " let g:airline#extensions#tabline#tab_nr_type = 2 " splits and tab number
+    let g:airline#extensions#whitespace#symbol = '!'
+    let g:airline#extensions#whitespace#enabled = 1
+    let g:airline_section_b = '%{strftime("%H:%M")}'
+    let g:airline_section_c = '%{CurDir()}\%t'
+    let g:airline_section_y = 'BN: %{bufnr("%")}'
+    " else
+        " let w:airline_disabled = 0
+    " endif
 
-"EasyGrep configure
+" EasyGrep configure:
     map <silent> <Leader>vv <plug>EgMapGrepCurrentWord_v
     vmap <silent> <Leader>vv <plug>EgMapGrepCurrentWord_v
     map <silent> <Leader>vw <plug>EgMapGrepCurrentWord_V
@@ -604,10 +551,8 @@ endif
     " By Hotkey trigger limit the search(vimgrep) to the current file only
     map <Leader>gk :noautocmd execute "vimgrep /" . expand("<cword>") . "/j" .expand("%") <Bar> copen <CR>
 
-"neocomplete配置
-    " Disable AutoComplPop.
-    "let g:acp_enableAtStartup = 0
-    "打开vim自动启用neocomplete
+" neocomplete configure:
+    " 打开vim自动启用neocomplete
     let g:neocomplete#enable_at_startup = 1
     " Use smartcase.
     let g:neocomplete#enable_smart_case = 1
@@ -624,17 +569,16 @@ endif
     let g:neocomplete#keyword_patterns['default'] = '\h\w*'
     " Plugin key-mappings.
     "inoremap <expr><C-g>     neocomplete#undo_completion()
-    "inoremap <expr><C-l>     neocomplete#complete_common_string()
-    " Recommended key-mappings.
-    " <CR>: close popup and save indent.
+    inoremap <expr><C-l>     neocomplete#complete_common_string()
+    " Recommended key-mappings. <CR>: close popup and save indent.
     inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
     function! s:my_cr_function()
       return neocomplete#close_popup() . "\<CR>"
       " For no inserting <CR> key.
-      "return pumvisible() ? neocomplete#close_popup() : "\<CR>"
+      return pumvisible() ? neocomplete#close_popup() : "\<CR>"
     endfunction
     " <TAB>: completion.
-    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+    " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
     " <C-h>, <BS>: close popup and delete backword char.
     " inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
     inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
@@ -648,14 +592,13 @@ endif
     "inoremap <expr><Up>    neocomplete#close_popup() . "\<Up>"
     "inoremap <expr><Down>  neocomplete#close_popup() . "\<Down>"
     " Or set this.
-    "let g:neocomplete#enable_cursor_hold_i = 1
+    " let g:neocomplete#enable_cursor_hold_i = 1
     " Or set this.
-    "let g:neocomplete#enable_insert_char_pre = 1
-    "像AutoComplPop一样自动选中第一项
-    "let g:neocomplete#enable_auto_select = 1
+    " let g:neocomplete#enable_insert_char_pre = 1
+    " 像AutoComplPop一样自动选中第一项
+    " let g:neocomplete#enable_auto_select = 1
     " Shell like behavior(not recommended).
-    "set completeopt+=longest
-    "let g:neocomplete#enable_auto_select = 1
+    set completeopt+=longest
     "let g:neocomplete#disable_auto_complete = 1
     "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
     " Enable omni completion.
@@ -672,18 +615,20 @@ endif
       let g:neocomplete#force_omni_input_patterns = {}
     endif
 
-"neosnippet configure:
+" neosnippet configure:
     imap <A-s>     <Plug>(neosnippet_expand_or_jump)
     smap <A-s>     <Plug>(neosnippet_expand_or_jump)
     xmap <A-s>     <Plug>(neosnippet_expand_target)
-    let g:neosnippet#snippets_directory='$VIM/vimfiles/Plugin/neosnippet-snippets/neosnippets'
+    let g:neosnippet#snippets_directory='$VIM/bundle/neosnippet-snippets/neosnippets'
+    let g:neosnippet#data_directory= $VIM.'/vimfiles/tmp/neosnippet'
 
-"pydiction configure
-    " let g:pydiction_location = '$VIM/vimfiles/Plugin/pydiction/complete-dict'
-    " let python_highlight_all = 1
-    " let g:pydiction_menu_height = 6
 
-"nerdtree configure
+" pydiction configure:
+    let g:pydiction_location = '$VIMFILES/Plugin/pydiction/complete-dict'
+    let python_highlight_all = 1
+    let g:pydiction_menu_height = 6
+
+" nerdtree configure:
     map <leader>st :NERDTreeToggle<CR>
     let NERDTreeIgnore=['\.pyc$', '\~$'] "ignore files in NERDTree"
     let g:nerdtree_tabs_open_on_gui_startup=0
@@ -702,26 +647,29 @@ endif
     let NERDTreeAutoDeleteBuffer=1
     let NERDTreeHijackNetrw=1
 
-"nerdcommenter configure：
+" nerdcommenter configure:
     imap <A-i> <plug>NERDCommenterInsert
 
-"repeat configure
+" repeat configure:
     silent! call repeat#set("\<surround.vim><Leader>rp1", v:count)
     silent! call repeat#set("\<vim-easymotion><Leader>rp2", v:count)
 
-" configure syntastic syntax checking to check on open as well as save
+" syntastic configure:
+    let g:syntastic_error_symbol = '✗'
+    let g:syntastic_warning_symbol = '⚠'
     let g:syntastic_check_on_open=1
+    let g:syntastic_enable_highlighting = 0
     let g:syntastic_always_populate_loc_list = 1
     let g:syntastic_auto_loc_list = 1
     let g:syntastic_check_on_wq = 0
-    let g:syntastic_python_checkers = ['flake8']
+    let g:syntastic_python_checkers = ['pyflakes,flake8']
     let g:syntastic_html_tidy_ignore_errors=[" proprietary attribute \"ng-"]
 
     set statusline+=%#warningmsg#
     "set statusline+=%{SyntasticStatuslineFlag()}
     set statusline+=%*
 
-"taglist/tagbar configure
+" taglist/tagbar configure:
     let g:tagbar_sort=0
     let g:tagbar_compact=1
     let g:tagbar_indent = 1
@@ -754,19 +702,19 @@ endif
      " 设定F8为taglist开关
      nnoremap <silent> <leader>vt :TlistToggle<CR>
 
-"auto-pairs configure:
+" auto-pairs configure:
     let g:AutoPairsFlyMode = 0
     " let g:AutoPairsShortcutBackInsert = '<M-b>'
     " let g:AutoPairsShortcutToggle = '<Leader>pt'
 
-"markdown configure:
+" markdown configure:
     au bufread,bufnewfile *.md,*.markdown setlocal ft=mkd
     let g:vim_markdown_folding_disabled=1
     let g:vim_markdown_no_default_key_mappings=1
     let g:vim_markdown_math=1
     let g:vim_markdown_frontmatter=1
 
-"undotree configure:
+" undotree configure:
     nnoremap <Leader>su :UndotreeToggle<cr>
     " let g:undotree_DiffAutoOpen = 0
     let g:undotree_SetFocusWhenToggle = 1
@@ -776,78 +724,123 @@ endif
         nmap <buffer> r <plug>UndotreeRedo
     endfunc
 
-"tmuxline configure:
+" tmuxline configure:
     let g:tmuxline_powerline_separators = 0
     "let g:tmuxline_preset = 'nightly_fox'
     let g:tmuxline_preset = 'powerline'
     let g:tmuxline_theme = 'powerline'
 
-"flake8 configure:
-     " autocmd FileType python map <buffer> <leader>cp :call Flake8()<CR>
-     " "let g:flake8_cmd="/opt/strangebin/flake8000"
-     " let g:flake8_show_in_gutter=1
-     " highlight link Flake8_Error      Error
-     " highlight link Flake8_Warning    WarningMsg
-     " highlight link Flake8_Complexity WarningMsg
-     " highlight link Flake8_Naming     WarningMsg
-     " highlight link Flake8_PyFlake    WarningMsg
+" flake8 configure:
+     autocmd FileType python map <buffer> <leader>cp :call Flake8()<CR>
+     let g:flake8_cmd="/usr/bin/flake8"
+     let g:flake8_show_in_gutter=1
+     highlight link Flake8_Error      Error
+     highlight link Flake8_Warning    WarningMsg
+     highlight link Flake8_Complexity WarningMsg
+     highlight link Flake8_Naming     WarningMsg
+     highlight link Flake8_PyFlake    WarningMsg
 
-"python-mode configure:
-    " let g:pymode_rope_goto_definition_bind = "<Leader>gd"
-    " " Override run current python file key shortcut to Ctrl-Shift-e
-    " let g:pymode_run_bind = "<Leader>rs"
-    " " Override view python doc key shortcut to Ctrl-Shift-d
-    " let g:pymode_doc_bind = "<Leader>vd"
-    " let g:pymode_breakpoint_bind = '<leader>bp'
-    " let g:pymode_syntax = 1
-    " let g:pymode_indent = 1
-    " let g:pymode_folding = 1
-    " let g:pymode_options = 1
-    " let g:pymode_trim_whitespaces = 1
-    " let g:pymode_options_colorcolumn = 1
-    " let g:pymode_options_max_line_length = 110
+" Autopep8 configure:
+    autocmd FileType python noremap <buffer> <Leader>ap :w!<CR>:call Autopep8()<CR>
+    let g:autopep8_ignore="E501,W293"
+    let g:autopep8_select="E501,W293"
+    let g:autopep8_pep8_passes=100
+    let g:autopep8_max_line_length=79
+    let g:autopep8_aggressive=1
+    let g:autopep8_aggressive=2
+    let g:autopep8_indent_size=2
+    let g:autopep8_disable_show_diff=1
+    let g:autopep8_diff_type='horizontal'
+    let g:autopep8_diff_type='vertical'
 
-"indent-guides:
+" indent-guides configure:
     let g:indent_guides_guide_size = 2  " 指定对齐线的尺寸
     let NERDSpaceDelims = 1             " 自动添加前置空格
+    let g:indent_guides_enable_on_vim_startup = 0  " 默认关闭
+    let g:indent_guides_start_level = 2  " 从第二层开始可视化显示缩进"
 
-"  < Vundle 插件管理工具配置 >
-filetype off
+" YouCompleteMe configure:
+    " let g:ycm_collect_identifiers_from_tags_files = 0
+    " let g:ycm_collect_identifiers_from_comments_and_strings = 0
+    " let g:ycm_path_to_python_interpreter = '/usr/local/bin/python'
+    " let g:ycm_path_to_python3_interpreter = '/usr/local/bin/python3'
+    " " 输入第0个字符开始补全
+    " let g:ycm_min_num_of_chars_for_completion = 0
+    " " " 禁止缓存匹配项,每次都重新生成匹配项
+    " let g:ycm_cache_omnifunc = 0
+    " " " 开启语义补全
+    " let g:ycm_seed_identifiers_with_syntax = 1
+    " " " 在注释输入中也能补全
+    " let g:ycm_complete_in_comments = 1
+    " " " 在字符串输入中也能补全
+    " let g:ycm_complete_in_strings = 1
+    " let g:ycm_min_num_of_chars_for_completion= 2
+    " let g:ycm_max_diagnostics_to_display = 0
+    " let g:ycm_key_list_select_completion = ['<C-n>', '<C-j>']
+    " let g:ycm_key_list_previous_completion = ['<C-p>', '<C-k>']
+    " let g:ycm_autoclose_preview_window_after_completion = 1
+    " let g:ycm_autoclose_preview_window_after_insertion = 1
+    " let g:ycm_filetype_whitelist = { 'python': 1  }
+    " let g:ycm_filetype_blacklist = {
+          " \ 'tagbar' : 1,
+          " \ 'nerdtree' : 1,
+          " \}
+    " " set complete-= i
+    " " let g:ycm_python_binary_path = 'python'
+    " let g:ycm_global_ycm_extra_conf = '$VIM/vimfiles/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+    " let g:ycm_confirm_extr_conf = 0
+    " set completeopt=longest,menu
+    " noremap <Leader>gd  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+    " "离开插入模式后自动关闭预览窗口"
+    " autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+    " "回车即选中当前项"
+    " " inoremap <expr> <CR>       pumvisible() ? '\<C-y>' : '\<CR>'
+    " "上下左右键行为"
+    " inoremap <expr> <Down>     pumvisible() ? '\<C-n>' : '\<Down>'
+    " inoremap <expr> <Up>       pumvisible() ? '\<C-p>' : '\<Up>'
+    " inoremap <expr> <PageDown> pumvisible() ? '\<PageDown>\<C-p>\<C-n>' : "'\<PageDown>'
+    " inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
+
+"  < Plug or Vundle 插件管理工具配置 >
 set rtp+=$VIM/vimfiles/bundle/Vundle.vim
-call vundle#begin('$VIM/vimfiles/bundle')
-"使用Vundle来管理Vundle，这个必须要有。
-    Plugin 'VundleVim/Vundle.vim'
-    " Plugin 'tpope/vim-fugitive'
-    Plugin 'easymotion/vim-easymotion'
-    Plugin 'vim-airline/vim-airline'
-    Plugin 'plasticboy/vim-markdown'
-    "Plugin 'godlygeek/tabular'
-    Plugin 'dimasg/vim-mark'
-    " Plugin 'iamcco/dict.vim'
-    " Plugin 'rkulla/pydiction'
-    "Plugin 'nvie/vim-flake8'
-    "Plugin 'klen/python-mode'
-    "Plugin 'vim-scripts/indentpython.vim'
-    "Plugin 'edkolev/tmuxline.vim'
-    Plugin 'txtbrowser'
-    Plugin 'taglist.vim'
-    "Plugin 'petdance/ack2'
-    Plugin 'svermeulen/EasyGrep'
-    Plugin 'majutsushi/tagbar'
-    Plugin 'junegunn/vim-easy-align'
-    Plugin 'jiangmiao/auto-pairs'
-    Plugin 'tpope/vim-surround'
-    Plugin 'tpope/vim-repeat'
-    Plugin 'Shougo/neocomplete.vim'
-    Plugin 'Shougo/neosnippet.vim'
-    Plugin 'Shougo/neosnippet-snippets'
-    Plugin 'scrooloose/syntastic'
-    Plugin 'scrooloose/nerdcommenter'
-    Plugin 'scrooloose/nerdtree'
-    " Plugin 'kien/ctrlp.vim'
-    Plugin 'ctrlpvim/ctrlp.vim'
-    Plugin 'mbbill/undotree'
-    Plugin 'yonchu/accelerated-smooth-scroll'
-    Plugin 'nathanaelkane/vim-indent-guides'
-call vundle#end()
-filetype plugin indent on
+" call vundle#begin('$VIM/vimfiles/bundle')
+call plug#begin('$VIM/vimfiles/bundle')
+    " Plugin 'VundleVim/Vundle.vim'
+    Plug 'tpope/vim-fugitive'
+    Plug 'easymotion/vim-easymotion'
+    Plug 'vim-airline/vim-airline'
+    Plug 'plasticboy/vim-markdown'
+    Plug 'dimasg/vim-mark'
+    Plug 'rkulla/pydiction'
+    Plug 'nvie/vim-flake8'
+    Plug 'tell-k/vim-autopep8'
+    " Plug 'vim-scripts/indentpython.vim'
+    Plug 'edkolev/tmuxline.vim'
+    Plug '$VIM/vimfiles/bundle/txtbrowser'
+    " Plug 'txtbrowser'
+    Plug 'vim-scripts/taglist.vim'
+    "Plug 'petdance/ack2'
+    Plug 'dkprice/vim-easygrep'
+    Plug 'majutsushi/tagbar'
+    Plug 'junegunn/vim-easy-align'
+    Plug 'justinmk/vim-sneak'
+    Plug 'jiangmiao/auto-pairs'
+    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-repeat'
+    " Plug 'Valloric/YouCompleteMe'
+    Plug 'Shougo/neocomplete.vim'
+    Plug 'Shougo/neosnippet.vim'
+    Plug 'Shougo/neosnippet-snippets'
+    Plug 'scrooloose/syntastic'
+    " Plug 'w0rp/ale'
+    Plug 'scrooloose/nerdcommenter'
+    Plug 'scrooloose/nerdtree'
+    Plug 'dyng/ctrlsf.vim'
+    " Plug 'junegunn/fzf', { 'dir': '$VIM/vimfiles/bundle/fzf', 'do': './install --all'  }
+    Plug 'ctrlpvim/ctrlp.vim'
+    Plug 'mbbill/undotree'
+    Plug 'yonchu/accelerated-smooth-scroll'
+    Plug 'nathanaelkane/vim-indent-guides'
+    Plug 'pearofducks/ansible-vim'
+call plug#end()
+" call vundle#end()

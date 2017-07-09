@@ -40,8 +40,7 @@ if (g:isWin && g:isGUI)
 endif
 
 if g:isLinux
-    let $VIMRUNTIME = '$VIM/vim80'
-    let $VIMFILES = '/usr/local/share/vim80/vimfiles'
+    let $VIMFILES = '$VIM/vimfiles'
     " set mouse=a                    " 在任何模式下启用鼠标,但是右键用不了
     colorscheme solarized
     set background=dark
@@ -118,6 +117,7 @@ filetype on                                             "启用文件类型侦�
 filetype plugin on                                      "针对不同的文件类型加载对应的插件
 filetype plugin indent on
 set nocompatible                                        "禁用 Vi 兼容模式
+set backspace=indent,eol,start
 set viewoptions=folds,options,cursor,unix,slash         "better unix/Windows compatible
 set virtualedit=onemore                                 "curso可以移动到行尾最后一个字符之后"
 set autoindent
@@ -148,7 +148,6 @@ set matchtime=6                             "匹配括号光标停留时间"
 set showmatch
 set history=500                             "保存更多的history"
 set wildmenu
-set backspace=indent,eol,start
 set vb t_vb=                                "关闭提示音
 set nobackup                                "设置无备份文件
 set noswapfile                              "设置无临时文件
@@ -159,8 +158,13 @@ let mapleader = ","
 inoremap <ESC> <ESC>
 nnoremap <ESC> <ESC>:nohl<CR>
 
+nmap <Up> <Nop>
+nmap <Down> <Nop>
+nmap <Left> <Nop>
+nmap <Right> <Nop>
 noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
 noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
+
 nmap J gJ
 nmap sf :w!<CR>
 
@@ -486,7 +490,7 @@ endif
     map <leader>sm :CtrlPMRU<CR>
     let g:ctrlp_by_filename = 1
     let g:ctrlp_mruf_case_sensitive = 1
-    let g:ctrlp_cache_dir = '$VIMFILES/tmp/ctrlp'
+    let g:ctrlp_cache_dir = $VIM.'vimfiles/tmp/ctrlp'
     let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
     let g:ctrlp_custom_ignore = '\v[\/]\.(exe|so|dll|tar|tar.gz|iso|ipk)$'
     set wildignore+=*\\tmp\\*,*.swp,*.zip,*.rar,*.7z,*.dat,*.ico,*pyc
@@ -510,7 +514,7 @@ endif
 
 " airline configure:
     " if g:isWin
-    let g:airline_theme = 'solarized'                " 设置主题
+    " let g:airline_theme = 'solarized'                " 设置主题
     let g:airline_powerline_fonts = 1
     let g:airline_right_sep = '◀'
     let g:airline#extensions#tabline#enabled = 1
@@ -578,7 +582,7 @@ endif
       return pumvisible() ? neocomplete#close_popup() : "\<CR>"
     endfunction
     " <TAB>: completion.
-    " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
     " <C-h>, <BS>: close popup and delete backword char.
     " inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
     inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
@@ -802,7 +806,7 @@ endif
     " inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
 
 "  < Plug or Vundle 插件管理工具配置 >
-set rtp+=$VIM/vimfiles/bundle/Vundle.vim
+"set rtp+=$VIM/vimfiles/bundle/Vundle.vim
 " call vundle#begin('$VIM/vimfiles/bundle')
 call plug#begin('$VIM/vimfiles/bundle')
     " Plugin 'VundleVim/Vundle.vim'

@@ -19,10 +19,10 @@ endif
 if has("gui_running")
     let g:isGUI = 1
     set background=dark
-    colorscheme lucius
-    " colorscheme solarized
+    " colorscheme lucius
+    colorscheme solarized
     " let g:solarized_termtrans=1
-    au GUIEnter * simalt ~x                               "窗口启动时自动最大化
+    " au GUIEnter * simalt ~x                               "窗口启动时自动最大化
     set guiheadroom=0                                     "禁止GTK填充窗口底部为主题背景色，此设置会消除底部的水平滚动条"
 else
     let g:isGUI = 0
@@ -75,8 +75,8 @@ elseif g:isLinux
     " autocmd! bufwritepost source $HOME/.vimrc %
 endif
 
-set guifont=XHei_OSX_Mono:h13
-"set guifont=Monaco:h13                                "Mac平台上的默认字体Monaco
+" set guifont=XHei_OSX_Mono:h13
+set guifont=Source_Code_Pro_Semibold_for_Powerline:h15
 
 set number                                            "显示行号
 " set relativenumber                                    "启用相对行号"
@@ -490,7 +490,7 @@ endif
     map <leader>sm :CtrlPMRU<CR>
     let g:ctrlp_by_filename = 1
     let g:ctrlp_mruf_case_sensitive = 1
-    let g:ctrlp_cache_dir = $VIM.'vimfiles/tmp/ctrlp'
+    let g:ctrlp_cache_dir = '$VIM/vimfiles/tmp/ctrlp'
     let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
     let g:ctrlp_custom_ignore = '\v[\/]\.(exe|so|dll|tar|tar.gz|iso|ipk)$'
     set wildignore+=*\\tmp\\*,*.swp,*.zip,*.rar,*.7z,*.dat,*.ico,*pyc
@@ -806,7 +806,7 @@ endif
     " inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
 
 "  < Plug or Vundle 插件管理工具配置 >
-"set rtp+=$VIM/vimfiles/bundle/Vundle.vim
+" set rtp+=$VIM/vimfiles/bundle/Vundle.vim
 " call vundle#begin('$VIM/vimfiles/bundle')
 call plug#begin('$VIM/vimfiles/bundle')
     " Plugin 'VundleVim/Vundle.vim'

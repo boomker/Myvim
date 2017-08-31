@@ -1,16 +1,16 @@
 " =============================================================================
-"        << 判断操作系统是 Windows 还是 Linux 和判断是终端还是 Gvim >>
+"        << 判断操作系统是 Windows 还是 Mac 和判断是终端还是 Gvim >>
 " =============================================================================
 
 " -----------------------------------------------------------------------------
-"  < 判断操作系统是否是 Windows 还是 Linux >
+"  < 判断操作系统是否是 Windows 还是 Mac >
 " -----------------------------------------------------------------------------
 let g:isWin = 0
-let g:isLinux = 0
+let g:isMac = 0
 if(has("win32") || has("win64"))
     let g:isWin = 1
 else
-    let g:isLinux = 1
+    let g:isMac = 1
 endif
 
 " -----------------------------------------------------------------------------
@@ -31,7 +31,6 @@ endif
 if (g:isWin && g:isGUI)
     "把下面一行文件中的else给注释掉就不会生成XXX~的备份文件了。
     source $VIMRUNTIME/vimrc_example.vim
-    "在Linux里把mswin里C-v注释掉
     source $VIMRUNTIME/mswin.vim
     " behave mswin
     language messages zh_CN.utf-8                           "解决状态信息栏乱码问题
@@ -39,7 +38,7 @@ if (g:isWin && g:isGUI)
     set mousef                                              "启用光标激活pane
 endif
 
-if g:isLinux
+if g:isMac
     let $VIMFILES = '$VIM/vimfiles'
     " set mouse=a                    " 在任何模式下启用鼠标,但是右键用不了
     colorscheme solarized
@@ -69,10 +68,8 @@ endif
 "配置文件自动载入
 if g:isWin
     autocmd! bufwritepost source $VIM/_vimrc %
-elseif g:isLinux
+elseif g:isMac
     autocmd! bufwritepost source $HOME/.vimrc %
-" elseif g:OS#mac
-    " autocmd! bufwritepost source $HOME/.vimrc %
 endif
 
 " set guifont=XHei_OSX_Mono:h13
@@ -97,12 +94,12 @@ set noimd                                             "关闭输入法
 
 "禁止UTF-8 BOM
 set nobomb
+set termencoding=utf-8
 set encoding=utf-8                                      "设置gvim内部编码
 set fileencoding=utf-8                                  "设置此缓冲区所在文件的字符编码
 set fileencodings=utf-8,cp936,ucs-bom,gb18030,gb2312    "设置支持打开的文件的编码
-set termencoding=utf-8
-set fileformat=unix                                     "设置新文件的<EOL>格式
-set fileformats=unix,dos,mac                            "给出文件的<EOL>格式类型
+set fileformat=mac
+set fileformats=mac,unix,dos                            "给出文件的<EOL>格式类型
 " 下面两行至于此是为解决右键菜单乱码问题
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
@@ -110,12 +107,6 @@ source $VIMRUNTIME/menu.vim
 " -----------------------------------------------------------------------------
 "  < 码字时的一些功能性配置 >
 " -----------------------------------------------------------------------------
-"开启语法高亮
-syntax enable
-syntax on
-filetype on                                             "启用文件类型侦测
-filetype plugin on                                      "针对不同的文件类型加载对应的插件
-filetype plugin indent on
 set nocompatible                                        "禁用 Vi 兼容模式
 set backspace=indent,eol,start
 set viewoptions=folds,options,cursor,unix,slash         "better unix/Windows compatible
@@ -137,8 +128,7 @@ set autoread                                            "当文件在外部被�
 set clipboard=unnamed                                   "与其他应用共享剪贴板,抽出和粘贴选择内容,而无须在这些命令前面附加"*.
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
 " 启用每行超过110列的字符提示(字体变蓝并加下划线)
-au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 110 . 'v.\+', -1)
-autocmd  FileType  text  setlocal  textwidth=110
+au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 78 . 'v.\+', -1)
 
 set hlsearch                                "高亮搜索
 set incsearch                               "在输入要搜索的文字时，实时匹配
@@ -153,10 +143,9 @@ set nobackup                                "设置无备份文件
 set noswapfile                              "设置无临时文件
 set nowritebackup                           "无写入备份
 
-"===============< 我定义的一些快捷键 >======================
+" ===============< 我定义的一些快捷键 >======================
 let mapleader = ","
 inoremap <ESC> <ESC>
-nnoremap <ESC> <ESC>:nohl<CR>
 
 nmap <Up> <Nop>
 nmap <Down> <Nop>
@@ -380,11 +369,6 @@ function! CurDir()
        let curdir = substitute(getcwd(), $HOME, "~", "g")
        return curdir
 endfunction
-
-" 打开自动定位到最后编辑的位置, 需要确认 .viminfo 当前用户可写
-if has("autocmd")
-  au BufReadPost * if line("'\.") > 1 && line("'\.") <= line("$") | exe "normal! g'\." | endif
-endif
 
 autocmd BufNewFile *.sh,*.py exec ":call SetFileHeadTitle()"
 func! SetFileHeadTitle()
@@ -810,41 +794,41 @@ endif
 " call vundle#begin('$VIM/vimfiles/bundle')
 call plug#begin('$VIM/vimfiles/bundle')
     " Plugin 'VundleVim/Vundle.vim'
-    Plug 'tpope/vim-fugitive'
+    " Plug 'tpope/vim-fugitive'
     Plug 'easymotion/vim-easymotion'
     Plug 'vim-airline/vim-airline'
-    Plug 'plasticboy/vim-markdown'
-    Plug 'dimasg/vim-mark'
-    Plug 'rkulla/pydiction'
-    Plug 'nvie/vim-flake8'
-    Plug 'tell-k/vim-autopep8'
+    " Plug 'plasticboy/vim-markdown'
+    " Plug 'dimasg/vim-mark'
+    " Plug 'rkulla/pydiction'
+    " Plug 'nvie/vim-flake8'
+    " Plug 'tell-k/vim-autopep8'
     " Plug 'vim-scripts/indentpython.vim'
-    Plug 'edkolev/tmuxline.vim'
-    Plug '$VIM/vimfiles/bundle/txtbrowser'
+    " Plug 'edkolev/tmuxline.vim'
+    " Plug '$VIM/vimfiles/bundle/txtbrowser'
     " Plug 'txtbrowser'
-    Plug 'vim-scripts/taglist.vim'
+    " Plug 'vim-scripts/taglist.vim'
     "Plug 'petdance/ack2'
     Plug 'dkprice/vim-easygrep'
-    Plug 'majutsushi/tagbar'
-    Plug 'junegunn/vim-easy-align'
-    Plug 'justinmk/vim-sneak'
+    " Plug 'majutsushi/tagbar'
+    " Plug 'junegunn/vim-easy-align'
+    " Plug 'justinmk/vim-sneak'
     Plug 'jiangmiao/auto-pairs'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-repeat'
     " Plug 'Valloric/YouCompleteMe'
     Plug 'Shougo/neocomplete.vim'
-    Plug 'Shougo/neosnippet.vim'
-    Plug 'Shougo/neosnippet-snippets'
+    " Plug 'Shougo/neosnippet.vim'
+    " Plug 'Shougo/neosnippet-snippets'
     Plug 'scrooloose/syntastic'
     " Plug 'w0rp/ale'
     Plug 'scrooloose/nerdcommenter'
-    Plug 'scrooloose/nerdtree'
+    " Plug 'scrooloose/nerdtree'
     Plug 'dyng/ctrlsf.vim'
     " Plug 'junegunn/fzf', { 'dir': '$VIM/vimfiles/bundle/fzf', 'do': './install --all'  }
     Plug 'ctrlpvim/ctrlp.vim'
-    Plug 'mbbill/undotree'
+    " Plug 'mbbill/undotree'
     Plug 'yonchu/accelerated-smooth-scroll'
-    Plug 'nathanaelkane/vim-indent-guides'
-    Plug 'pearofducks/ansible-vim'
+    " Plug 'nathanaelkane/vim-indent-guides'
+    " Plug 'pearofducks/ansible-vim'
 call plug#end()
 " call vundle#end()

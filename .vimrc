@@ -18,6 +18,8 @@ endif
 " -----------------------------------------------------------------------------
 if has("gui_running")
     let g:isGUI = 1
+    set imi=2                                             "搜狗输入法在macvim混乱的解决方法如下:
+    set ims=2
     set background=dark
     " colorscheme lucius
     colorscheme solarized
@@ -65,7 +67,7 @@ if g:isMac
     endif
 endif
 
-"配置文件自动载入
+" 配置文件自动载入
 if g:isWin
     autocmd! bufwritepost source $VIM/_vimrc %
 elseif g:isMac
@@ -89,10 +91,9 @@ set laststatus=2                                      "启用状态栏信息
 set showtabline=2                                     "当只有一个标签时也显示标签行
 set magic                                             "打开正则匹配模式
 set noimd                                             "关闭输入法
-"set imsearch=2
-"inoremap <ESC> <ESC>:set iminsert=0<CR>
+" inoremap <ESC> <ESC>:set iminsert=0<CR>
 
-"禁止UTF-8 BOM
+" 禁止UTF-8 BOM
 set nobomb
 set termencoding=utf-8
 set encoding=utf-8                                      "设置gvim内部编码
@@ -122,8 +123,8 @@ set scrolloff=3                                         "上下滚动时当前�
 set cursorline                                          "突出显示当前行
 set foldenable                                          "启用折叠
 set foldmethod=indent                                   "indent 折叠方式
-"set foldopen=all                                        "光标移到折叠时自动打开
-"set foldclose=all
+" set foldopen=all                                        "光标移到折叠时自动打开
+" set foldclose=all
 set autoread                                            "当文件在外部被修改，自动更新该文件
 set clipboard=unnamed                                   "与其他应用共享剪贴板,抽出和粘贴选择内容,而无须在这些命令前面附加"*.
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
@@ -146,6 +147,7 @@ set nowritebackup                           "无写入备份
 " ===============< 我定义的一些快捷键 >======================
 let mapleader = ","
 inoremap <ESC> <ESC>
+noremap <leader>nl :nohl<esc>
 
 nmap <Up> <Nop>
 nmap <Down> <Nop>
@@ -166,22 +168,22 @@ else
     nmap <Leader>rc :so $HOME/.vimrc<CR>:nohl<CR>
 endif
 
-"复制到行未.
+" 复制到行未.
 nmap ye y$
 nmap yh y^
-"将本行复制到寄存器里面并粘贴到下行
+" 将本行复制到寄存器里面并粘贴到下行
 nmap yp mYyyp`Yj
 
 nnoremap gb G
 nmap ge $
 nmap gh ^
-"粘贴到词头
+" 粘贴到词头
 nmap gp bP
 noremap gl gu
 noremap gu gU
 
 nmap sc <S-c>
-"代替s的删除并insert
+" 代替s的删除并insert
 nmap si i<Delete>
 nmap ss ``zz
 nmap sm `mzz
@@ -189,38 +191,38 @@ nmap sl `lzz
 " nmap sj <C-o>
 " nmap sk <C-i>
 nmap su <C-r>
-"快速替换一词
+" 快速替换一词
 nmap sp vep
 nmap sP bvep
 
-"设置在normal模式下,在光标所在行的上行或下行插入一空行,但是不变模式和光标的位置.
+" 设置在normal模式下,在光标所在行的上行或下行插入一空行,但是不变模式和光标的位置.
 nmap tj mQo<esc>`Q
 nmap tk mQ<S-o><esc>`Q
-"新建.
+" 新建 Untitled.
 nmap tn :tabnew!<CR>
 nmap tp <S-End><C-v>
-"设置光标所在行标后的字符置于下行.
+" 设置光标所在行标后的字符置于下行.
 nmap to a<CR><ESC>k$
 
-"字符串时不置换临时寄存器
+" 字符串时不置换临时寄存器
 xnoremap p "0p
 nnoremap mp "0p
 nnoremap mP "0P
-"inoremap <leader>vp <esc>"+p
-"inoremap <leader>vP <esc>"+P
-"noremap <leader>vp "+p
-"noremap <leader>vP "+P
-"vnoremap <leader>vp "+p
-"vnoremap <leader>vP "+P
-"noremap <leader>yc "*y
-"noremap <leader>Yc "*Y
+" inoremap <leader>vp <esc>"+p
+" inoremap <leader>vP <esc>"+P
+" noremap <leader>vp "+p
+" noremap <leader>vP "+P
+" vnoremap <leader>vp "+p
+" vnoremap <leader>vP "+P
+" noremap <leader>yc "*y
+" noremap <leader>Yc "*Y
 
 nmap mr "Z
 nmap md <S-*>
 vmap md y/<C-v><CR>
 nmap ms <S-#>
 
-"normal模式下删除光标之前或之后的所有字符
+" normal模式下删除光标之前或之后的所有字符
 nmap dt d^
 nmap dl d$
 
@@ -274,7 +276,7 @@ nnoremap zq <C-w>w:q!<CR>
 " 用空格键来开关折叠
 nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zO')<CR>
 
-"Smart way to move between windows 分屏窗口移动
+" Smart way to move between windows 分屏窗口移动
 nmap <C-j> <C-W>j
 nmap <C-k> <C-W>k
 nmap <C-h> <C-W>h
@@ -322,7 +324,7 @@ noremap <leader>bb :tabprev<cr>
 noremap <leader>bn :tabnext<cr>
 noremap <leader>bm :tabmove
 
-"noremap <leader>sv ggvG
+" noremap <leader>sv ggvG
 onoremap af :<C-u>normal! ggVG<CR>''
 
 " 常规模式下输入 cS 清除行尾空格
@@ -426,9 +428,9 @@ autocmd FileType c,cpp,java,go,php,javascript,puppet,python,xml,yml,perl autocmd
 " set tags=./tags;                            "向上级目录递归查找tags文件（好像只有在Windows下才有用）
 
 
-"==============< 插件配置 >================
+" ==============< 插件配置 >================
 
-"透明+置顶插件的配置:
+" 透明+置顶插件的配置:
 if (g:isWin && g:isGUI)
     let g:Current_Alpha = 255
     let g:Top_Most = 0
@@ -610,7 +612,6 @@ endif
     let g:neosnippet#snippets_directory='$VIM/bundle/neosnippet-snippets/neosnippets'
     let g:neosnippet#data_directory= $VIM.'/vimfiles/tmp/neosnippet'
 
-
 " pydiction configure:
     let g:pydiction_location = '$VIMFILES/Plugin/pydiction/complete-dict'
     let python_highlight_all = 1
@@ -634,9 +635,6 @@ endif
     let NERDTreeDirArrows=0
     let NERDTreeAutoDeleteBuffer=1
     let NERDTreeHijackNetrw=1
-
-" nerdcommenter configure:
-    imap <A-i> <plug>NERDCommenterInsert
 
 " repeat configure:
     silent! call repeat#set("\<surround.vim><Leader>rp1", v:count)
@@ -789,9 +787,7 @@ endif
     " inoremap <expr> <PageDown> pumvisible() ? '\<PageDown>\<C-p>\<C-n>' : "'\<PageDown>'
     " inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
 
-"  < Plug or Vundle 插件管理工具配置 >
-" set rtp+=$VIM/vimfiles/bundle/Vundle.vim
-" call vundle#begin('$VIM/vimfiles/bundle')
+"  < Plug 插件管理工具配置 >
 call plug#begin('$VIM/vimfiles/bundle')
     " Plugin 'VundleVim/Vundle.vim'
     " Plug 'tpope/vim-fugitive'
@@ -803,11 +799,10 @@ call plug#begin('$VIM/vimfiles/bundle')
     " Plug 'nvie/vim-flake8'
     " Plug 'tell-k/vim-autopep8'
     " Plug 'vim-scripts/indentpython.vim'
-    " Plug 'edkolev/tmuxline.vim'
     " Plug '$VIM/vimfiles/bundle/txtbrowser'
-    " Plug 'txtbrowser'
     " Plug 'vim-scripts/taglist.vim'
     "Plug 'petdance/ack2'
+    "Plug 'Chun-Yang/vim-action-ag'
     Plug 'dkprice/vim-easygrep'
     " Plug 'majutsushi/tagbar'
     " Plug 'junegunn/vim-easy-align'
@@ -831,4 +826,3 @@ call plug#begin('$VIM/vimfiles/bundle')
     " Plug 'nathanaelkane/vim-indent-guides'
     " Plug 'pearofducks/ansible-vim'
 call plug#end()
-" call vundle#end()

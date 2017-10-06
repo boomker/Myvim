@@ -372,14 +372,14 @@ function! CurDir()
        return curdir
 endfunction
 
-autocmd BufNewFile *.sh,*.py exec ":call SetFileHeadTitle()"
+autocmd BufNewFile,BufRead *.sh,*.py exec ":call SetFileHeadTitle()"
 func! SetFileHeadTitle()
     if &filetype == 'python'
         call setline(1, "\#!/usr/bin/python")
         call setline(2, "\# Description: ")
         call setline(3, "\# Author: boomker")
         call setline(4, "\# Mail: 15800545854@139.com")
-        call setline(5, "\# Date: strftime("%Y-%m-%d %H:%M")")
+        " call setline(5, "\# Date: strftime("%Y-%m-%d %H:%M")")
         normal Go
     endif
     if &filetype == 'sh'
@@ -387,7 +387,7 @@ func! SetFileHeadTitle()
         call setline(2, "\# Description: ")
         call setline(3, "\# Author: boomker")
         call setline(4, "\# Mail: 15800545854@139.com")
-        call setline(5, "\# Date: strftime("%Y-%m-%d %H:%M")")
+        " call setline(5, "\# Date: strftime("+%F %H:%M")")
         normal Go
     endif
 endfunction

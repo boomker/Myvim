@@ -67,6 +67,10 @@ if g:isMac
     endif
 endif
 
+if exists('$TMUX')
+    set term=screen-256color
+endif
+
 " 配置文件自动载入
 if g:isWin
     autocmd! bufwritepost source $VIM/_vimrc %
@@ -327,10 +331,10 @@ noremap <leader>bm :tabmove
 " noremap <leader>sv ggvG
 onoremap af :<C-u>normal! ggVG<CR>''
 
-" 常规模式下输入 cS 清除行尾空格
+" 常规模式下输入 dS 清除行尾空格
 nnoremap <Leader>ds :%s/\s\+$//g<cr>:w!<CR>''
 
-" 常规模式下输入 cM 清除行尾 ^M 符号
+" 常规模式下输入 dM 清除行尾 ^M 符号
 nnoremap <Leader>dm :%s/\r$//g<CR>:w!<CR>''
 
 " convert tab to space
@@ -378,7 +382,7 @@ func! SetFileHeadTitle()
         call setline(1, "\#!/usr/bin/python")
         call setline(2, "\# Description: ")
         call setline(3, "\# Author: boomker")
-        call setline(4, "\# Mail: 15800545854@139.com")
+        call setline(4, "\# Mail: gmboomker@gmail.com")
         " call setline(5, "\# Date: strftime("%Y-%m-%d %H:%M")")
         normal Go
     endif
@@ -419,7 +423,25 @@ fun! <SID>StripTrailingWhitespaces()
     %s/\s\+$//e
     call cursor(l, c)
 endfun
-autocmd FileType c,cpp,java,go,php,javascript,puppet,python,xml,yml,perl autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
+autocmd FileType c,cpp,java,go,php,javascript,puppet,python,xml,yml,perl,txt,sh autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
+
+"" " " " "" " "" " "" " "
+" Quickly Run
+" " "" " "" " "" " "" " "
+map <F5> :call CompileRunGcc()<CR>
+function! CompileRunGcc()
+    exec "w"
+    if &filetype == 'python'
+        exec "!time python %"
+    elseif &filetype == 'sh'
+        :!time bash %
+    elseif &filetype == 'go'
+        exec "!go build %<"
+        exec "!time go run %"
+    " elseif &filetype == "mkd"
+        " exec "!"
+    endif
+endfunction
 
 " -----------------------------------------------------------------------------
 "  < ctags 工具配置 >
@@ -571,7 +593,7 @@ endif
     inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
     " <C-h>, <BS>: close popup and delete backword char.
     " inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-    inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+    " inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
     inoremap <expr><C-u>  neocomplete#close_popup()
     inoremap <expr><A-u>  neocomplete#cancel_popup()
     " Close popup by <Space>.
@@ -793,36 +815,40 @@ call plug#begin('$VIM/vimfiles/bundle')
     " Plug 'tpope/vim-fugitive'
     Plug 'easymotion/vim-easymotion'
     Plug 'vim-airline/vim-airline'
-    " Plug 'plasticboy/vim-markdown'
+    Plug 'plasticboy/vim-markdown'
+    " Plug '.../jedi-vim'   #coding hint
     " Plug 'dimasg/vim-mark'
     " Plug 'rkulla/pydiction'
     " Plug 'nvie/vim-flake8'
-    " Plug 'tell-k/vim-autopep8'
+    Plug 'tell-k/vim-autopep8'
     " Plug 'vim-scripts/indentpython.vim'
     " Plug '$VIM/vimfiles/bundle/txtbrowser'
     " Plug 'vim-scripts/taglist.vim'
-    "Plug 'petdance/ack2'
-    "Plug 'Chun-Yang/vim-action-ag'
+    Plug 'rking/ag.vim'
+    Plug 'Chun-Yang/vim-action-ag'
+    Plug 'dyng/ctrlsf.vim'
+    Plug 'terryma/vim-multiple-cursors'
+    Plug 'ctrlpvim/ctrlp.vim'
     Plug 'dkprice/vim-easygrep'
-    " Plug 'majutsushi/tagbar'
-    " Plug 'junegunn/vim-easy-align'
+    Plug 'majutsushi/tagbar'
+    Plug 'junegunn/vim-easy-align'
     " Plug 'justinmk/vim-sneak'
     Plug 'jiangmiao/auto-pairs'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-repeat'
     " Plug 'Valloric/YouCompleteMe'
     Plug 'Shougo/neocomplete.vim'
-    " Plug 'Shougo/neosnippet.vim'
+    Plug 'Shougo/neosnippet.vim'
     " Plug 'Shougo/neosnippet-snippets'
-    Plug 'scrooloose/syntastic'
-    " Plug 'w0rp/ale'
+    " Plug 'scrooloose/syntastic'
+    Plug 'w0rp/ale'
     Plug 'scrooloose/nerdcommenter'
-    " Plug 'scrooloose/nerdtree'
-    Plug 'dyng/ctrlsf.vim'
+    Plug 'scrooloose/nerdtree'
     " Plug 'junegunn/fzf', { 'dir': '$VIM/vimfiles/bundle/fzf', 'do': './install --all'  }
-    Plug 'ctrlpvim/ctrlp.vim'
-    " Plug 'mbbill/undotree'
+    Plug 'mbbill/undotree'
     Plug 'yonchu/accelerated-smooth-scroll'
+    Plug 'rizzatti/dash.vim'
     " Plug 'nathanaelkane/vim-indent-guides'
     " Plug 'pearofducks/ansible-vim'
 call plug#end()
+

@@ -67,9 +67,9 @@ if g:isMac
     endif
 endif
 
-if exists('$TMUX')
-    set term=screen-256color
-endif
+" if exists('$TMUX')
+    " set term=screen-256color
+" endif
 
 " 配置文件自动载入
 if g:isWin
@@ -95,7 +95,6 @@ set laststatus=2                                      "启用状态栏信息
 set showtabline=2                                     "当只有一个标签时也显示标签行
 set magic                                             "打开正则匹配模式
 set noimd                                             "关闭输入法
-" inoremap <ESC> <ESC>:set iminsert=0<CR>
 
 " 禁止UTF-8 BOM
 set nobomb
@@ -105,6 +104,7 @@ set fileencoding=utf-8                                  "设置此缓冲区所�
 set fileencodings=utf-8,cp936,ucs-bom,gb18030,gb2312    "设置支持打开的文件的编码
 set fileformat=mac
 set fileformats=mac,unix,dos                            "给出文件的<EOL>格式类型
+set pyxversion=3
 " 下面两行至于此是为解决右键菜单乱码问题
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
@@ -150,8 +150,8 @@ set nowritebackup                           "无写入备份
 
 " ===============< 我定义的一些快捷键 >======================
 let mapleader = ","
-inoremap <ESC> <ESC>
-noremap <leader>nl :nohl<esc>
+inoremap <ESC> <ESC>:nohl<CR>
+noremap <leader>nl :nohl<CR>
 
 nmap <Up> <Nop>
 nmap <Down> <Nop>
@@ -209,6 +209,7 @@ nmap tp <S-End><C-v>
 nmap to a<CR><ESC>k$
 
 " 字符串时不置换临时寄存器
+noremap p ""p
 xnoremap p "0p
 nnoremap mp "0p
 nnoremap mP "0P
@@ -563,77 +564,6 @@ endif
     " By Hotkey trigger limit the search(vimgrep) to the current file only
     map <Leader>gk :noautocmd execute "vimgrep /" . expand("<cword>") . "/j" .expand("%") <Bar> copen <CR>
 
-" neocomplete configure:
-    " 打开vim自动启用neocomplete
-    let g:neocomplete#enable_at_startup = 1
-    " Use smartcase.
-    let g:neocomplete#enable_smart_case = 1
-    let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-    " Define dictionary.
-    let g:neocomplete#data_directory = $VIM.'/vimfiles/tmp/neocomplete'
-    let g:neocomplete#sources#dictionary#dictionaries = {
-            \ 'default' : '',
-            \ 'autohotkey' : $VIM.'/vimfiles/dict/AutoHotkey',
-            \ }
-    if !exists('g:neocomplete#keyword_patterns')
-        let g:neocomplete#keyword_patterns = {}
-    endif
-    let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-    " Plugin key-mappings.
-    "inoremap <expr><C-g>     neocomplete#undo_completion()
-    inoremap <expr><C-l>     neocomplete#complete_common_string()
-    " Recommended key-mappings. <CR>: close popup and save indent.
-    inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-    function! s:my_cr_function()
-      return neocomplete#close_popup() . "\<CR>"
-      " For no inserting <CR> key.
-      return pumvisible() ? neocomplete#close_popup() : "\<CR>"
-    endfunction
-    " <TAB>: completion.
-    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-    " <C-h>, <BS>: close popup and delete backword char.
-    " inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-    " inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-    inoremap <expr><C-u>  neocomplete#close_popup()
-    inoremap <expr><A-u>  neocomplete#cancel_popup()
-    " Close popup by <Space>.
-    "inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
-    " For cursor moving in insert mode(Not recommended)
-    "inoremap <expr><Left>  neocomplete#close_popup() . "\<Left>"
-    "inoremap <expr><Right> neocomplete#close_popup() . "\<Right>"
-    "inoremap <expr><Up>    neocomplete#close_popup() . "\<Up>"
-    "inoremap <expr><Down>  neocomplete#close_popup() . "\<Down>"
-    " Or set this.
-    " let g:neocomplete#enable_cursor_hold_i = 1
-    " Or set this.
-    " let g:neocomplete#enable_insert_char_pre = 1
-    " 像AutoComplPop一样自动选中第一项
-    " let g:neocomplete#enable_auto_select = 1
-    " Shell like behavior(not recommended).
-    set completeopt+=longest
-    "let g:neocomplete#disable_auto_complete = 1
-    "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
-    " Enable omni completion.
-    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-    autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-    autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-    autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-    " Enable heavy omni completion.
-    if !exists('g:neocomplete#sources#omni#input_patterns')
-      let g:neocomplete#sources#omni#input_patterns = {}
-    endif
-    if !exists('g:neocomplete#force_omni_input_patterns')
-      let g:neocomplete#force_omni_input_patterns = {}
-    endif
-
-" neosnippet configure:
-    imap <A-s>     <Plug>(neosnippet_expand_or_jump)
-    smap <A-s>     <Plug>(neosnippet_expand_or_jump)
-    xmap <A-s>     <Plug>(neosnippet_expand_target)
-    let g:neosnippet#snippets_directory='$VIM/bundle/neosnippet-snippets/neosnippets'
-    let g:neosnippet#data_directory= $VIM.'/vimfiles/tmp/neosnippet'
-
 " pydiction configure:
     let g:pydiction_location = '$VIMFILES/Plugin/pydiction/complete-dict'
     let python_highlight_all = 1
@@ -809,6 +739,26 @@ endif
     " inoremap <expr> <PageDown> pumvisible() ? '\<PageDown>\<C-p>\<C-n>' : "'\<PageDown>'
     " inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
 
+" deoplete configure:
+  let g:deoplete#enable_at_startup = 1
+
+" deoplete or nvim-completion-manager configure:
+    set shortmess+=c
+    inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+    imap <expr> <CR>  (pumvisible() ?  "\<c-y>\<Plug>(expand_or_nl)" : "\<CR>")
+    imap <expr> <Plug>(expand_or_nl) (cm#completed_is_snippet() ? "\<C-U>":"\<CR>")
+    inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    " au User CmSetup call cm#register_source({'name' : 'cm-css',
+        " \ 'priority': 9,
+        " \ 'scoping': 1,
+        " \ 'scopes': ['css','scss'],
+        " \ 'abbreviation': 'css',
+        " \ 'word_pattern': '[\w\-]+',
+        " \ 'cm_refresh_patterns':['[\w\-]+\s*:\s+'],
+        " \ 'cm_refresh': {'omnifunc': 'csscomplete#CompleteCSS'},
+        " \ })
+
 "  < Plug 插件管理工具配置 >
 call plug#begin('$VIM/vimfiles/bundle')
     " Plugin 'VundleVim/Vundle.vim'
@@ -837,9 +787,10 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-repeat'
     " Plug 'Valloric/YouCompleteMe'
-    Plug 'Shougo/neocomplete.vim'
-    Plug 'Shougo/neosnippet.vim'
-    " Plug 'Shougo/neosnippet-snippets'
+    Plug 'Shougo/deoplete.nvim'
+    Plug 'roxma/nvim-yarp'
+    Plug 'roxma/vim-hug-neovim-rpc'
+    " Plug 'roxma/nvim-completion-manager'
     " Plug 'scrooloose/syntastic'
     Plug 'w0rp/ale'
     Plug 'scrooloose/nerdcommenter'

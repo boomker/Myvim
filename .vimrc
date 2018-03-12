@@ -67,9 +67,6 @@ if g:isMac
     endif
 endif
 
-" if exists('$TMUX')
-    " set term=screen-256color
-" endif
 
 " 配置文件自动载入
 if g:isWin
@@ -104,10 +101,10 @@ set fileencoding=utf-8                                  "设置此缓冲区所�
 set fileencodings=utf-8,cp936,ucs-bom,gb18030,gb2312    "设置支持打开的文件的编码
 set fileformat=mac
 set fileformats=mac,unix,dos                            "给出文件的<EOL>格式类型
-set pyxversion=3
+set pyxversion=2
 " 下面两行至于此是为解决右键菜单乱码问题
 source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
+" source $VIMRUNTIME/menu.vim
 
 " -----------------------------------------------------------------------------
 "  < 码字时的一些功能性配置 >
@@ -270,7 +267,7 @@ nnoremap z, <<
 nnoremap z. >>
 nnoremap zh zH
 nnoremap zl zL
-nnoremap zc zC
+" nnoremap zc zC
 nnoremap zu [z
 nnoremap zn ]z
 nnoremap zg :q!<CR>
@@ -279,7 +276,7 @@ nnoremap zv <C-w>v
 nnoremap zi <C-w>s
 nnoremap zq <C-w>w:q!<CR>
 " 用空格键来开关折叠
-nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zO')<CR>
+nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
 
 " Smart way to move between windows 分屏窗口移动
 nmap <C-j> <C-W>j
@@ -377,14 +374,13 @@ function! CurDir()
        return curdir
 endfunction
 
-autocmd BufNewFile,BufRead *.sh,*.py exec ":call SetFileHeadTitle()"
+autocmd BufNewFile,BufRead,FileType sh,python exec ":call SetFileHeadTitle()"
 func! SetFileHeadTitle()
     if &filetype == 'python'
-        call setline(1, "\#!/usr/bin/python")
+        call setline(1, "\#!/usr/bin/python3")
         call setline(2, "\# Description: ")
         call setline(3, "\# Author: boomker")
         call setline(4, "\# Mail: gmboomker@gmail.com")
-        " call setline(5, "\# Date: strftime("%Y-%m-%d %H:%M")")
         normal Go
     endif
     if &filetype == 'sh'
@@ -403,20 +399,6 @@ function! AddPythonDict_txt()
     set complete+=k
 endfunction
 
-augroup vimrc_Python
-    autocmd!
-    "highlight characters past column 120
-    highlight BadWhitespace ctermbg=red guibg=red
-    autocmd FileType python highlight Excess ctermbg=DarkGrey guibg=Black
-    autocmd FileType python set nowrap
-    autocmd FileType python set autoindent
-    autocmd FileType python match Excess /\%120v.*/
-    autocmd BufRead,BufNewFile *.py set textwidth=110
-    autocmd BufRead,BufNewFile *.py match BadWhitespace /^\t\+/
-    autocmd BufRead,BufNewFile *.py match BadWhitespace /\s\+$/
-    " autocmd BufWritePost *.py call Flake8()
-    augroup END
-
 " 保存python文件时删除多余空格
 fun! <SID>StripTrailingWhitespaces()
     let l = line(".")
@@ -424,32 +406,7 @@ fun! <SID>StripTrailingWhitespaces()
     %s/\s\+$//e
     call cursor(l, c)
 endfun
-autocmd FileType c,cpp,java,go,php,javascript,puppet,python,xml,yml,perl,txt,sh autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
-
-"" " " " "" " "" " "" " "
-" Quickly Run
-" " "" " "" " "" " "" " "
-map <F5> :call CompileRunGcc()<CR>
-function! CompileRunGcc()
-    exec "w"
-    if &filetype == 'python'
-        exec "!time python %"
-    elseif &filetype == 'sh'
-        :!time bash %
-    elseif &filetype == 'go'
-        exec "!go build %<"
-        exec "!time go run %"
-    " elseif &filetype == "mkd"
-        " exec "!"
-    endif
-endfunction
-
-" -----------------------------------------------------------------------------
-"  < ctags 工具配置 >
-" -----------------------------------------------------------------------------
-" 对浏览代码非常的方便,可以在函数,变量之间跳转等
-" set tags=./tags;                            "向上级目录递归查找tags文件（好像只有在Windows下才有用）
-
+autocmd FileType python,go,php,javascript,yml,txt,sh autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
 
 " ==============< 插件配置 >================
 
@@ -522,15 +479,20 @@ endif
     nmap <silent> <leader>th <ESC>:TBMatch<RETURN>
 
 " airline configure:
-    " if g:isWin
     " let g:airline_theme = 'solarized'                " 设置主题
     let g:airline_powerline_fonts = 1
-    let g:airline_right_sep = '◀'
-    let g:airline#extensions#tabline#enabled = 1
+    let g:airline#extensions#tabline#show_buffers = 1
+    " let g:airline#extensions#tabline#switch_buffers_and_tabs = 1
+    let g:airline#extensions#tabline#show_tabs = 0
+    let g:airline#extensions#tabline#buf_label_first = 1
+    let g:airline#extensions#tabline#buffers_label = 'bfs'
+    let g:airline#extensions#branch#enabled = 1
     let g:airline#extensions#tavline#enabled = 1
-    let g:airline#extensions#syntastic#enabled = 1
+    " let g:airline#extensions#syntastic#enabled = 1
     let g:airline#extensions#tagbar#enabled = 1
     let g:airline#extensions#tagbar#flags = 'f'
+    " let g:airline#extensions#virtualenv#enabled = 1
+    let g:airline#extensions#tabline#enabled = 1
     let g:airline#extensions#tabline#show_close_button = 0
     let g:airline#extensions#tabline#fnametruncate = 1
     let g:airline#extensions#tabline#formatter = 'unique_tail'
@@ -538,12 +500,11 @@ endif
     " let g:airline#extensions#tabline#tab_nr_type = 2 " splits and tab number
     let g:airline#extensions#whitespace#symbol = '!'
     let g:airline#extensions#whitespace#enabled = 1
+    let g:airline#extensions#whitespace#mixed_indent_format = 'm-i[%s]'
+    let g:airline#extensions#whitespace#mixed_indent_file_format = 'm-i-f[%s]'
     let g:airline_section_b = '%{strftime("%H:%M")}'
     let g:airline_section_c = '%{CurDir()}\%t'
     let g:airline_section_y = 'BN: %{bufnr("%")}'
-    " else
-        " let w:airline_disabled = 0
-    " endif
 
 " EasyGrep configure:
     map <silent> <Leader>vv <plug>EgMapGrepCurrentWord_v
@@ -571,7 +532,7 @@ endif
 
 " nerdtree configure:
     map <leader>st :NERDTreeToggle<CR>
-    let NERDTreeIgnore=['\.pyc$', '\~$'] "ignore files in NERDTree"
+    let NERDTreeIgnore=['\~$', '\.pyc$', '\.swp$', '\.DS_Store$']
     let g:nerdtree_tabs_open_on_gui_startup=0
     let g:NERDTreeMapToggleBookmarks="b"
     let g:NERDTreeMapChangeRoot="c"
@@ -587,25 +548,30 @@ endif
     let NERDTreeDirArrows=0
     let NERDTreeAutoDeleteBuffer=1
     let NERDTreeHijackNetrw=1
+    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " repeat configure:
     silent! call repeat#set("\<surround.vim><Leader>rp1", v:count)
     silent! call repeat#set("\<vim-easymotion><Leader>rp2", v:count)
 
-" syntastic configure:
-    let g:syntastic_error_symbol = '✗'
-    let g:syntastic_warning_symbol = '⚠'
-    let g:syntastic_check_on_open=1
-    let g:syntastic_enable_highlighting = 0
-    let g:syntastic_always_populate_loc_list = 1
-    let g:syntastic_auto_loc_list = 1
-    let g:syntastic_check_on_wq = 0
-    let g:syntastic_python_checkers = ['pyflakes,flake8']
-    let g:syntastic_html_tidy_ignore_errors=[" proprietary attribute \"ng-"]
+" ale configure:
+    " let g:syntastic_error_symbol = '✗'
+    " let g:syntastic_warning_symbol = '⚠'
+    " let g:syntastic_check_on_open=1
+    " let g:syntastic_enable_highlighting = 0
+    " let g:syntastic_always_populate_loc_list = 1
+    " let g:syntastic_auto_loc_list = 1
+    " let g:syntastic_check_on_wq = 0
+    " let g:syntastic_python_checkers = ['pyflakes,flake8']
+    " let g:syntastic_html_tidy_ignore_errors=[" proprietary attribute \"ng-"]
+    " set statusline+=%#warningmsg#
+    " "set statusline+=%{SyntasticStatuslineFlag()}
+    " set statusline+=%*
 
-    set statusline+=%#warningmsg#
-    "set statusline+=%{SyntasticStatuslineFlag()}
-    set statusline+=%*
+    let g:ale_fix_on_save = 1
+    let g:ale_completion_enabled = 1
+    let g:ale_sign_column_always = 1
+    let g:airline#extensions#ale#enabled = 1
 
 " taglist/tagbar configure:
     let g:tagbar_sort=0
@@ -624,21 +590,22 @@ endif
     let g:tagbar_map_prevtag = "K"
     let g:tagbar_map_openallfolds = "ao"
     let g:tagbar_map_closeallfolds = "ac"
-     "--------------------------------------------------------
-     let Tlist_Auto_Highlight_Tag=1
-     let Tlist_Auto_Open=0
-     let Tlist_Auto_Update=1
-     let Tlist_Close_On_Select=1
-     let Tlist_Display_Tag_Scope=1
-     let Tlist_Exit_OnlyWindow=1
-     let Tlist_Enable_Dold_Column=1
-     let Tlist_File_Fold_Auto_Close=1
-     let Tlist_GainFocus_On_ToggleOpen=1
-     let Tlist_Show_One_File=1
-     let Tlist_Use_Right_Window=1
-     let Tlist_Use_SingleClick=1
-     " 设定F8为taglist开关
-     nnoremap <silent> <leader>vt :TlistToggle<CR>
+
+    " Taglist configure:--------------------------------------------------------
+         " let Tlist_Auto_Highlight_Tag=1
+         " let Tlist_Auto_Open=0
+         " let Tlist_Auto_Update=1
+         " let Tlist_Close_On_Select=1
+         " let Tlist_Display_Tag_Scope=1
+         " let Tlist_Exit_OnlyWindow=1
+         " let Tlist_Enable_Dold_Column=1
+         " let Tlist_File_Fold_Auto_Close=1
+         " let Tlist_GainFocus_On_ToggleOpen=1
+         " let Tlist_Show_One_File=1
+         " let Tlist_Use_Right_Window=1
+         " let Tlist_Use_SingleClick=1
+         " " 设定F8为taglist开关
+         " nnoremap <silent> <leader>vt :TlistToggle<CR>
 
 " auto-pairs configure:
     let g:AutoPairsFlyMode = 0
@@ -662,34 +629,20 @@ endif
         nmap <buffer> r <plug>UndotreeRedo
     endfunc
 
-" tmuxline configure:
-    let g:tmuxline_powerline_separators = 0
-    "let g:tmuxline_preset = 'nightly_fox'
-    let g:tmuxline_preset = 'powerline'
-    let g:tmuxline_theme = 'powerline'
-
 " flake8 configure:
-     autocmd FileType python map <buffer> <leader>cp :call Flake8()<CR>
-     let g:flake8_cmd="/usr/bin/flake8"
-     let g:flake8_show_in_gutter=1
-     highlight link Flake8_Error      Error
-     highlight link Flake8_Warning    WarningMsg
-     highlight link Flake8_Complexity WarningMsg
-     highlight link Flake8_Naming     WarningMsg
-     highlight link Flake8_PyFlake    WarningMsg
+     " autocmd FileType python map <buffer> <leader>cp :call Flake8()<CR>
+     " let g:flake8_cmd="/usr/bin/flake8"
+     " let g:flake8_show_in_gutter=1
+     " highlight link Flake8_Error      Error
+     " highlight link Flake8_Warning    WarningMsg
+     " highlight link Flake8_Complexity WarningMsg
+     " highlight link Flake8_Naming     WarningMsg
+     " highlight link Flake8_PyFlake    WarningMsg
 
 " Autopep8 configure:
     autocmd FileType python noremap <buffer> <Leader>ap :w!<CR>:call Autopep8()<CR>
-    let g:autopep8_ignore="E501,W293"
-    let g:autopep8_select="E501,W293"
-    let g:autopep8_pep8_passes=100
-    let g:autopep8_max_line_length=79
-    let g:autopep8_aggressive=1
-    let g:autopep8_aggressive=2
-    let g:autopep8_indent_size=2
-    let g:autopep8_disable_show_diff=1
-    let g:autopep8_diff_type='horizontal'
-    let g:autopep8_diff_type='vertical'
+    let g:autopep8_ignore="W391"
+    " let g:autopep8_select="E501,W293"
 
 " indent-guides configure:
     let g:indent_guides_guide_size = 2  " 指定对齐线的尺寸
@@ -704,13 +657,13 @@ endif
     " let g:ycm_path_to_python3_interpreter = '/usr/local/bin/python3'
     " " 输入第0个字符开始补全
     " let g:ycm_min_num_of_chars_for_completion = 0
-    " " " 禁止缓存匹配项,每次都重新生成匹配项
+    " " 禁止缓存匹配项,每次都重新生成匹配项
     " let g:ycm_cache_omnifunc = 0
-    " " " 开启语义补全
+    " " 开启语义补全
     " let g:ycm_seed_identifiers_with_syntax = 1
-    " " " 在注释输入中也能补全
+    " " 在注释输入中也能补全
     " let g:ycm_complete_in_comments = 1
-    " " " 在字符串输入中也能补全
+    " " 在字符串输入中也能补全
     " let g:ycm_complete_in_strings = 1
     " let g:ycm_min_num_of_chars_for_completion= 2
     " let g:ycm_max_diagnostics_to_display = 0
@@ -739,59 +692,102 @@ endif
     " inoremap <expr> <PageDown> pumvisible() ? '\<PageDown>\<C-p>\<C-n>' : "'\<PageDown>'
     " inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
 
-" deoplete configure:
-  let g:deoplete#enable_at_startup = 1
-
 " deoplete or nvim-completion-manager configure:
+    let g:deoplete#enable_at_startup = 1
     set shortmess+=c
-    inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
-    imap <expr> <CR>  (pumvisible() ?  "\<c-y>\<Plug>(expand_or_nl)" : "\<CR>")
-    imap <expr> <Plug>(expand_or_nl) (cm#completed_is_snippet() ? "\<C-U>":"\<CR>")
+    " inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+    " imap <expr> <CR>  (pumvisible() ?  "\<c-y>\<Plug>(expand_or_nl)" : "\<CR>")
+    " imap <expr> <Plug>(expand_or_nl) (cm#completed_is_snippet() ? "\<C-U>":"\<CR>")
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-    " au User CmSetup call cm#register_source({'name' : 'cm-css',
-        " \ 'priority': 9,
-        " \ 'scoping': 1,
-        " \ 'scopes': ['css','scss'],
-        " \ 'abbreviation': 'css',
-        " \ 'word_pattern': '[\w\-]+',
-        " \ 'cm_refresh_patterns':['[\w\-]+\s*:\s+'],
-        " \ 'cm_refresh': {'omnifunc': 'csscomplete#CompleteCSS'},
-        " \ })
+
+" jedi-vim configre:
+    let g:jedi#completions_enabled = 1
+    let g:jedi#completions_command = "<Tab>"
+    inoremap <silent> <buffer> <C-N> <c-x><c-o>
+    let g:jedi#goto_command = "<leader>gc"
+    let g:jedi#goto_assignments_command = "<leader>ga"
+    let g:jedi#goto_definitions_command = ""
+    let g:jedi#documentation_command = "K"
+    let g:jedi#usages_command = "<leader>uc"
+    " let g:jedi#completions_command = "<C-Space>"
+    let g:jedi#rename_command = "<leader>rn"
+
+" autoformat configure:
+    let g:autoformat_autoindent = 0
+    let g:autoformat_retab = 0
+    let g:autoformat_remove_trailing_spaces = 0
+    map <F6> <ESC>:Autoformat<CR>:w<CR>:call RunPython()<CR>
+    function! RunPython()
+        let mp = &makeprg
+        let ef = &errorformat
+        let exeFile = expand("%:t")
+        setlocal makeprg=python\ -u
+        set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
+        silent make %
+        copen
+        let &makeprg = mp
+        let &errorformat = ef
+    endfunction
+
+" RainbowParentheses configure:
+    let g:rbpt_colorpairs = [
+                            \ ['brown',       'RoyalBlue3'],
+                            \ ['Darkblue',    'SeaGreen3'],
+                            \ ['darkgray',    'DarkOrchid3'],
+                            \ ['darkgreen',   'firebrick3'],
+                            \ ['darkcyan',    'RoyalBlue3'],
+                            \ ['darkred',     'SeaGreen3'],
+                            \ ['darkmagenta', 'DarkOrchid3'],
+                            \ ['brown',       'firebrick3'],
+                            \ ['gray',        'RoyalBlue3'],
+                            \ ['darkmagenta', 'DarkOrchid3'],
+                            \ ['Darkblue',    'firebrick3'],
+                            \ ['darkgreen',   'RoyalBlue3'],
+                            \ ['darkcyan',    'SeaGreen3'],
+                            \ ['darkred',     'DarkOrchid3'],
+                            \ ['red',         'firebrick3'],
+                            \ ]
+    let g:rbpt_max = 16
+    let g:rbpt_loadcmd_toggle = 0
+    au VimEnter * RainbowParenthesesToggle
+    au Syntax * RainbowParenthesesLoadRound
+    au Syntax * RainbowParenthesesLoadSquare
+    au Syntax * RainbowParenthesesLoadBraces
 
 "  < Plug 插件管理工具配置 >
 call plug#begin('$VIM/vimfiles/bundle')
     " Plugin 'VundleVim/Vundle.vim'
-    " Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-fugitive'
     Plug 'easymotion/vim-easymotion'
     Plug 'vim-airline/vim-airline'
+    " Plug 'jmcantrell/vim-virtualenv'
     Plug 'plasticboy/vim-markdown'
-    " Plug '.../jedi-vim'   #coding hint
+    Plug 'davidhalter/jedi-vim'
     " Plug 'dimasg/vim-mark'
-    " Plug 'rkulla/pydiction'
+    Plug 'rkulla/pydiction'
     " Plug 'nvie/vim-flake8'
     Plug 'tell-k/vim-autopep8'
-    " Plug 'vim-scripts/indentpython.vim'
+    Plug 'Chiel92/vim-autoformat'
+    Plug 'vim-scripts/indentpython.vim'
     " Plug '$VIM/vimfiles/bundle/txtbrowser'
     " Plug 'vim-scripts/taglist.vim'
+    Plug 'majutsushi/tagbar'
     Plug 'rking/ag.vim'
     Plug 'Chun-Yang/vim-action-ag'
     Plug 'dyng/ctrlsf.vim'
     Plug 'terryma/vim-multiple-cursors'
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'dkprice/vim-easygrep'
-    Plug 'majutsushi/tagbar'
     Plug 'junegunn/vim-easy-align'
-    " Plug 'justinmk/vim-sneak'
     Plug 'jiangmiao/auto-pairs'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-repeat'
     " Plug 'Valloric/YouCompleteMe'
-    Plug 'Shougo/deoplete.nvim'
-    Plug 'roxma/nvim-yarp'
-    Plug 'roxma/vim-hug-neovim-rpc'
+    " Plug 'Shougo/deoplete.nvim'
+    " Plug 'roxma/nvim-yarp'
+    " Plug 'roxma/vim-hug-neovim-rpc'
     " Plug 'roxma/nvim-completion-manager'
-    " Plug 'scrooloose/syntastic'
     Plug 'w0rp/ale'
     Plug 'scrooloose/nerdcommenter'
     Plug 'scrooloose/nerdtree'
@@ -799,7 +795,8 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'mbbill/undotree'
     Plug 'yonchu/accelerated-smooth-scroll'
     Plug 'rizzatti/dash.vim'
-    " Plug 'nathanaelkane/vim-indent-guides'
+    Plug 'nathanaelkane/vim-indent-guides'
+    Plug 'kien/rainbow_parentheses.vim'
     " Plug 'pearofducks/ansible-vim'
 call plug#end()
 

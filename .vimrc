@@ -263,13 +263,9 @@ vmap <Leader>sb S[
 xmap <Leader>fb S{
 xmap <Leader>sb S[
 
-nnoremap z, <<
-nnoremap z. >>
-nnoremap zh zH
-nnoremap zl zL
 " nnoremap zc zC
-nnoremap zu [z
-nnoremap zn ]z
+"nnoremap zu [z
+"nnoremap zn ]z
 nnoremap zg :q!<CR>
 nnoremap zf <S-z><S-z>
 nnoremap zv <C-w>v
@@ -285,23 +281,7 @@ nmap <C-h> <C-W>h
 nmap <C-l> <C-W>l
 
 cnoremap <C-a> <Home>
-" cnoremap <C-h> <Left>
-" cnoremap <C-l> <Right>
 cnoremap <c-v> <C-r>"
-
-inoremap <A-h> <Home>
-inoremap <A-j> <Down><Home>
-inoremap <A-k> <Up><End>
-inoremap <A-l> <End>
-inoremap <c-j> <Down>
-inoremap <c-k> <Up>
-inoremap <c-h> <Left>
-inoremap <c-l> <Right>
-
-nnoremap <c-t> mz>>`zllll
-inoremap <c-t> <esc>mz>>`zllllli
-" nnoremap <c-x> mz:m+<cr>`z
-" inoremap <c-x> <esc>mz:m+<cr>`zli
 
 " :inoremap < <><ESC>i
 " {[( rigTab补全 )]}
@@ -465,10 +445,13 @@ endif
     let g:EasyMotion_smartcase = 1
     let g:EasyMotion_leader_key = 'f'
     let g:EasyMotion_startofline = '0'
-    map fu <Plug>(easymotion-F)
-    map f/ <Plug>(easymotion-tn)
-    map fl <Plug>(easymotion-lineforward)
-    map fh <Plug>(easymotion-linebackward)
+    nmap fu <Plug>(easymotion-N)
+    nmap f/ <Plug>(easymotion-fn)
+    "支持多关键词正则搜索
+    nmap f? <Plug>(easymotion-Fn)
+    nmap fl <Plug>(easymotion-lineforward)
+    nmap fh <Plug>(easymotion-linebackward)
+    nmap f. <Plug>(easymotion-repeat)
 
 " txtBrowser configure:
     let tlist_txt_settings = 'txt;c:content;f:figures;t:tables'
@@ -506,24 +489,24 @@ endif
     let g:airline_section_c = '%{CurDir()}\%t'
     let g:airline_section_y = 'BN: %{bufnr("%")}'
 
-" EasyGrep configure:
-    map <silent> <Leader>vv <plug>EgMapGrepCurrentWord_v
-    vmap <silent> <Leader>vv <plug>EgMapGrepCurrentWord_v
-    map <silent> <Leader>vw <plug>EgMapGrepCurrentWord_V
-    vmap <silent> <Leader>vw <plug>EgMapGrepCurrentWord_V
-    "map <silent> <Leader>mr <plug>EgMapReplaceCurrentWord_r
-    "vmap <silent> <Leader>mr <plug>EgMapReplaceCurrentWord_r
-    map <silent> <Leader>vr <plug>EgMapReplaceCurrentWord_R
-    vmap <silent> <Leader>vr <plug>EgMapReplaceCurrentWord_R
+" ag/greper/ctrlsf configure:
+    nnoremap <leader>G :Grepper -tool ag<cr>
+    "nmap <leader>gs <plug>(GrepperOperator)
+    nnoremap <leader># :Grepper -buffer -tool ag -cword -noprompt<cr>
+" ctrsf configure:
+    nmap <leader>sf <Plug>CtrlSFPrompt
+    nmap <leader>sw <Plug>CtrlSFCwordExec
+    nmap <leader>ww <Plug>CtrlSFCCwordExec
+    let g:ctrlsf_default_view_mode = 'compact'
 
-    let g:EasyGrepFilesToExclude="*.svn*,*.git*,*.a,*.o,*.so,*.d,*.depend,tags"
-    " let g:EasyGrepRecursive=1
-    " let g:EasyGrepAllOptionsInExplorer=1
-    " let g:EasyGrepCommand=1
-    " let g:EasyGrepReplaceWindowMode=2
-    "
-    " By Hotkey trigger limit the search(vimgrep) to the current file only
-    map <Leader>gk :noautocmd execute "vimgrep /" . expand("<cword>") . "/j" .expand("%") <Bar> copen <CR>
+    " Optional. The default behaviour should work for most users.
+    let g:grepper               = {}
+    let g:grepper.tools         = ['ag', 'ack', 'grep', 'findstr', 'git']
+    let g:grepper.jump          = 0
+    let g:grepper.next_tool     = '<leader>g<tab>'
+    let g:grepper.simple_prompt = 1
+    let g:grepper.quickfix      = 1
+    let g:grepper.highlight = 1
 
 " pydiction configure:
     let g:pydiction_location = '$VIMFILES/Plugin/pydiction/complete-dict'
@@ -550,30 +533,13 @@ endif
     let NERDTreeHijackNetrw=1
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-" repeat configure:
-    silent! call repeat#set("\<surround.vim><Leader>rp1", v:count)
-    silent! call repeat#set("\<vim-easymotion><Leader>rp2", v:count)
-
 " ale configure:
-    " let g:syntastic_error_symbol = '✗'
-    " let g:syntastic_warning_symbol = '⚠'
-    " let g:syntastic_check_on_open=1
-    " let g:syntastic_enable_highlighting = 0
-    " let g:syntastic_always_populate_loc_list = 1
-    " let g:syntastic_auto_loc_list = 1
-    " let g:syntastic_check_on_wq = 0
-    " let g:syntastic_python_checkers = ['pyflakes,flake8']
-    " let g:syntastic_html_tidy_ignore_errors=[" proprietary attribute \"ng-"]
-    " set statusline+=%#warningmsg#
-    " "set statusline+=%{SyntasticStatuslineFlag()}
-    " set statusline+=%*
-
     let g:ale_fix_on_save = 1
     let g:ale_completion_enabled = 1
     let g:ale_sign_column_always = 1
     let g:airline#extensions#ale#enabled = 1
 
-" taglist/tagbar configure:
+" tagbar configure:
     let g:tagbar_sort=0
     let g:tagbar_compact=1
     let g:tagbar_indent = 1
@@ -590,22 +556,6 @@ endif
     let g:tagbar_map_prevtag = "K"
     let g:tagbar_map_openallfolds = "ao"
     let g:tagbar_map_closeallfolds = "ac"
-
-    " Taglist configure:--------------------------------------------------------
-         " let Tlist_Auto_Highlight_Tag=1
-         " let Tlist_Auto_Open=0
-         " let Tlist_Auto_Update=1
-         " let Tlist_Close_On_Select=1
-         " let Tlist_Display_Tag_Scope=1
-         " let Tlist_Exit_OnlyWindow=1
-         " let Tlist_Enable_Dold_Column=1
-         " let Tlist_File_Fold_Auto_Close=1
-         " let Tlist_GainFocus_On_ToggleOpen=1
-         " let Tlist_Show_One_File=1
-         " let Tlist_Use_Right_Window=1
-         " let Tlist_Use_SingleClick=1
-         " " 设定F8为taglist开关
-         " nnoremap <silent> <leader>vt :TlistToggle<CR>
 
 " auto-pairs configure:
     let g:AutoPairsFlyMode = 0
@@ -629,26 +579,17 @@ endif
         nmap <buffer> r <plug>UndotreeRedo
     endfunc
 
-" flake8 configure:
-     " autocmd FileType python map <buffer> <leader>cp :call Flake8()<CR>
-     " let g:flake8_cmd="/usr/bin/flake8"
-     " let g:flake8_show_in_gutter=1
-     " highlight link Flake8_Error      Error
-     " highlight link Flake8_Warning    WarningMsg
-     " highlight link Flake8_Complexity WarningMsg
-     " highlight link Flake8_Naming     WarningMsg
-     " highlight link Flake8_PyFlake    WarningMsg
-
 " Autopep8 configure:
     autocmd FileType python noremap <buffer> <Leader>ap :w!<CR>:call Autopep8()<CR>
     let g:autopep8_ignore="W391"
     " let g:autopep8_select="E501,W293"
 
-" indent-guides configure:
-    let g:indent_guides_guide_size = 2  " 指定对齐线的尺寸
-    let NERDSpaceDelims = 1             " 自动添加前置空格
-    let g:indent_guides_enable_on_vim_startup = 0  " 默认关闭
-    let g:indent_guides_start_level = 2  " 从第二层开始可视化显示缩进"
+" indentline configure:
+    " let g:indentLine_setColors = 0
+    let g:indentLine_color_dark = 1
+    let g:indentLine_char = '┆'
+    let g:indentLine_leadingSpaceEnabled = 1
+    let g:indentLine_leadingSpaceChar = '·'
 
 " YouCompleteMe configure:
     " let g:ycm_collect_identifiers_from_tags_files = 0
@@ -713,7 +654,7 @@ endif
     " let g:jedi#completions_command = "<C-Space>"
     let g:jedi#rename_command = "<leader>rn"
 
-" autoformat configure:
+" autoformat configure for F6 run Pycode:
     let g:autoformat_autoindent = 0
     let g:autoformat_retab = 0
     let g:autoformat_remove_trailing_spaces = 0
@@ -731,34 +672,22 @@ endif
     endfunction
 
 " RainbowParentheses configure:
-    let g:rbpt_colorpairs = [
-                            \ ['brown',       'RoyalBlue3'],
-                            \ ['Darkblue',    'SeaGreen3'],
-                            \ ['darkgray',    'DarkOrchid3'],
-                            \ ['darkgreen',   'firebrick3'],
-                            \ ['darkcyan',    'RoyalBlue3'],
-                            \ ['darkred',     'SeaGreen3'],
-                            \ ['darkmagenta', 'DarkOrchid3'],
-                            \ ['brown',       'firebrick3'],
-                            \ ['gray',        'RoyalBlue3'],
-                            \ ['darkmagenta', 'DarkOrchid3'],
-                            \ ['Darkblue',    'firebrick3'],
-                            \ ['darkgreen',   'RoyalBlue3'],
-                            \ ['darkcyan',    'SeaGreen3'],
-                            \ ['darkred',     'DarkOrchid3'],
-                            \ ['red',         'firebrick3'],
-                            \ ]
-    let g:rbpt_max = 16
     let g:rbpt_loadcmd_toggle = 0
     au VimEnter * RainbowParenthesesToggle
     au Syntax * RainbowParenthesesLoadRound
     au Syntax * RainbowParenthesesLoadSquare
     au Syntax * RainbowParenthesesLoadBraces
 
+" plugins manager plug configure:
+    if empty(glob('$VIMRUNTIME/autoload/plug.vim'))
+        silent execute "!curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+        autocmd VimEnter * PlugInstall | source $HOME/.vimrc
+    endif
+
 "  < Plug 插件管理工具配置 >
 call plug#begin('$VIM/vimfiles/bundle')
-    " Plugin 'VundleVim/Vundle.vim'
     Plug 'tpope/vim-fugitive'
+    Plug 'mhinz/vim-signify'
     Plug 'easymotion/vim-easymotion'
     Plug 'vim-airline/vim-airline'
     " Plug 'jmcantrell/vim-virtualenv'
@@ -766,23 +695,14 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'davidhalter/jedi-vim'
     " Plug 'dimasg/vim-mark'
     Plug 'rkulla/pydiction'
-    " Plug 'nvie/vim-flake8'
     Plug 'tell-k/vim-autopep8'
     Plug 'Chiel92/vim-autoformat'
-    Plug 'vim-scripts/indentpython.vim'
     " Plug '$VIM/vimfiles/bundle/txtbrowser'
-    " Plug 'vim-scripts/taglist.vim'
     Plug 'majutsushi/tagbar'
-    Plug 'rking/ag.vim'
-    Plug 'Chun-Yang/vim-action-ag'
-    Plug 'dyng/ctrlsf.vim'
-    Plug 'terryma/vim-multiple-cursors'
-    Plug 'ctrlpvim/ctrlp.vim'
-    Plug 'dkprice/vim-easygrep'
     Plug 'junegunn/vim-easy-align'
     Plug 'jiangmiao/auto-pairs'
     Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-repeat'
+    Plug 'kien/rainbow_parentheses.vim'
     " Plug 'Valloric/YouCompleteMe'
     " Plug 'Shougo/deoplete.nvim'
     " Plug 'roxma/nvim-yarp'
@@ -791,12 +711,17 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'w0rp/ale'
     Plug 'scrooloose/nerdcommenter'
     Plug 'scrooloose/nerdtree'
-    " Plug 'junegunn/fzf', { 'dir': '$VIM/vimfiles/bundle/fzf', 'do': './install --all'  }
+    "Plug 'junegunn/fzf', { 'dir': '$VIM/vimfiles/bundle/fzf', 'do': './install --all'  }
+    "Plug '/usr/local/opt/fzf'
+    "Plug 'junegunn/fzf.vim'
+    Plug 'mhinz/vim-grepper'
+    Plug 'ctrlpvim/ctrlp.vim'
+    Plug 'dyng/ctrlsf.vim'
+    Plug 'terryma/vim-multiple-cursors'
     Plug 'mbbill/undotree'
     Plug 'yonchu/accelerated-smooth-scroll'
     Plug 'rizzatti/dash.vim'
-    Plug 'nathanaelkane/vim-indent-guides'
-    Plug 'kien/rainbow_parentheses.vim'
+    Plug 'Yggdroot/indentLine'
     " Plug 'pearofducks/ansible-vim'
 call plug#end()
 

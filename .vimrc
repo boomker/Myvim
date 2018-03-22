@@ -32,14 +32,12 @@ if (g:isWin && g:isGUI)
     set mousef                                              "启用光标激活pane
     " set mouse=a                                           " 在任何模式下启用鼠标,但是右键用不了
     au GUIEnter * simalt ~x                                 "窗口启动时自动最大化
-    autocmd! bufwritepost source $VIM/_vimrc %
-    nmap <Leader>rc :so $VIM/_vimrc<CR>:nohl<CR>
+    "autocmd bufwritepost .vimrc source $VIM/_vimrc
 endif
 
 if (g:isMac && g:isGUI)
     source $VIMRUNTIME/menu.vim
-    autocmd! bufwritepost source $HOME/.vimrc %
-endi
+endif
 
 colorscheme solarized
 set background=dark
@@ -47,7 +45,7 @@ set guifont=Source_Code_Pro_Semibold_for_Powerline:h15
 
 set nocompatible                                      "禁用 Vi 兼容模式
 set number                                            "显示行号
-" set relativenumber                                    "启用相对行号"
+set relativenumber                                    "启用相对行号"
 set wrap                                              "设置自动折行
 " set nolinebreak                                       "不自动换行
 set shortmess=atI                                     "去掉欢迎界面
@@ -60,14 +58,13 @@ set laststatus=2                                      "启用状态栏信息
 set showtabline=2                                     "当只有一个标签时也显示标签行
 set magic                                             "打开正则匹配模式
 set noimd                                             "关闭输入法
-
 set nobomb                                              " 禁止UTF-8 BOM
 set termencoding=utf-8
 set encoding=utf-8                                      "设置gvim内部编码
 set fileencoding=utf-8                                  "设置此缓冲区所在文件的字符编码
 set fileencodings=utf-8,cp936,ucs-bom,gb18030,gb2312    "设置支持打开的文件的编码
-set fileformat=mac
-set fileformats=mac,unix,dos                            "给出文件的<EOL>格式类型
+set fileformat=unix
+set fileformats=unix,dos                            "给出文件的<EOL>格式类型
 set pyxversion=2                                        "neovim incompatible that option"
 set backspace=indent,eol,start
 set viewoptions=folds,options,cursor,unix,slash         "better unix/Windows compatible
@@ -80,7 +77,7 @@ set tabstop=4                                           "设置Tab键的宽度
 set softtabstop=4
 set shiftwidth=4                                        "换行时自动缩进4个空格
 set scrolloff=3                                         "上下滚动时当前行距顶或低保持有3行"
-set cursorline                                          "突出显示当前行
+set cursorline cursorcolumn                             "突出显示当前行
 set foldenable                                          "启用折叠
 set foldmethod=indent                                   "indent 折叠方式
 " set foldopen=all                                        "光标移到折叠时自动打开
@@ -103,11 +100,10 @@ set nowritebackup                           "无写入备份
 filetype plugin on
 syntax on
 source $VIMRUNTIME/delmenu.vim
+autocmd! bufwritepost .vimrc source $MYVIMRC
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
 au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 78 . 'v.\+', -1)
-if has("autocmd")
-    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " ===============< Hotkey mapping >======================
 let mapleader = ","
@@ -124,7 +120,7 @@ noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
 nmap j jzz
 nmap k kzz
 nmap J gJ
-nmap ga ^
+nmap gh ^
 nmap ge $
 noremap gl gu
 noremap gu gU
@@ -144,14 +140,14 @@ nmap tk mQ<S-o><esc>`Q
 nmap tn :tabnew!<CR>
 nmap tp v$p
 
-" Visual mode 时不置换临时寄存器
 noremap cp "0p
+inoremap <  <><Left>
 
 nmap md <S-*>
 nmap ms <S-#>
 
 " Delete character end of current cursor
-nmap da d^
+nmap dh d^
 nmap de d$
 nmap d<CR> dG
 nmap dj 2dd
@@ -159,8 +155,8 @@ nmap dk k2dd
 nmap y<CR> yG
 nmap yj 2yy
 nmap yk k2yy
+nmap yh y^
 nmap ye y$
-nmap ya y^
 
 nnoremap zg :q!<CR>
 nnoremap zf <S-z><S-z>
@@ -204,8 +200,6 @@ nnoremap <Leader>dm :%s/\r$//g<CR>:w!<CR>''
 " convert tab to space
 noremap <Leader>ts :%s/\v\t/    /g<CR>
 
-nmap <Leader>rc :so $HOME/.vimrc<CR>:nohl<CR>
-
 " ------------------------------------< Complex configure >------------------------------------
 
 " highlight keyword
@@ -244,10 +238,10 @@ function! CurDir()
        return curdir
 endfunction
 
-autocmd BufNewFile *.py,*.sh, exec ":call SetComment()"
+autocmd BufNewFile *.py,*.sh :call SetFileHeadInfo()
 let $author_name = "Shingo"
 let $author_email = "gmboomker@gmail.com"
-func SetComment()
+func! SetFileHeadInfo()
     if expand("%:e") == 'py'
         call setline(1, '#!/bin/env python')
     elseif expand("%:e") == 'sh'
@@ -264,7 +258,7 @@ func SetComment()
     call append(9, '# *************************************************')
     normal Go
 endfunc
-map <Leader>ch <ESC>ggO<ESC>:call SetComment()<CR>
+"map <Leader>ch <ESC>ggO<ESC>:call SetFileHeadComment()<CR>
 
 au FileType python call AddPythonDict_txt()
 function! AddPythonDict_txt()

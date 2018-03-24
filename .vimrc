@@ -17,10 +17,13 @@ if has("gui_running")
     set imi=2                                             "搜狗输入法在macvim混乱的解决方法如下:
     set ims=2
     set guiheadroom=0                                     "禁止GTK填充窗口底部为主题背景色，此设置会消除底部的水平滚动条"
+    set background=light
 else
     let g:isGUI = 0
-    set t_Co=256                   " 在终端启用256色
     let g:solarized_termtrans=1
+    "let g:solarized_termcolors=256
+    set t_Co=256                   " 在终端启用256色
+    set background=dark
 endif
 
 if (g:isWin && g:isGUI)
@@ -39,8 +42,9 @@ if (g:isMac && g:isGUI)
     source $VIMRUNTIME/menu.vim
 endif
 
-colorscheme solarized
-set background=dark
+"colorscheme solarized
+colorscheme NeoSolarized
+set termguicolors
 set guifont=Source_Code_Pro_Semibold_for_Powerline:h15
 
 set nocompatible                                      "禁用 Vi 兼容模式
@@ -64,7 +68,7 @@ set encoding=utf-8                                      "设置gvim内部编码
 set fileencoding=utf-8                                  "设置此缓冲区所在文件的字符编码
 set fileencodings=utf-8,cp936,ucs-bom,gb18030,gb2312    "设置支持打开的文件的编码
 set fileformat=unix
-set fileformats=unix,dos                            "给出文件的<EOL>格式类型
+set fileformats=unix,dos                                "给出文件的<EOL>格式类型
 set pyxversion=2                                        "neovim incompatible that option"
 set backspace=indent,eol,start
 set viewoptions=folds,options,cursor,unix,slash         "better unix/Windows compatible
@@ -102,7 +106,7 @@ syntax on
 source $VIMRUNTIME/delmenu.vim
 autocmd! bufwritepost .vimrc source $MYVIMRC
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
-au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 78 . 'v.\+', -1)
+"au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 78 . 'v.\+', -1)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " ===============< Hotkey mapping >======================
@@ -114,11 +118,9 @@ nmap <Up> <Nop>
 nmap <Down> <Nop>
 nmap <Left> <Nop>
 nmap <Right> <Nop>
-noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
-noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
+noremap <silent> <expr> j (v:count == 0 ? 'gjzz' : 'j')
+noremap <silent> <expr> k (v:count == 0 ? 'gkzz' : 'k')
 
-nmap j jzz
-nmap k kzz
 nmap J gJ
 nmap gh ^
 nmap ge $
@@ -157,6 +159,7 @@ nmap yj 2yy
 nmap yk k2yy
 nmap yh y^
 nmap ye y$
+nmap ysiw{ ysiw}
 
 nnoremap zg :q!<CR>
 nnoremap zf <S-z><S-z>
@@ -224,6 +227,14 @@ endfunction
 
 let&t_SI .=WrapForTmux("\<Esc>[?2004h")
 let&t_EI .=WrapForTmux("\<Esc>[?2004l")
+
+if exists('$TMUX')
+    let &t_8f = "\<ESC>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<ESC>[48;2;%lu;%lu;%lum"
+else
+    let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
+    let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
+endif
 
 function! XTermPasteBegin()
     set pastetoggle=<Esc>[201~
@@ -320,8 +331,8 @@ endfun
     xmap <Leader>ga <Plug>(EasyAlign)
 
 " ctrlP configure:
-    let g:ctrlp_map = '<Leader>gf'
     map <leader>sm :CtrlPMRU<CR>
+    let g:ctrlp_map = '<Leader>gf'
     let g:ctrlp_by_filename = 1
     let g:ctrlp_mruf_case_sensitive = 1
     let g:ctrlp_cache_dir = '$VIM/vimfiles/tmp/ctrlp'
@@ -331,8 +342,8 @@ endfun
 
 " ctrsf configure:
     nmap <leader>sf <Plug>CtrlSFPrompt
-    nmap <leader>sw <Plug>CtrlSFCwordExec
-    nmap <leader>ww <Plug>CtrlSFCCwordExec
+    nmap <leader>fw <Plug>CtrlSFCCwordExec
+    "nmap <leader>ww <Plug>CtrlSFCCwordExec
     let g:ctrlsf_default_view_mode = 'compact'
 
 " nerdtree configure:
@@ -440,7 +451,7 @@ endfun
     "let g:jedi#completions_command = "<Tab>"
     let g:jedi#completions_command = "<C-Space>"
     set omnifunc=syntaxcomplete#Complete
-    inoremap <silent> <buffer> <C-N> <c-x><c-o>
+    inoremap <silent> <buffer> <C-N> <c-x><c-n>
     let g:jedi#goto_command = "<leader>gc"
     let g:jedi#goto_assignments_command = "<leader>ga"
     let g:jedi#goto_definitions_command = "<leader>gd"
@@ -491,12 +502,17 @@ endfun
 
 " plugins manager plug configure:
     if empty(glob('$VIMRUNTIME/autoload/plug.vim'))
-        silent execute "!curl -fLo $VIMRUNTIME/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+        silent execute "!curl -fLo $VIMRUNTIME/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+        silent execute "!curl -fLo $VIMRUNTIME/colors/NeoSolarized.vim \
+        https://raw.githubusercontent.com/icymind/NeoSolarized/master/colors/NeoSolarized.vim"
         autocmd VimEnter * PlugInstall | source $HOME/.vimrc
     endif
 
 "  < Plugin lists >
+set rtp+=/usr/local/opt/fzf
 call plug#begin('$VIM/vimfiles/bundle')
+    Plug 'iCyMind/NeoSolarized'
     Plug 'tpope/vim-fugitive'
     Plug 'mhinz/vim-signify'
     Plug 'easymotion/vim-easymotion'
@@ -520,7 +536,6 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'mbbill/undotree'
     "Plug 'junegunn/fzf', { 'dir': '$VIM/vimfiles/bundle/fzf', 'do': './install --all'  }
     "Plug '/usr/local/opt/fzf'
-    "Plug 'junegunn/fzf.vim'
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'dyng/ctrlsf.vim'
     Plug 'terryma/vim-multiple-cursors'

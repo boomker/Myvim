@@ -269,7 +269,7 @@ func! SetFileHeadInfo()
     call append(9, '# *************************************************')
     normal Go
 endfunc
-"map <Leader>ch <ESC>ggO<ESC>:call SetFileHeadComment()<CR>
+map <Leader>ch <ESC>ggO<ESC>:call SetFileHeadInfo()<CR>
 
 au FileType python call AddPythonDict_txt()
 function! AddPythonDict_txt()
@@ -378,6 +378,7 @@ endfun
     let g:ale_fix_on_save = 1
     let g:ale_completion_enabled = 1
     let g:ale_sign_column_always = 1
+    let g:ale_set_highlights = 1
     let g:airline#extensions#ale#enabled = 1
 
 " tagbar configure:

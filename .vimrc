@@ -42,8 +42,8 @@ if (g:isMac && g:isGUI)
     source $VIMRUNTIME/menu.vim
 endif
 
-"colorscheme solarized
-colorscheme NeoSolarized
+" colorscheme solarized
+colorscheme solarized8_flat
 set termguicolors
 set guifont=Source_Code_Pro_Semibold_for_Powerline:h15
 
@@ -330,6 +330,17 @@ endfun
     nmap <Leader>ga <Plug>(EasyAlign)
     xmap <Leader>ga <Plug>(EasyAlign)
 
+" multiplecursors
+    let g:multi_cursor_use_default_mapping=0
+    " Default mapping
+    let g:multi_cursor_next_key='<C-m>'
+    let g:multi_cursor_prev_key='<C-p>'
+    let g:multi_cursor_skip_key='<C-x>'
+    let g:multi_cursor_quit_key='<Esc>'
+
+" gundo
+    noremap <leader>ut :GundoToggle<CR>
+
 " ctrlP configure:
     map <leader>sm :CtrlPMRU<CR>
     let g:ctrlp_map = '<Leader>gf'
@@ -345,6 +356,10 @@ endfun
     nmap <leader>fw <Plug>CtrlSFCCwordExec
     "nmap <leader>ww <Plug>CtrlSFCCwordExec
     let g:ctrlsf_default_view_mode = 'compact'
+
+" nerdcommenter
+    let g:NERDSpaceDelims=1
+    let g:NERDAltDelims_python = 1
 
 " nerdtree configure:
     map <leader>st :NERDTreeToggle<CR>
@@ -380,6 +395,7 @@ endfun
     let g:ale_sign_column_always = 1
     let g:ale_set_highlights = 1
     let g:airline#extensions#ale#enabled = 1
+    let g:ale_python_flake8_args="--ignore=E114,E116,E131 --max-line-length=120"
 
 " tagbar configure:
     let g:tagbar_sort=0
@@ -505,23 +521,22 @@ endfun
     if empty(glob('$VIMRUNTIME/autoload/plug.vim'))
         silent execute "!curl -fLo $VIMRUNTIME/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-        silent execute "!curl -fLo $VIMRUNTIME/colors/NeoSolarized.vim \
-        https://raw.githubusercontent.com/icymind/NeoSolarized/master/colors/NeoSolarized.vim"
         autocmd VimEnter * PlugInstall | source $HOME/.vimrc
     endif
 
 "  < Plugin lists >
 set rtp+=/usr/local/opt/fzf
 call plug#begin('$VIM/vimfiles/bundle')
-    Plug 'iCyMind/NeoSolarized'
+    Plug 'lifepillar/vim-solarized8'
     Plug 'tpope/vim-fugitive'
     Plug 'mhinz/vim-signify'
+    " Plug 'airblade/vim-gitgutter'
+    Plug 'sjl/gundo.vim'
     Plug 'easymotion/vim-easymotion'
     Plug 'vim-airline/vim-airline'
     " Plug 'jmcantrell/vim-virtualenv'
     Plug 'plasticboy/vim-markdown'
     Plug 'davidhalter/jedi-vim'
-    " Plug 'dimasg/vim-mark'
     Plug 'rkulla/pydiction'
     Plug 'tell-k/vim-autopep8'
     Plug 'Chiel92/vim-autoformat'
@@ -529,6 +544,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'junegunn/vim-easy-align'
     Plug 'jiangmiao/auto-pairs'
     Plug 'tpope/vim-surround'
+    Plug 'kshenoy/vim-signature'
     Plug 'kien/rainbow_parentheses.vim'
     " Plug 'Valloric/YouCompleteMe'
     Plug 'w0rp/ale'
@@ -536,7 +552,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'scrooloose/nerdtree'
     Plug 'mbbill/undotree'
     "Plug 'junegunn/fzf', { 'dir': '$VIM/vimfiles/bundle/fzf', 'do': './install --all'  }
-    "Plug '/usr/local/opt/fzf'
+    Plug '/usr/local/opt/fzf'
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'dyng/ctrlsf.vim'
     Plug 'terryma/vim-multiple-cursors'

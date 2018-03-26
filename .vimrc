@@ -300,30 +300,28 @@ endfun
     nmap fh <Plug>(easymotion-linebackward)
     nmap f. <Plug>(easymotion-repeat)
 
-" airline configure:
-    let g:airline_powerline_fonts = 1
-    " let g:airline#extensions#tabline#switch_buffers_and_tabs = 1
-    let g:airline#extensions#tabline#enabled = 1
-    let g:airline#extensions#tabline#buffers_label = 'bfs'
-    let g:airline#extensions#tabline#show_close_button = 0
-    let g:airline#extensions#tabline#fnametruncate = 1
-    let g:airline#extensions#tabline#formatter = 'unique_tail'
-    let g:airline#extensions#tabline#tab_nr_type = 1
-    let g:airline#extensions#tabline#show_buffers = 1
-    let g:airline#extensions#tabline#show_tabs = 0
-    let g:airline#extensions#tabline#buf_label_first = 1
-    let g:airline#extensions#branch#enabled = 1
-    let g:airline#extensions#tavline#enabled = 1
-    let g:airline#extensions#tagbar#enabled = 1
-    let g:airline#extensions#tagbar#flags = 'f'
-    " let g:airline#extensions#virtualenv#enabled = 1
-    let g:airline#extensions#whitespace#enabled = 1
-    let g:airline#extensions#whitespace#trailing_format = 'tws[%s]'
-    let g:airline#extensions#whitespace#mixed_indent_format = 'mit[%s]'
-    let g:airline#extensions#whitespace#mixed_indent_file_format = 'mif[%s]'
-    let g:airline_section_b = '%{strftime("%H:%M")}'
-    let g:airline_section_c = '%{CurDir()}\%t'
-    let g:airline_section_y = 'BN: %{bufnr("%")}'
+" lightline configure:
+    let g:lightline = {
+		\ 'component': {
+		\   'lineinfo': ' %3l:%-2v',
+		\ },
+		\ 'component_function': {
+        \   'readonly': 'LightlineReadonly',
+        \   'fugitive': 'LightlineFugitive'
+        \ },
+        \ 'separator': { 'left': '', 'right': '' },
+        \ 'subseparator': { 'left': '', 'right': '' }
+        \ }
+    function! LightlineReadonly()
+        return &readonly ? '' : ''
+    endfunction
+    function! LightlineFugitive()
+        if exists('*fugitive#head')
+            let branch = fugitive#head()
+            return branch !=# '' ? ''.branch : ''
+        endif
+        return ''
+    endfunction
 
 " easy_align configure:
     vmap <Enter> <Plug>(EasyAlign)
@@ -394,7 +392,6 @@ endfun
     let g:ale_completion_enabled = 1
     let g:ale_sign_column_always = 1
     let g:ale_set_highlights = 1
-    let g:airline#extensions#ale#enabled = 1
     let g:ale_python_flake8_args="--ignore=E114,E116,E131 --max-line-length=120"
 
 " tagbar configure:
@@ -533,7 +530,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     " Plug 'airblade/vim-gitgutter'
     Plug 'sjl/gundo.vim'
     Plug 'easymotion/vim-easymotion'
-    Plug 'vim-airline/vim-airline'
+    Plug 'itchyny/lightline.vim'
     " Plug 'jmcantrell/vim-virtualenv'
     Plug 'plasticboy/vim-markdown'
     Plug 'davidhalter/jedi-vim'

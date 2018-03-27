@@ -40,6 +40,13 @@ endif
 
 if (g:isMac && g:isGUI)
     source $VIMRUNTIME/menu.vim
+    if exists('$TMUX')
+        let &t_8f = "\<ESC>[38;2;%lu;%lu;%lum"
+        let &t_8b = "\<ESC>[48;2;%lu;%lu;%lum"
+    else
+        let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
+        let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
+    endif
 endif
 
 " colorscheme solarized
@@ -104,6 +111,7 @@ set nowritebackup                           "无写入备份
 filetype plugin on
 syntax on
 source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/synmenu.vim
 autocmd! bufwritepost .vimrc source $MYVIMRC
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
 "au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 78 . 'v.\+', -1)
@@ -228,14 +236,6 @@ endfunction
 let&t_SI .=WrapForTmux("\<Esc>[?2004h")
 let&t_EI .=WrapForTmux("\<Esc>[?2004l")
 
-if exists('$TMUX')
-    let &t_8f = "\<ESC>[38;2;%lu;%lu;%lum"
-    let &t_8b = "\<ESC>[48;2;%lu;%lu;%lum"
-else
-    let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
-    let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
-endif
-
 function! XTermPasteBegin()
     set pastetoggle=<Esc>[201~
     set paste
@@ -340,14 +340,34 @@ endfun
     noremap <leader>ut :GundoToggle<CR>
 
 " ctrlP configure:
-    map <leader>sm :CtrlPMRU<CR>
-    let g:ctrlp_map = '<Leader>gf'
+    nnoremap <leader>sm :CtrlPMRU<CR>
+    " let g:ctrlp_map = '<Leader>gf'
     let g:ctrlp_by_filename = 1
     let g:ctrlp_mruf_case_sensitive = 1
     let g:ctrlp_cache_dir = '$VIM/vimfiles/tmp/ctrlp'
     let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
     let g:ctrlp_custom_ignore = '\v[\/]\.(exe|so|dll|tar|tar.gz|iso|ipk)$'
     set wildignore+=*\\tmp\\*,*.swp,*.zip,*.rar,*.7z,*.dat,*.ico,*pyc
+
+" fzf configure:
+    command! -bang -nargs=* Ag
+      \ call fzf#vim#ag(<q-args>,
+      \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+      \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+      \                 <bang>0)
+    command! -bang -nargs=? -complete=dir Files
+      \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+    " Insert mode completion
+    imap <c-x><c-k> <plug>(fzf-complete-word)
+    imap <c-x><c-f> <plug>(fzf-complete-path)
+    imap <c-x><c-j> <plug>(fzf-complete-file-ag)
+    imap <c-x><c-l> <plug>(fzf-complete-line)
+
+    " Advanced customization using autoload functions
+    inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
+    nnoremap <silent> <Leader>fa :Ag<CR>
+    nnoremap <silent> <Leader>ff :Files<CR>
 
 " ctrsf configure:
     nmap <leader>sf <Plug>CtrlSFPrompt
@@ -392,7 +412,16 @@ endfun
     let g:ale_completion_enabled = 1
     let g:ale_sign_column_always = 1
     let g:ale_set_highlights = 1
+    let g:ale_sign_warning = 'W>'
+    let g:ale_sign_error = 'E>'
+    let g:ale_echo_msg_error_str = 'E'
+    let g:ale_echo_msg_warning_str = 'W'
+    let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+    let g:ale_open_list = 0
+    let g:ale_lint_delay = 1000
     let g:ale_python_flake8_args="--ignore=E114,E116,E131 --max-line-length=120"
+    nmap [a <Plug>(ale_next_wrap)
+    nmap ]a <Plug>(ale_previous_wrap)
 
 " tagbar configure:
     let g:tagbar_sort=0
@@ -419,46 +448,46 @@ endfun
     let g:vim_markdown_frontmatter=1
 
 " YouCompleteMe configure:
-    " let g:ycm_collect_identifiers_from_tags_files = 0
-    " let g:ycm_collect_identifiers_from_comments_and_strings = 0
-    " let g:ycm_path_to_python_interpreter = '/usr/local/bin/python'
-    " let g:ycm_path_to_python3_interpreter = '/usr/local/bin/python3'
-    " " 输入第0个字符开始补全
-    " let g:ycm_min_num_of_chars_for_completion = 0
-    " " 禁止缓存匹配项,每次都重新生成匹配项
-    " let g:ycm_cache_omnifunc = 0
-    " " 开启语义补全
-    " let g:ycm_seed_identifiers_with_syntax = 1
-    " " 在注释输入中也能补全
-    " let g:ycm_complete_in_comments = 1
-    " " 在字符串输入中也能补全
-    " let g:ycm_complete_in_strings = 1
-    " let g:ycm_min_num_of_chars_for_completion= 2
-    " let g:ycm_max_diagnostics_to_display = 0
-    " let g:ycm_key_list_select_completion = ['<C-n>', '<C-j>']
-    " let g:ycm_key_list_previous_completion = ['<C-p>', '<C-k>']
-    " let g:ycm_autoclose_preview_window_after_completion = 1
-    " let g:ycm_autoclose_preview_window_after_insertion = 1
-    " let g:ycm_filetype_whitelist = { 'python': 1  }
-    " let g:ycm_filetype_blacklist = {
-          " \ 'tagbar' : 1,
-          " \ 'nerdtree' : 1,
-          " \}
-    " " set complete-= i
-    " " let g:ycm_python_binary_path = 'python'
-    " let g:ycm_global_ycm_extra_conf = '$VIM/vimfiles/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-    " let g:ycm_confirm_extr_conf = 0
-    " set completeopt=longest,menu
-    " noremap <Leader>gd  :YcmCompleter GoToDefinitionElseDeclaration<CR>
-    " "离开插入模式后自动关闭预览窗口"
-    " autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-    " "回车即选中当前项"
-    " " inoremap <expr> <CR>       pumvisible() ? '\<C-y>' : '\<CR>'
-    " "上下左右键行为"
-    " inoremap <expr> <Down>     pumvisible() ? '\<C-n>' : '\<Down>'
-    " inoremap <expr> <Up>       pumvisible() ? '\<C-p>' : '\<Up>'
-    " inoremap <expr> <PageDown> pumvisible() ? '\<PageDown>\<C-p>\<C-n>' : "'\<PageDown>'
-    " inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
+    let g:ycm_python_binary_path = 'python3'
+    let g:ycm_path_to_python3_interpreter = '/usr/bin/python3'
+    " 输入第2个字符开始补全
+    let g:ycm_min_num_of_chars_for_completion = 2
+    " 禁止缓存匹配项,每次都重新生成匹配项
+    let g:ycm_cache_omnifunc = 0
+    " 开启语义补全
+    let g:ycm_seed_identifiers_with_syntax = 1
+    " 在注释输入中也能补全
+    let g:ycm_complete_in_comments = 1
+    " 在字符串输入中也能补全
+    let g:ycm_complete_in_strings = 1
+    let g:ycm_collect_identifiers_from_tags_files = 0
+    let g:ycm_collect_identifiers_from_comments_and_strings = 0
+    let g:ycm_min_num_of_chars_for_completion= 2
+    let g:ycm_max_diagnostics_to_display = 0
+    let g:ycm_key_list_select_completion = ['<C-n>', '<C-j>']
+    let g:ycm_key_list_previous_completion = ['<C-p>', '<C-k>']
+    let g:ycm_autoclose_preview_window_after_completion = 1
+    let g:ycm_autoclose_preview_window_after_insertion = 1
+    let g:ycm_filetype_whitelist = { 'python': 1   }
+    let g:ycm_filetype_blacklist = {
+          \ 'tagbar' : 1,
+          \ 'nerdtree' : 1,
+          \ 'gitcommit' : 1,
+          \}
+    let g:ycm_global_ycm_extra_conf = '$VIMFILES/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/ycm_extra_confpy'
+    let g:ycm_confirm_extr_conf = 0
+    set completeopt=longest,menu
+    nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+    nnoremap <leader>gd :YcmCompleter GoToDeclaration<CR>
+    "离开插入模式后自动关闭预览窗口"
+    autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+    "回车即选中当前项"
+    let g:ycm_key_list_stop_completion = ['<CR>']
+    "上下左右键行为"
+    inoremap <expr> <Down>     pumvisible() ? '\<C-n>' : '\<Down>'
+    inoremap <expr> <Up>       pumvisible() ? '\<C-p>' : '\<Up>'
+    inoremap <expr> <PageDown> pumvisible() ? '\<PageDown>\<C-p>\<C-n>' : "'\<PageDown>'
+    inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
 
 " jedi-vim configre:
     let g:jedi#completions_enabled = 1
@@ -515,14 +544,15 @@ endfun
     au Syntax * RainbowParenthesesLoadBraces
 
 " plugins manager plug configure:
-    if empty(glob('$VIMRUNTIME/autoload/plug.vim'))
-        silent execute "!curl -fLo $VIMRUNTIME/autoload/plug.vim --create-dirs \
-        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-        autocmd VimEnter * PlugInstall | source $HOME/.vimrc
-    endif
+    " if empty(glob('$VIMRUNTIME/autoload/plug.vim'))
+        " silent execute "!curl -fLo $VIMRUNTIME/autoload/plug.vim --create-dirs \
+        " https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+        " autocmd VimEnter * PlugInstall | source $MYVIMRC
+    " endif
 
 "  < Plugin lists >
 set rtp+=/usr/local/opt/fzf
+" set rtp+="$HOME/gitrep/fzf"
 call plug#begin('$VIM/vimfiles/bundle')
     Plug 'lifepillar/vim-solarized8'
     Plug 'tpope/vim-fugitive'
@@ -541,6 +571,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'junegunn/vim-easy-align'
     Plug 'jiangmiao/auto-pairs'
     Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-repeat'
     Plug 'kshenoy/vim-signature'
     Plug 'kien/rainbow_parentheses.vim'
     " Plug 'Valloric/YouCompleteMe'
@@ -548,7 +579,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'scrooloose/nerdcommenter'
     Plug 'scrooloose/nerdtree'
     Plug 'mbbill/undotree'
-    "Plug 'junegunn/fzf', { 'dir': '$VIM/vimfiles/bundle/fzf', 'do': './install --all'  }
+    Plug 'junegunn/fzf.vim'
     Plug '/usr/local/opt/fzf'
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'dyng/ctrlsf.vim'

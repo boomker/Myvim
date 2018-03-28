@@ -450,7 +450,7 @@ endfun
 
 " YouCompleteMe configure:
     let g:ycm_python_binary_path = 'python3'
-    let g:ycm_path_to_python3_interpreter = '/usr/bin/python3'
+    let g:ycm_path_to_python3_interpreter = '/usr/local/bin/python3'
     " 输入第2个字符开始补全
     let g:ycm_min_num_of_chars_for_completion = 2
     " 禁止缓存匹配项,每次都重新生成匹配项
@@ -475,7 +475,7 @@ endfun
           \ 'nerdtree' : 1,
           \ 'gitcommit' : 1,
           \}
-    let g:ycm_global_ycm_extra_conf = '$VIMFILES/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/ycm_extra_confpy'
+    let g:ycm_global_ycm_extra_conf = '$VIMFILES/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
     let g:ycm_confirm_extr_conf = 0
     set completeopt=longest,menu
     nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
@@ -485,14 +485,13 @@ endfun
     "回车即选中当前项"
     let g:ycm_key_list_stop_completion = ['<CR>']
     "上下左右键行为"
-    inoremap <expr> <Down>     pumvisible() ? '\<C-n>' : '\<Down>'
-    inoremap <expr> <Up>       pumvisible() ? '\<C-p>' : '\<Up>'
-    inoremap <expr> <PageDown> pumvisible() ? '\<PageDown>\<C-p>\<C-n>' : "'\<PageDown>'
-    inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
+    " inoremap <expr> <Down>     pumvisible() ? '\<C-n>' : '\<Down>'
+    " inoremap <expr> <Up>       pumvisible() ? '\<C-p>' : '\<Up>'
+    " inoremap <expr> <PageDown> pumvisible() ? '\<PageDown>\<C-p>\<C-n>' : "'\<PageDown>'
+    " inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
 
-" jedi-vim configre:
+" jedi-vim configure:
     let g:jedi#completions_enabled = 1
-    "let g:jedi#completions_command = "<Tab>"
     let g:jedi#completions_command = "<C-Space>"
     set omnifunc=syntaxcomplete#Complete
     inoremap <silent> <buffer> <C-N> <c-x><c-n>
@@ -562,7 +561,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'sjl/gundo.vim'
     Plug 'easymotion/vim-easymotion'
     Plug 'itchyny/lightline.vim'
-    " Plug 'jmcantrell/vim-virtualenv'
+    " Plug 'plytophogy/vim-virtualenv'
     Plug 'plasticboy/vim-markdown'
     Plug 'davidhalter/jedi-vim'
     Plug 'rkulla/pydiction'
@@ -575,7 +574,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'tpope/vim-repeat'
     Plug 'kshenoy/vim-signature'
     Plug 'kien/rainbow_parentheses.vim'
-    " Plug 'Valloric/YouCompleteMe'
+    Plug 'Valloric/YouCompleteMe'
     Plug 'w0rp/ale'
     Plug 'scrooloose/nerdcommenter'
     Plug 'scrooloose/nerdtree'

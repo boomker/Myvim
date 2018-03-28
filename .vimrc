@@ -56,7 +56,7 @@ set guifont=Source_Code_Pro_Semibold_for_Powerline:h15
 
 set nocompatible                                      "禁用 Vi 兼容模式
 set number                                            "显示行号
-set relativenumber                                    "启用相对行号"
+" set relativenumber                                    "启用相对行号"
 set wrap                                              "设置自动折行
 " set nolinebreak                                       "不自动换行
 set shortmess=atI                                     "去掉欢迎界面

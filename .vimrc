@@ -340,10 +340,11 @@ endfun
     noremap <leader>ut :GundoToggle<CR>
 
 " ctrlP configure:
-    nnoremap <leader>sm :CtrlPMRU<CR>
+    nnoremap <leader>fm :CtrlPMRU<CR>
     " let g:ctrlp_map = '<Leader>gf'
     let g:ctrlp_by_filename = 1
     let g:ctrlp_mruf_case_sensitive = 1
+    let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
     let g:ctrlp_cache_dir = '$VIM/vimfiles/tmp/ctrlp'
     let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
     let g:ctrlp_custom_ignore = '\v[\/]\.(exe|so|dll|tar|tar.gz|iso|ipk)$'
@@ -582,6 +583,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'junegunn/fzf.vim'
     Plug '/usr/local/opt/fzf'
     Plug 'ctrlpvim/ctrlp.vim'
+    Plug 'FelikZ/ctrlp-py-matcher'
     Plug 'dyng/ctrlsf.vim'
     Plug 'terryma/vim-multiple-cursors'
     Plug 'yonchu/accelerated-smooth-scroll'

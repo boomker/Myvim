@@ -23,7 +23,8 @@ else
     let g:solarized_termtrans=1
     "let g:solarized_termcolors=256
     set t_Co=256                   " 在终端启用256色
-    set background=dark
+    set background=light
+    " set background=dark
 endif
 
 if (g:isWin && g:isGUI)

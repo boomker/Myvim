@@ -552,7 +552,8 @@ endfun
     " endif
 
 "  < Plugin lists >
-set rtp+=~/gitrep/fzf
+set rtp+=/usr/local/opt/fzf
+" set rtp+="$HOME/gitrep/fzf"
 call plug#begin('$VIM/vimfiles/bundle')
     Plug 'lifepillar/vim-solarized8'
     Plug 'tpope/vim-fugitive'
@@ -572,15 +573,16 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'jiangmiao/auto-pairs'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-obsession'
     Plug 'kshenoy/vim-signature'
     Plug 'kien/rainbow_parentheses.vim'
-    " Plug 'Valloric/YouCompleteMe'
+    Plug 'Valloric/YouCompleteMe'
     Plug 'w0rp/ale'
     Plug 'scrooloose/nerdcommenter'
     Plug 'scrooloose/nerdtree'
     Plug 'mbbill/undotree'
     Plug 'junegunn/fzf.vim'
-    Plug '~/gitrepo/fzf'
+    Plug '/usr/local/opt/fzf'
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'FelikZ/ctrlp-py-matcher'
     Plug 'dyng/ctrlsf.vim'

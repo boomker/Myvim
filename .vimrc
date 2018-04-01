@@ -539,10 +539,13 @@ endfun
 
 " RainbowParentheses configure:
     let g:rbpt_loadcmd_toggle = 0
-    au VimEnter * RainbowParenthesesToggle
+    " au VimEnter * RainbowParenthesesToggle
     au Syntax * RainbowParenthesesLoadRound
     au Syntax * RainbowParenthesesLoadSquare
     au Syntax * RainbowParenthesesLoadBraces
+
+" ansible yaml filetype detect configure:
+    au BufRead,BufNewFile */playbooks/*.yml set filetype=yaml.ansible
 
 " plugins manager plug configure:
     " if empty(glob('$VIMRUNTIME/autoload/plug.vim'))
@@ -588,5 +591,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'yonchu/accelerated-smooth-scroll'
     Plug 'rizzatti/dash.vim'
     Plug 'Yggdroot/indentLine'
-    " Plug 'pearofducks/ansible-vim'
+    Plug 'pearofducks/ansible-vim'
+    " Plug 'pearofducks/ansible-vim', { 'do': 'cd ./UltiSnips; python2 generate.py' }
+    Plug 'ekalinin/Dockerfile.vim'
 call plug#end()

@@ -544,6 +544,9 @@ endfun
     au Syntax * RainbowParenthesesLoadSquare
     au Syntax * RainbowParenthesesLoadBraces
 
+" ansible yaml filetype configure:
+    " au BufRead,BufNewFile */playbooks/*.yml set filetype=yaml.ansible
+
 " plugins manager plug configure:
     " if empty(glob('$VIMRUNTIME/autoload/plug.vim'))
         " silent execute "!curl -fLo $VIMRUNTIME/autoload/plug.vim --create-dirs \
@@ -590,5 +593,6 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'yonchu/accelerated-smooth-scroll'
     Plug 'rizzatti/dash.vim'
     Plug 'Yggdroot/indentLine'
+    " Plug 'ekalinin/Dockerfile.vim'
     " Plug 'pearofducks/ansible-vim'
 call plug#end()

@@ -397,6 +397,18 @@ endfun
     let NERDTreeDirArrows=0
     let NERDTreeAutoDeleteBuffer=1
     let NERDTreeHijackNetrw=1
+    let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ 'Ignored'   : '☒',
+    \ "Unknown"   : "?"
+    \ }
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " undotree configure:
@@ -583,6 +595,8 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'w0rp/ale'
     Plug 'scrooloose/nerdcommenter'
     Plug 'scrooloose/nerdtree'
+    Plug 'jistr/vim-nerdtree-tabs'
+    Plug 'Xuyuanp/nerdtree-git-plugin'
     Plug 'mbbill/undotree'
     Plug 'junegunn/fzf.vim'
     Plug '/usr/local/opt/fzf'

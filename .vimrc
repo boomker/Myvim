@@ -1,12 +1,12 @@
 " -----------------------------------------------------------------------------
-"  < 判断操作系统是否是 Windows 还是 Mac >
+"  < 判断操作系统是否是 Windows 还是 Unix >
 " -----------------------------------------------------------------------------
 let g:isWin = 0
-let g:isMac = 0
+let g:isUnix = 0
 if(has("win32") || has("win64"))
     let g:isWin = 1
 else
-    let g:isMac = 1
+    let g:isUnix = 1
 endif
 
 " -----------------------------------------------------------------------------
@@ -21,26 +21,24 @@ if has("gui_running")
 else
     let g:isGUI = 0
     let g:solarized_termtrans=1
-    "let g:solarized_termcolors=256
+    " let g:solarized_termcolors=256
     set t_Co=256                   " 在终端启用256色
-    set background=light
-    " set background=dark
+    set background=dark
 endif
 
 if (g:isWin && g:isGUI)
-    source $VIMRUNTIME/vimrc_example.vim
-    source $VIMRUNTIME/mswin.vim
+    source ${VIMRUNTIME}/vimrc_example.vim
+    source ${VIMRUNTIME}/mswin.vim
     " behave mswin
     language messages zh_CN.utf-8                           "解决状态信息栏乱码问题
     set iminsert=2                                          "输入法设置"
     set mousef                                              "启用光标激活pane
-    " set mouse=a                                           " 在任何模式下启用鼠标,但是右键用不了
+    set mouse=a                                           " 在任何模式下启用鼠标,但是右键用不了
     au GUIEnter * simalt ~x                                 "窗口启动时自动最大化
-    "autocmd bufwritepost .vimrc source $VIM/_vimrc
+    autocmd bufwritepost .vimrc source $VIM/_vimrc
 endif
 
-if (g:isMac && g:isGUI)
-    source $VIMRUNTIME/menu.vim
+if (g:isUnix)
     if exists('$TMUX')
         let &t_8f = "\<ESC>[38;2;%lu;%lu;%lum"
         let &t_8b = "\<ESC>[48;2;%lu;%lu;%lum"
@@ -50,19 +48,25 @@ if (g:isMac && g:isGUI)
     endif
 endif
 
-" colorscheme solarized
-colorscheme solarized8_flat
+if has('nvim')
+    set runtimepath+=/usr/local/opt/neovim/share/nvim
+    let &packpath = &runtimepath
+    let g:python3_host_prog = '/usr/local/bin/python3'
+    let g:python_host_prog  = '/usr/local/bin/python'
+endif
+
+colorscheme gruvbox
+" colorscheme solarized8_flat
 set termguicolors
 set guifont=Source_Code_Pro_Semibold_for_Powerline:h15
 
 set nocompatible                                      "禁用 Vi 兼容模式
 set number                                            "显示行号
-" set relativenumber                                    "启用相对行号"
 set wrap                                              "设置自动折行
 " set nolinebreak                                       "不自动换行
 set shortmess=atI                                     "去掉欢迎界面
 set guioptions-=m                                     "去掉菜单栏"
-set guioptions-=e                                     "去掉标签栏"
+set guioptions-=e                                      "去掉标签栏"
 set guioptions-=T                                     "去掉工具栏"
 set guioptions-=r                                     "去掉右边的滚动条"
 set guioptions-=L
@@ -70,14 +74,13 @@ set laststatus=2                                      "启用状态栏信息
 set showtabline=2                                     "当只有一个标签时也显示标签行
 set magic                                             "打开正则匹配模式
 set noimd                                             "关闭输入法
-set nobomb                                              " 禁止UTF-8 BOM
+set nobomb                                            " 禁止UTF-8 BOM
 set termencoding=utf-8
 set encoding=utf-8                                      "设置gvim内部编码
 set fileencoding=utf-8                                  "设置此缓冲区所在文件的字符编码
 set fileencodings=utf-8,cp936,ucs-bom,gb18030,gb2312    "设置支持打开的文件的编码
 set fileformat=unix
 set fileformats=unix,dos                                "给出文件的<EOL>格式类型
-set pyxversion=2                                        "neovim incompatible that option"
 set backspace=indent,eol,start
 set viewoptions=folds,options,cursor,unix,slash         "better unix/Windows compatible
 set virtualedit=onemore                                 "curso可以移动到行尾最后一个字符之后"
@@ -91,6 +94,7 @@ set shiftwidth=4                                        "换行时自动缩进4�
 set scrolloff=3                                         "上下滚动时当前行距顶或低保持有3行"
 set cursorline cursorcolumn                             "突出显示当前行
 set foldenable                                          "启用折叠
+" set foldmethod=marker
 set foldmethod=indent                                   "indent 折叠方式
 " set foldopen=all                                        "光标移到折叠时自动打开
 " set foldclose=all
@@ -100,7 +104,7 @@ set hlsearch                                "高亮搜索
 set incsearch                               "在输入要搜索的文字时，实时匹配
 set ignorecase                              "搜索模式里忽略大小写
 set smartcase                               "搜索模式包含大写字符，忽略上一行设置
-set matchtime=6                             "匹配括号光标停留时间"
+set matchtime=5                             "匹配括号光标停留时间"
 set showmatch
 set matchpairs+=<:>                         " specially for html"
 set history=500                             "保存更多的history"
@@ -111,17 +115,18 @@ set noswapfile                              "设置无临时文件
 set nowritebackup                           "无写入备份
 filetype plugin on
 syntax on
-source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/synmenu.vim
 autocmd! bufwritepost .vimrc source $MYVIMRC
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
 "au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 78 . 'v.\+', -1)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " ===============< Hotkey mapping >======================
-let mapleader = ","
+let mapleader = ";"
 inoremap <ESC> <ESC>:nohl<CR>
-noremap <leader>nl :nohl<CR>
+nnoremap <leader><space> :nohl<CR>
+nnoremap <leader>sd :colorscheme solarized8_dark_flat<CR>
+nnoremap <leader>ss :colorscheme solarized8_light_flat<CR>
+" nnoremap <leader>rn :set relativenumber<CR>
 
 nmap <Up> <Nop>
 nmap <Down> <Nop>
@@ -135,24 +140,27 @@ nmap gh ^
 nmap ge $
 noremap gl gu
 noremap gu gU
+nmap gp <Plug>GitGutterPrevHunk
+nmap gn <Plug>GitGutterNextHunk
+noremap e  w
+noremap w  e
 
 " instead of s and C
-nmap si i<Delete>
-nmap sc <S-c>
 nmap sf :w!<CR>
-" nmap sj <C-o>
-" nmap sk <C-i>
+nmap sj <C-o>
+nmap sk <C-i>
 nmap su <C-r>
 
-" like o or O, but change cursor position and mode
-nmap tj mQo<esc>`Q
-nmap tk mQ<S-o><esc>`Q
-" 新建 Untitled.
-nmap tn :tabnew!<CR>
-nmap tp v$p
+" like o or O, but not change cursor position and mode
+nmap tj mQo<esc>`Qm<space>
+nmap tk mQ<S-o><esc>`Qm<space>
+nmap tt :tabnew!<CR>
+nmap tn :tabn<CR>
+nmap tp :tabp<CR>
+nmap tw vwP
+nmap te d$"0p
 
-noremap cp "0p
-inoremap <  <><Left>
+noremap cp ""P
 
 nmap md <S-*>
 nmap ms <S-#>
@@ -171,11 +179,13 @@ nmap ye y$
 nmap ysiw{ ysiw}
 
 nnoremap zg :q!<CR>
+nnoremap zp <C-w>pZQ
 nnoremap zf <S-z><S-z>
 nnoremap zv <C-w>v
 nnoremap zi <C-w>s
 " space key to toggle whether fold
 nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
+" nnoremap <leader>fm $a<space>{{{{<ESC>d$}O}}}<ESC>
 
 cnoremap <C-a> <Home>
 cnoremap <c-v> <C-r>"
@@ -202,17 +212,18 @@ noremap <leader>bb :tabprev<cr>
 noremap <leader>bn :tabnext<cr>
 noremap <leader>bm :tabmove
 
-" Delete trailing whitespace
-nnoremap <Leader>ds :%s/\s\+$//g<cr>:w!<CR>''
-
-" Delete trailing ^M symbol
-nnoremap <Leader>dm :%s/\r$//g<CR>:w!<CR>''
-" or :%s/\r/\r/g
-
-" convert tab to space
-noremap <Leader>ts :%s/\v\t/    /g<CR>
+" Plug keymap configure:
+    nnoremap <Leader>pi :PlugInstall<Cr>
+    nnoremap <Leader>pc :PlugClean<Cr>
+    nnoremap <Leader>pu :PlugUpdate<Cr>
 
 " ------------------------------------< Complex configure >------------------------------------
+"  in the normal mode autoset relative_number
+augroup relative_numbser
+    autocmd!
+    autocmd InsertEnter * :set norelativenumber
+    autocmd InsertLeave * :set relativenumber
+augroup END
 
 " highlight keyword
 if has("autocmd")
@@ -223,6 +234,18 @@ if has("autocmd")
       endif
 endif
 
+" 以下是让 insert mode 的光标成为下划线, 一个终极的解决办法就是安装terminus plugin
+" if exists('$ITERM_PROFILE')
+    " if exists('$TMUX') 
+        " let &t_SI = "\<Esc>[3 q"
+        " let &t_EI = "\<Esc>[0 q"
+    " else
+        " let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+        " let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+    " endif
+" endif
+
+" 设置在 tmux & xterm 里粘贴系统剪贴板里的字符时保持原有排版格式
 function! WrapForTmux(s)
     if !exists('$TMUX')
         return a:s
@@ -233,31 +256,26 @@ function! WrapForTmux(s)
 
     return tmux_start . substitute(a:s,"\<Esc>","\<Esc>\<Esc>",'g'). tmux_end
 endfunction
-
 let&t_SI .=WrapForTmux("\<Esc>[?2004h")
 let&t_EI .=WrapForTmux("\<Esc>[?2004l")
 
+" 在tmux 里使用 tmux 的方式复制文本的话(跨窗口共享 tmux buffer), 粘贴时直接使用<C-V>/<⌘ -V>
+inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
 function! XTermPasteBegin()
     set pastetoggle=<Esc>[201~
     set paste
     return""
 endfunction
 
-inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
-
-function! CurDir()
-       let curdir = substitute(getcwd(), $HOME, "~", "g")
-       return curdir
-endfunction
-
+" 设置 Python/shell 文件格式的文件头部信息
 autocmd BufNewFile *.py,*.sh :call SetFileHeadInfo()
 let $author_name = "Shingo"
 let $author_email = "gmboomker@gmail.com"
 func! SetFileHeadInfo()
     if expand("%:e") == 'py'
-        call setline(1, '#!/bin/env python')
+        call setline(1, '#!/usr/bin/env python3')
     elseif expand("%:e") == 'sh'
-        call setline(1, '#!/bin/env bash')
+        call setline(1, '#!/usr/bin/env bash')
     endif
     call append(1, '# *************************************************')
     call append(2, '#')
@@ -270,16 +288,10 @@ func! SetFileHeadInfo()
     call append(9, '# *************************************************')
     normal Go
 endfunc
-map <Leader>ch <ESC>ggO<ESC>:call SetFileHeadInfo()<CR>
+map <Leader>sh <ESC>ggO<ESC>:call SetFileHeadInfo()<CR>
 
-au FileType python call AddPythonDict_txt()
-function! AddPythonDict_txt()
-    set dict+=$VIMFILES/dict/python.txt
-    set complete+=k
-endfunction
-
-autocmd FileType python,go,php,javascript,yml,txt,sh autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
 " Delete trailing whitespace
+autocmd FileType python,go,php,javascript,yml,txt,sh autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
 fun! StripTrailingWhitespaces()
     let l = line(".")
     let c = col(".")
@@ -297,32 +309,18 @@ endfun
     nmap f/ <Plug>(easymotion-fn)
     " support multi keyword used expr to find
     nmap f? <Plug>(easymotion-Fn)
-    nmap fl <Plug>(easymotion-lineforward)
-    nmap fh <Plug>(easymotion-linebackward)
+    nmap ff <Plug>(easymotion-w)
+    nmap fh <Plug>(easymotion-lineanywhere)
+    nmap fo <Plug>(easymotion-overwin-f)
+    nmap fl <Plug>(easymotion-overwin-line)
     nmap f. <Plug>(easymotion-repeat)
 
-" lightline configure:
-    let g:lightline = {
-		\ 'component': {
-		\   'lineinfo': ' %3l:%-2v',
-		\ },
-		\ 'component_function': {
-        \   'readonly': 'LightlineReadonly',
-        \   'fugitive': 'LightlineFugitive'
-        \ },
-        \ 'separator': { 'left': '', 'right': '' },
-        \ 'subseparator': { 'left': '', 'right': '' }
-        \ }
-    function! LightlineReadonly()
-        return &readonly ? '' : ''
-    endfunction
-    function! LightlineFugitive()
-        if exists('*fugitive#head')
-            let branch = fugitive#head()
-            return branch !=# '' ? ''.branch : ''
-        endif
-        return ''
-    endfunction
+" airline configure:
+    let g:airline_theme='wombat'
+    let g:airline_powerline_fonts = 1
+    let g:airline_extensions = ['ale', 'branch', 'obsession']
+    let g:airline#extensions#whitespace#symbol = 'WS'
+    let b:airline_whitespace_checks = [ 'indent', 'trailing' ]
 
 " easy_align configure:
     vmap <Enter> <Plug>(EasyAlign)
@@ -332,53 +330,32 @@ endfun
 " multiplecursors
     let g:multi_cursor_use_default_mapping=0
     " Default mapping
-    let g:multi_cursor_next_key='<C-m>'
+    let g:multi_cursor_start_key='<C-n>'
+    let g:multi_cursor_next_key='<C-n>'
     let g:multi_cursor_prev_key='<C-p>'
     let g:multi_cursor_skip_key='<C-x>'
     let g:multi_cursor_quit_key='<Esc>'
 
-" gundo
-    noremap <leader>ut :GundoToggle<CR>
-
-" ctrlP configure:
-    nnoremap <leader>fm :CtrlPMRU<CR>
-    " let g:ctrlp_map = '<Leader>gf'
-    let g:ctrlp_by_filename = 1
-    let g:ctrlp_mruf_case_sensitive = 1
-    let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-    let g:ctrlp_cache_dir = '$VIM/vimfiles/tmp/ctrlp'
-    let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
-    let g:ctrlp_custom_ignore = '\v[\/]\.(exe|so|dll|tar|tar.gz|iso|ipk)$'
-    set wildignore+=*\\tmp\\*,*.swp,*.zip,*.rar,*.7z,*.dat,*.ico,*pyc
-
-" fzf configure:
-    command! -bang -nargs=* Ag
-      \ call fzf#vim#ag(<q-args>,
-      \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-      \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
-      \                 <bang>0)
-    command! -bang -nargs=? -complete=dir Files
-      \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
-    " Insert mode completion
-    imap <c-x><c-k> <plug>(fzf-complete-word)
-    imap <c-x><c-f> <plug>(fzf-complete-path)
-    imap <c-x><c-j> <plug>(fzf-complete-file-ag)
-    imap <c-x><c-l> <plug>(fzf-complete-line)
-
-    " Advanced customization using autoload functions
-    inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
-    nnoremap <silent> <Leader>fa :Ag<CR>
-    nnoremap <silent> <Leader>ff :Files<CR>
+" Leaderf configure:
+    let g:Lf_DefaultMode = 'Regex'
+    let g:Lf_ShortcutF = '<Leader>ff'
+    let g:Lf_ShortcutB = '<Leader>fb'
+    nnoremap <Leader>fh :LeaderfMru<CR>
+    nnoremap <Leader>fl :LeaderfLine<CR>
+    let g:Lf_WildIgnore = {
+       \ 'dir': ['.svn','.git','.hg','.DS_Store','*node_modules','*compiled','*dist'],
+       \ 'file': ['*.sw?','~$*','*.dat','*.exe','*.o','*.so','*.py[co]']
+       \}
 
 " ctrsf configure:
-    nmap <leader>sf <Plug>CtrlSFPrompt
+    nmap <leader>sf :CtrlSF<space>-smartcase -R<space>
     nmap <leader>fw <Plug>CtrlSFCCwordExec
-    "nmap <leader>ww <Plug>CtrlSFCCwordExec
     let g:ctrlsf_default_view_mode = 'compact'
+    let g:ctrlsf_regex_pattern = 1
 
 " nerdcommenter
     let g:NERDSpaceDelims=1
+    let g:NERDCompactSexyComs = 1
     let g:NERDAltDelims_python = 1
 
 " nerdtree configure:
@@ -397,10 +374,33 @@ endfun
     let NERDTreeDirArrows=0
     let NERDTreeAutoDeleteBuffer=1
     let NERDTreeHijackNetrw=1
+    let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ 'Ignored'   : '☒',
+    \ "Unknown"   : "?"
+    \ }
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+    " vim不指定具体文件打开是，自动使用nerdtree
+    autocmd StdinReadPre * let s:std_in=1
+    autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree |endif
+
+" gitgutter configure configure:
+    set updatetime=50
+    let g:gitgutter_sign_added = '✚'
+    let g:gitgutter_sign_modified = '★'
+    let g:gitgutter_sign_removed = '✖'
+    let g:gitgutter_sign_removed_first_line = '➤'
+    let g:gitgutter_sign_modified_removed = '✹'
 
 " undotree configure:
-    nnoremap <Leader>su :UndotreeToggle<cr>
+    nnoremap <Leader>ut :UndotreeToggle<cr>
     " let g:undotree_DiffAutoOpen = 0
     let g:undotree_SetFocusWhenToggle = 1
     function! g:Undotree_CustomMap()
@@ -414,16 +414,18 @@ endfun
     let g:ale_completion_enabled = 1
     let g:ale_sign_column_always = 1
     let g:ale_set_highlights = 1
-    let g:ale_sign_warning = 'W>'
-    let g:ale_sign_error = 'E>'
+    let g:ale_sign_error = '◉'
+    let g:ale_sign_warning = '◉'
+    highlight! ALEErrorSign ctermfg=9 guifg=#C30500
+    highlight! ALEWarningSign ctermfg=11 guifg=#F0C674
     let g:ale_echo_msg_error_str = 'E'
     let g:ale_echo_msg_warning_str = 'W'
     let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
     let g:ale_open_list = 0
     let g:ale_lint_delay = 1000
     let g:ale_python_flake8_args="--ignore=E114,E116,E131 --max-line-length=120"
-    nmap [a <Plug>(ale_next_wrap)
-    nmap ]a <Plug>(ale_previous_wrap)
+    nmap sn <Plug>(ale_next_wrap)
+    nmap sp <Plug>(ale_previous_wrap)
 
 " tagbar configure:
     let g:tagbar_sort=0
@@ -450,10 +452,11 @@ endfun
     let g:vim_markdown_frontmatter=1
 
 " YouCompleteMe configure:
+    " completor和YCM一样都是补全插件, 但是和YCM有冲突
+    " let g:completor_python_binary = '/usr/local/bin/python3' 
+    " completor 是基于标签补全的, 同时还可以模糊匹配Snippets的key
     let g:ycm_python_binary_path = 'python3'
     let g:ycm_path_to_python3_interpreter = '/usr/local/bin/python3'
-    " 输入第2个字符开始补全
-    let g:ycm_min_num_of_chars_for_completion = 2
     " 禁止缓存匹配项,每次都重新生成匹配项
     let g:ycm_cache_omnifunc = 0
     " 开启语义补全
@@ -462,62 +465,60 @@ endfun
     let g:ycm_complete_in_comments = 1
     " 在字符串输入中也能补全
     let g:ycm_complete_in_strings = 1
-    let g:ycm_collect_identifiers_from_tags_files = 0
-    let g:ycm_collect_identifiers_from_comments_and_strings = 0
-    let g:ycm_min_num_of_chars_for_completion= 2
+    let g:ycm_collect_identifiers_from_tags_files = 1
+    let g:ycm_collect_identifiers_from_comments_and_strings = 1
+    " 输入第2个字符开始补全
+    let g:ycm_min_num_of_chars_for_completion = 2
     let g:ycm_max_diagnostics_to_display = 0
+    let g:ycm_show_diagnostics_ui = 0
+    let g:ycm_key_invoke_completion = '<c-space>'
     let g:ycm_key_list_select_completion = ['<C-n>', '<C-j>']
     let g:ycm_key_list_previous_completion = ['<C-p>', '<C-k>']
     let g:ycm_autoclose_preview_window_after_completion = 1
     let g:ycm_autoclose_preview_window_after_insertion = 1
-    let g:ycm_filetype_whitelist = { 'python': 1   }
-    let g:ycm_filetype_blacklist = {
-          \ 'tagbar' : 1,
-          \ 'nerdtree' : 1,
-          \ 'gitcommit' : 1,
-          \}
+    let g:ycm_filetype_whitelist = { 
+        \ 'sh': 1,
+        \ 'python': 1,
+        \ }
+    let g:ycm_filetype_blacklist = { 
+        \ 'tagbar' : 1,
+        \ 'nerdtree' : 1,
+        \ 'gitcommit' : 1,
+        \ }
+    " 如果配置下面输入两个字符来自动触发语义补全，会导致utilsnap的补全不在补全窗口里面显示
+    let g:ycm_semantic_triggers =  {
+        \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{3}'],
+        \ 'cs,lua,javascript': ['re!\w{3}'],
+        \ }
     let g:ycm_global_ycm_extra_conf = '$VIMFILES/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
     let g:ycm_confirm_extr_conf = 0
+    " 回车即选中当前项"
+    let g:ycm_key_list_stop_completion = ['<CR>']
     set completeopt=longest,menu
+    " let g:ycm_add_preview_to_completeopt = 0
+    " 离开插入模式后自动关闭预览窗口"
+    autocmd InsertLeave * if pumvisible() == 0|pclose|endif
     nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
     nnoremap <leader>gd :YcmCompleter GoToDeclaration<CR>
-    "离开插入模式后自动关闭预览窗口"
-    autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-    "回车即选中当前项"
-    let g:ycm_key_list_stop_completion = ['<CR>']
-    "上下左右键行为"
-    " inoremap <expr> <Down>     pumvisible() ? '\<C-n>' : '\<Down>'
-    " inoremap <expr> <Up>       pumvisible() ? '\<C-p>' : '\<Up>'
-    " inoremap <expr> <PageDown> pumvisible() ? '\<PageDown>\<C-p>\<C-n>' : "'\<PageDown>'
-    " inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
 
-" jedi-vim configure:
-    let g:jedi#completions_enabled = 1
-    let g:jedi#completions_command = "<C-Space>"
-    set omnifunc=syntaxcomplete#Complete
-    inoremap <silent> <buffer> <C-N> <c-x><c-n>
-    let g:jedi#goto_command = "<leader>gc"
-    let g:jedi#goto_assignments_command = "<leader>ga"
-    let g:jedi#goto_definitions_command = "<leader>gd"
-    "let g:jedi#documentation_command = "K"
-    let g:jedi#usages_command = "<leader>uc"
-    let g:jedi#rename_command = "<leader>rn"
+" Snippets configure:
+    let g:UltiSnipsExpandTrigger="<tab>"
+    let g:UltiSnipsJumpForwardTrigger="<c-b>"
+    let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
-" pydiction configure:
-    let g:pydiction_location = '$VIMFILES/Plugin/pydiction/complete-dict'
-    let python_highlight_all = 1
-    let g:pydiction_menu_height = 6
+    " If you want :UltiSnipsEdit to split your window.
+    let g:UltiSnipsEditSplit="vertical"
 
 " Autopep8 configure:
     autocmd FileType python noremap <buffer> <Leader>ap :w!<CR>:call Autopep8()<CR>
     let g:autopep8_ignore="W391"
     " let g:autopep8_select="E501,W293"
 
-" autoformat configure for F6 run Pycode:
+" autoformat configure for F10 run Pycode:
     let g:autoformat_autoindent = 0
     let g:autoformat_retab = 0
     let g:autoformat_remove_trailing_spaces = 0
-    map <F6> <ESC>:Autoformat<CR>:w<CR>:call RunPython()<CR>
+    map <F10> <ESC>:Autoformat<CR>:w<CR>:call RunPython()<CR>
     function! RunPython()
         let mp = &makeprg
         let ef = &errorformat
@@ -530,68 +531,82 @@ endfun
         let &errorformat = ef
     endfunction
 
-" indentline configure:
-    " let g:indentLine_setColors = 0
-    let g:indentLine_color_dark = 1
-    let g:indentLine_char = '┆'
-    let g:indentLine_leadingSpaceEnabled = 1
-    let g:indentLine_leadingSpaceChar = '·'
+" indentline AutoPairs, Asyncrun configure:
+    let g:indent_guides_enable_on_vim_startup = 1
+    let g:AutoPairs = {'<':'>', '(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
 
-" RainbowParentheses configure:
-    let g:rbpt_loadcmd_toggle = 0
-    " au VimEnter * RainbowParenthesesToggle
-    au Syntax * RainbowParenthesesLoadRound
-    au Syntax * RainbowParenthesesLoadSquare
-    au Syntax * RainbowParenthesesLoadBraces
+" rainbow configure:
+    let g:rainbow_active = 1
+	let g:rainbow_conf = {
+        \	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+        \	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+        \   }
 
-" ansible yaml filetype detect configure:
-    au BufRead,BufNewFile */playbooks/*.yml set filetype=yaml.ansible
+" incsearch configure:
+    map /  <Plug>(incsearch-forward)
+    map ?  <Plug>(incsearch-backward)
+    map g/ <Plug>(incsearch-stay)
+    map n  <Plug>(incsearch-nohl-n)
+    map N  <Plug>(incsearch-nohl-N)
+    map *  <Plug>(incsearch-nohl-*)
+    map #  <Plug>(incsearch-nohl-#)
+    map g* <Plug>(incsearch-nohl-g*)
+    map g# <Plug>(incsearch-nohl-g#)
 
-" plugins manager plug configure:
-    " if empty(glob('$VIMRUNTIME/autoload/plug.vim'))
-        " silent execute "!curl -fLo $VIMRUNTIME/autoload/plug.vim --create-dirs \
-        " https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-        " autocmd VimEnter * PlugInstall | source $MYVIMRC
-    " endif
+" plugins manager autodownload and initialization configure:
+    let vim_plug_just_installed = 0
+    let vim_plug_path = '${VIMRUNTIME}/autoload/plug.vim'
+    if !empty(glob('${VIMRUNTIME}/autoload/plug.vim'))
+        echo "Installing Vim-plug..."
+        echo ""
+        silent !mkdir -p ${VIMRUNTIME}/autoload
+        silent !curl -fLo ${VIMRUNTIME}/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        let vim_plug_just_installed = 1
+    endif
+    if vim_plug_just_installed
+        :execute 'source '.fnameescape(vim_plug_path)
+    endif
 
 "  < Plugin lists >
-set rtp+=~/gitrep/fzf
 call plug#begin('$VIM/vimfiles/bundle')
-    Plug 'lifepillar/vim-solarized8'
-    Plug 'tpope/vim-fugitive'
-    Plug 'mhinz/vim-signify'
-    " Plug 'airblade/vim-gitgutter'
-    Plug 'sjl/gundo.vim'
+    Plug 'flazz/vim-colorschemes'
+    Plug 'vim-airline/vim-airline-themes'
+    Plug 'vim-airline/vim-airline'
+    " Plug 'lifepillar/vim-solarized8'
+    Plug 'wincent/terminus'
     Plug 'easymotion/vim-easymotion'
-    Plug 'itchyny/lightline.vim'
-    " Plug 'plytophogy/vim-virtualenv'
-    Plug 'plasticboy/vim-markdown'
-    Plug 'davidhalter/jedi-vim'
-    Plug 'rkulla/pydiction'
+    Plug 'junegunn/vim-easy-align'
+    Plug 'luochen1990/rainbow'
+    Plug 'kshenoy/vim-signature'
+    Plug 'airblade/vim-gitgutter'
+    Plug 'tpope/vim-fugitive'
+    " Plug 'mhinz/vim-signify' support more vcs
+    Plug 'Shougo/denite.nvim'
+    Plug 'tpope/vim-obsession'
+    Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-surround'
+    Plug 'jiangmiao/auto-pairs'
+    " Plug 'davidhalter/jedi-vim'
+    " Plug 'maralla/completor.vim'
+    Plug 'Valloric/YouCompleteMe'
+    Plug 'sirver/ultisnips'
+    Plug 'honza/vim-snippets'
     Plug 'tell-k/vim-autopep8'
     Plug 'Chiel92/vim-autoformat'
-    Plug 'majutsushi/tagbar'
-    Plug 'junegunn/vim-easy-align'
-    Plug 'jiangmiao/auto-pairs'
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-repeat'
-    Plug 'kshenoy/vim-signature'
-    Plug 'kien/rainbow_parentheses.vim'
-    " Plug 'Valloric/YouCompleteMe'
     Plug 'w0rp/ale'
+    " Plug 'plytophogy/vim-virtualenv'
+    Plug 'majutsushi/tagbar'
     Plug 'scrooloose/nerdcommenter'
     Plug 'scrooloose/nerdtree'
+    Plug 'jistr/vim-nerdtree-tabs'
+    Plug 'Xuyuanp/nerdtree-git-plugin'
     Plug 'mbbill/undotree'
-    Plug 'junegunn/fzf.vim'
-    Plug '~/gitrepo/fzf'
-    Plug 'ctrlpvim/ctrlp.vim'
-    Plug 'FelikZ/ctrlp-py-matcher'
-    Plug 'dyng/ctrlsf.vim'
+    Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+    Plug 'haya14busa/incsearch.vim'
     Plug 'terryma/vim-multiple-cursors'
     Plug 'yonchu/accelerated-smooth-scroll'
     Plug 'rizzatti/dash.vim'
-    Plug 'Yggdroot/indentLine'
-    Plug 'pearofducks/ansible-vim'
-    " Plug 'pearofducks/ansible-vim', { 'do': 'cd ./UltiSnips; python2 generate.py' }
-    Plug 'ekalinin/Dockerfile.vim'
+    Plug 'nathanaelkane/vim-indent-guides'
+    Plug 'sheerun/vim-polyglot'
+    Plug 'CodeFalling/fcitx-vim-osx'
 call plug#end()

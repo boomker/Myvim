@@ -18,12 +18,12 @@ if has("gui_running")
     set ims=2
     set guiheadroom=0                                     "禁止GTK填充窗口底部为主题背景色，此设置会消除底部的水平滚动条"
     set background=light
+    colorscheme onedark
 else
     let g:isGUI = 0
-    let g:solarized_termtrans=1
-    let g:solarized_termcolors=256
     set t_Co=256                   " 在终端启用256色
     set background=dark
+    colorscheme gruvbox
 endif
 
 if (g:isWin && g:isGUI)
@@ -48,12 +48,12 @@ endif
 
 if has('nvim')
     " set runtimepath+=/usr/local/opt/neovim/share/nvim
+    let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
     let &packpath = &runtimepath
     let g:python3_host_prog = '/usr/local/bin/python3'
     let g:python_host_prog  = '/usr/local/bin/python'
 endif
 
-colorscheme gruvbox
 set termguicolors
 set guifont=Source_Code_Pro_Semibold_for_Powerline:h15
 
@@ -66,7 +66,8 @@ set guioptions-=r                                     "去掉右边的滚动条"
 set guioptions-=L
 set laststatus=2                                      "启用状态栏信息
 set showtabline=2                                     "当只有一个标签时也显示标签行
-set noshowmode
+set noshowmode                                        " 使用 airline 时不再显示模式状态
+set lazyredraw
 set helplang=cn
 set number                                            "显示行号
 set wrap                                              "设置自动折行
@@ -84,6 +85,7 @@ set fileformats=unix,dos                                "给出文件的<EOL>格
 set backspace=indent,eol,start
 set viewoptions=folds,options,cursor,unix,slash         "better unix/Windows compatible
 set virtualedit=onemore                                 "curso可以移动到行尾最后一个字符之后"
+set autochdir
 set autoindent
 set smartindent                                         "启用智能对齐方式
 set shiftround
@@ -125,11 +127,10 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 " ===============< Hotkey mapping >======================
 let mapleader = ";"
 inoremap <ESC> <ESC>:nohl<CR>
-nnoremap <leader><space> :nohl<CR>
-nnoremap <leader>sd :colorscheme solarized8_dark_flat<CR>
-nnoremap <leader>ss :colorscheme solarized8_light_flat<CR>
-" nnoremap <leader>rn :set relativenumber<CR>
+inoremap <C-e> <C-y>
+inoremap <C-y> <C-e>
 
+nnoremap <leader><space> :nohl<CR>
 nmap <Up> <Nop>
 nmap <Down> <Nop>
 nmap <Left> <Nop>
@@ -178,16 +179,17 @@ nmap yj 2yy
 nmap yk k2yy
 nmap yh y^
 nmap ye y$
+nmap yp yyp
 nmap ysiw{ ysiw}
 
 nnoremap zg :q!<CR>
 nnoremap zp <C-w>pZQ
 nnoremap zf <S-z><S-z>
-nnoremap zv <C-w>v
-nnoremap zi <C-w>s
+nnoremap zl <C-w>v
+nnoremap zh <C-w>s
 " space key to toggle whether fold
-nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
-" nnoremap <leader>fm $a<space>{{{{<ESC>d$}O}}}<ESC>
+nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zO')<CR>
+" nnoremap zo zO
 
 cnoremap <C-a> <Home>
 cnoremap <c-v> <C-r>"
@@ -213,11 +215,6 @@ noremap <leader>bl :tablast<cr>
 noremap <leader>bb :tabprev<cr>
 noremap <leader>bn :tabnext<cr>
 noremap <leader>bm :tabmove
-
-" Plug keymap configure:
-    nnoremap <Leader>pi :PlugInstall<Cr>
-    nnoremap <Leader>pc :PlugClean<Cr>
-    nnoremap <Leader>pu :PlugUpdate<Cr>
 
 " ------------------------------------< Complex configure >------------------------------------
 "  in the normal mode autoset relative_number
@@ -335,7 +332,7 @@ endfun
     nmap <Leader>ga <Plug>(EasyAlign)
     xmap <Leader>ga <Plug>(EasyAlign)
 
-" multiplecursors
+" multiplecursors configure:
     let g:multi_cursor_use_default_mapping=0
     " Default mapping
     let g:multi_cursor_start_key='<C-n>'
@@ -345,11 +342,11 @@ endfun
     let g:multi_cursor_quit_key='<Esc>'
 
 " Leaderf configure:
+    nnoremap <Leader>fh :LeaderfMru<CR>
+    nnoremap <Leader>fl :LeaderfLine<CR>
     let g:Lf_DefaultMode = 'Regex'
     let g:Lf_ShortcutF = '<Leader>ff'
     let g:Lf_ShortcutB = '<Leader>fb'
-    nnoremap <Leader>fh :LeaderfMru<CR>
-    nnoremap <Leader>fl :LeaderfLine<CR>
     let g:Lf_WildIgnore = {
        \ 'dir': ['.svn','.git','.hg','.DS_Store','*node_modules','*compiled','*dist'],
        \ 'file': ['*.sw?','~$*','*.dat','*.exe','*.o','*.so','*.py[co]']
@@ -374,7 +371,7 @@ endfun
     nmap <leader>fs :Files<CR>
     nmap <leader>fa :Ag<CR>
 
-" nerdcommenter
+" nerdcommenter configure:
     let g:NERDSpaceDelims=1
     let g:NERDCompactSexyComs = 1
     let g:NERDAltDelims_python = 1
@@ -554,7 +551,7 @@ endfun
         let &errorformat = ef
     endfunction
 
-" indentline AutoPairs, Asyncrun configure:
+" indentline AutoPairs, configure:
     let g:indent_guides_enable_on_vim_startup = 1
     let g:AutoPairs = {'<':'>', '(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
 
@@ -576,15 +573,7 @@ endfun
     map g* <Plug>(incsearch-nohl-g*)
     map g# <Plug>(incsearch-nohl-g#)
 
-" neomake configure:
-    " call neomake#configure#automake({
-    " \ 'TextChanged': {},
-    " \ 'InsertLeave': {},
-    " \ 'BufWritePost': {'delay': 0},
-    " \ 'BufWinEnter': {},
-    " \ }, 500)
-
-" plugins manager autodownload and initialization configure:
+" plugins manager autodownload and keymap configure:
     let vim_plug_just_installed = 0
     let vim_plug_path = '${VIMRUNTIME}/autoload/plug.vim'
     if !empty(glob('${VIMRUNTIME}/autoload/plug.vim'))
@@ -597,6 +586,10 @@ endfun
     if vim_plug_just_installed
         :execute 'source '.fnameescape(vim_plug_path)
     endif
+    " Plug keymap configure:
+    nnoremap <Leader>pi :PlugInstall<Cr>
+    nnoremap <Leader>pc :PlugClean<Cr>
+    nnoremap <Leader>pu :PlugUpdate<Cr>
 
 "  < Plugin lists >
 call plug#begin('$VIM/vimfiles/bundle')
@@ -612,7 +605,6 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'airblade/vim-gitgutter'
     Plug 'neoclide/vim-easygit'
     Plug 'Shougo/denite.nvim'
-    Plug 'neomake/neomake'
     " Plug 'jreybert/vimagit'
     " Plug 'mhinz/vim-signify' support more vcs
     " Plug 'tpope/vim-fugitive'
@@ -628,6 +620,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'tell-k/vim-autopep8'
     Plug 'Chiel92/vim-autoformat'
     Plug 'w0rp/ale'
+    " Plug 'neomake/neomake'
     " Plug 'plytophogy/vim-virtualenv'
     Plug 'majutsushi/tagbar'
     Plug 'scrooloose/nerdcommenter'

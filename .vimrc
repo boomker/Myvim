@@ -21,7 +21,7 @@ if has("gui_running")
 else
     let g:isGUI = 0
     let g:solarized_termtrans=1
-    " let g:solarized_termcolors=256
+    let g:solarized_termcolors=256
     set t_Co=256                   " 在终端启用256色
     set background=dark
 endif
@@ -39,31 +39,25 @@ if (g:isWin && g:isGUI)
 endif
 
 if (g:isUnix)
+    set rtp+=~/gitrep/fzf
     if exists('$TMUX')
         let &t_8f = "\<ESC>[38;2;%lu;%lu;%lum"
         let &t_8b = "\<ESC>[48;2;%lu;%lu;%lum"
-    else
-        let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
-        let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
     endif
 endif
 
 if has('nvim')
-    set runtimepath+=/usr/local/opt/neovim/share/nvim
+    " set runtimepath+=/usr/local/opt/neovim/share/nvim
     let &packpath = &runtimepath
     let g:python3_host_prog = '/usr/local/bin/python3'
     let g:python_host_prog  = '/usr/local/bin/python'
 endif
 
 colorscheme gruvbox
-" colorscheme solarized8_flat
 set termguicolors
 set guifont=Source_Code_Pro_Semibold_for_Powerline:h15
 
 set nocompatible                                      "禁用 Vi 兼容模式
-set number                                            "显示行号
-set wrap                                              "设置自动折行
-" set nolinebreak                                       "不自动换行
 set shortmess=atI                                     "去掉欢迎界面
 set guioptions-=m                                     "去掉菜单栏"
 set guioptions-=e                                      "去掉标签栏"
@@ -72,6 +66,12 @@ set guioptions-=r                                     "去掉右边的滚动条"
 set guioptions-=L
 set laststatus=2                                      "启用状态栏信息
 set showtabline=2                                     "当只有一个标签时也显示标签行
+set noshowmode
+set helplang=cn
+set number                                            "显示行号
+set wrap                                              "设置自动折行
+set formatoptions+=j
+" set nolinebreak                                       "不自动换行
 set magic                                             "打开正则匹配模式
 set noimd                                             "关闭输入法
 set nobomb                                            " 禁止UTF-8 BOM
@@ -86,6 +86,7 @@ set viewoptions=folds,options,cursor,unix,slash         "better unix/Windows com
 set virtualedit=onemore                                 "curso可以移动到行尾最后一个字符之后"
 set autoindent
 set smartindent                                         "启用智能对齐方式
+set shiftround
 set smarttab                                            "指定行首按一次backspace就删除shiftwidth宽度的空格
 set expandtab                                           "将Tab键转换为空格
 set tabstop=4                                           "设置Tab键的宽度
@@ -93,6 +94,7 @@ set softtabstop=4
 set shiftwidth=4                                        "换行时自动缩进4个空格
 set scrolloff=3                                         "上下滚动时当前行距顶或低保持有3行"
 set cursorline cursorcolumn                             "突出显示当前行
+set colorcolumn=120
 set foldenable                                          "启用折叠
 " set foldmethod=marker
 set foldmethod=indent                                   "indent 折叠方式
@@ -104,7 +106,7 @@ set hlsearch                                "高亮搜索
 set incsearch                               "在输入要搜索的文字时，实时匹配
 set ignorecase                              "搜索模式里忽略大小写
 set smartcase                               "搜索模式包含大写字符，忽略上一行设置
-set matchtime=5                             "匹配括号光标停留时间"
+set matchtime=3                             "匹配括号光标停留时间"
 set showmatch
 set matchpairs+=<:>                         " specially for html"
 set history=500                             "保存更多的history"
@@ -311,16 +313,22 @@ endfun
     nmap f? <Plug>(easymotion-Fn)
     nmap ff <Plug>(easymotion-w)
     nmap fh <Plug>(easymotion-lineanywhere)
+    nmap fl <Plug>(easymotion-lineforward)
     nmap fo <Plug>(easymotion-overwin-f)
-    nmap fl <Plug>(easymotion-overwin-line)
+    nmap fi <Plug>(easymotion-overwin-line)
     nmap f. <Plug>(easymotion-repeat)
 
-" airline configure:
+" airline lightline configure:
     let g:airline_theme='wombat'
-    let g:airline_powerline_fonts = 1
-    let g:airline_extensions = ['ale', 'branch', 'obsession']
+    let g:airline_extensions = ['ale', 'obsession']
     let g:airline#extensions#whitespace#symbol = 'WS'
     let b:airline_whitespace_checks = [ 'indent', 'trailing' ]
+    let g:lightline = {
+		\ 'separator': { 'left': '', 'right': '' },
+        \ }
+    let g:lightline.tabline = {
+        \ 'left': [ [ 'tabs' ] ],
+        \ 'right': [ [ '' ] ] }
 
 " easy_align configure:
     vmap <Enter> <Plug>(EasyAlign)
@@ -352,6 +360,19 @@ endfun
     nmap <leader>fw <Plug>CtrlSFCCwordExec
     let g:ctrlsf_default_view_mode = 'compact'
     let g:ctrlsf_regex_pattern = 1
+
+" fzf configure:
+    command! -bang -nargs=* Ag
+        \ call fzf#vim#ag(<q-args>,
+        \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+        \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+        \                 <bang>0)
+    command! -bang Colors
+        \ call fzf#vim#colors({'left': '15%', 'options': '--reverse --margin 30%,0'}, <bang>0)
+    command! -bang -nargs=? -complete=dir Files
+        \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+    nmap <leader>fs :Files<CR>
+    nmap <leader>fa :Ag<CR>
 
 " nerdcommenter
     let g:NERDSpaceDelims=1
@@ -398,6 +419,7 @@ endfun
     let g:gitgutter_sign_removed = '✖'
     let g:gitgutter_sign_removed_first_line = '➤'
     let g:gitgutter_sign_modified_removed = '✹'
+    let g:easygit_enable_command = 1
 
 " undotree configure:
     nnoremap <Leader>ut :UndotreeToggle<cr>
@@ -424,6 +446,7 @@ endfun
     let g:ale_open_list = 0
     let g:ale_lint_delay = 1000
     let g:ale_python_flake8_args="--ignore=E114,E116,E131 --max-line-length=120"
+    let g:ale_emit_conflict_warnings = 0
     nmap sn <Plug>(ale_next_wrap)
     nmap sp <Plug>(ale_previous_wrap)
 
@@ -553,6 +576,14 @@ endfun
     map g* <Plug>(incsearch-nohl-g*)
     map g# <Plug>(incsearch-nohl-g#)
 
+" neomake configure:
+    " call neomake#configure#automake({
+    " \ 'TextChanged': {},
+    " \ 'InsertLeave': {},
+    " \ 'BufWritePost': {'delay': 0},
+    " \ 'BufWinEnter': {},
+    " \ }, 500)
+
 " plugins manager autodownload and initialization configure:
     let vim_plug_just_installed = 0
     let vim_plug_path = '${VIMRUNTIME}/autoload/plug.vim'
@@ -570,18 +601,21 @@ endfun
 "  < Plugin lists >
 call plug#begin('$VIM/vimfiles/bundle')
     Plug 'flazz/vim-colorschemes'
+    Plug 'itchyny/lightline.vim'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'vim-airline/vim-airline'
-    " Plug 'lifepillar/vim-solarized8'
     Plug 'wincent/terminus'
     Plug 'easymotion/vim-easymotion'
     Plug 'junegunn/vim-easy-align'
     Plug 'luochen1990/rainbow'
     Plug 'kshenoy/vim-signature'
     Plug 'airblade/vim-gitgutter'
-    Plug 'tpope/vim-fugitive'
-    " Plug 'mhinz/vim-signify' support more vcs
+    Plug 'neoclide/vim-easygit'
     Plug 'Shougo/denite.nvim'
+    Plug 'neomake/neomake'
+    " Plug 'jreybert/vimagit'
+    " Plug 'mhinz/vim-signify' support more vcs
+    " Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-obsession'
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
@@ -601,12 +635,15 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'jistr/vim-nerdtree-tabs'
     Plug 'Xuyuanp/nerdtree-git-plugin'
     Plug 'mbbill/undotree'
+    Plug 'dyng/ctrlsf.vim'
+    "Plug 'junegunn/fzf', { 'dir': '$VIM/vimfiles/bundle/fzf', 'do': './install --all'  }
+    Plug 'junegunn/fzf.vim'
+    Plug '~/gitrepo/fzf'
     Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
     Plug 'haya14busa/incsearch.vim'
     Plug 'terryma/vim-multiple-cursors'
     Plug 'yonchu/accelerated-smooth-scroll'
-    Plug 'rizzatti/dash.vim'
     Plug 'nathanaelkane/vim-indent-guides'
     Plug 'sheerun/vim-polyglot'
-    Plug 'CodeFalling/fcitx-vim-osx'
+    Plug 'rizzatti/dash.vim'
 call plug#end()

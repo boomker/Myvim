@@ -309,6 +309,7 @@ fun! StripTrailingWhitespaces()
 endfun
 
 " open terminal in specified eatra split window
+" press <C-d> to exit terminal
 if has('nvim')
     func! OpenTerminal()
         " open split windows on the topleft
@@ -348,13 +349,15 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     let g:airline_extensions = ['ale', 'obsession']
     let g:airline#extensions#whitespace#symbol = 'WS'
     let b:airline_whitespace_checks = [ 'indent', 'trailing' ]
+    let g:airline#extensions#tabline#enabled = 1
     let g:airline_left_sep = '»'
     let g:airline_left_sep = '▶'
     let g:airline_right_sep = '«'
     let g:airline_right_sep = '◀'
     let g:lightline = {
-		\ 'separator': { 'left': '', 'right': '' },
-        \ }
+    \ 'separator': { 'left': '', 'right': '' },
+    \ }
+
     let g:lightline.tabline = {
         \ 'left': [ [ 'tabs' ] ],
         \ 'right': [ [ '' ] ] }
@@ -411,7 +414,7 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
 
 " nerdtree configure:
     map <leader>st :NERDTreeToggle<CR>
-    let NERDTreeIgnore=['\~$', '\.pyc$', '\.swp$', '\.DS_Store$']
+    let NERDTreeIgnore=['\.pyc','\~$','\.swp','__pycache__','\.git$','\.DS_Store']
     let g:nerdtree_tabs_open_on_gui_startup=0
     let g:NERDTreeMapToggleBookmarks="b"
     let g:NERDTreeMapChangeRoot="c"
@@ -584,11 +587,26 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     endfunction
 
 " python-mode Settings {{{
-    let g:pymode_rope = 0
+    let g:pymode_lint = 0
+    let g:pymode_run = 0
+    let g:pymode_breakpoint = 1
+    let g:pymode_doc = 1
+    let g:pymode_folding = 1
+    let g:pymode_motion = 1
+    let g:pymode_rope = 1
+    let g:pymode_rope_lookup_project = 0
     let g:pymode_rope_completion = 0
-    let g:pymode_doc = 0
-    let g:pymode_folding = 0
-" }}}
+    "重命名光标下的函数，方法，变量及类名
+    let g:pymode_rope_rename_bind = '<Leader>rr'
+    let g:pymode_rope_show_doc_bind = '<Leader>sd'
+    let g:pymode_rope_rename_module_bind = '<Leader>rm'
+    let g:pymode_rope_goto_definition_bind = '<Leader>pd'
+    let g:pymode_rope_goto_definition_cmd = 'vnew'
+    "重命名光标下的模块或包
+    "开启python所有的语法高亮
+    let g:pymode_syntax = 1
+    let g:pymode_syntax_all = 1
+" 参考：https://blog.csdn.net/demorngel/article/details/71158792 }}}
 
 " indentline AutoPairs, configure:
     let g:indent_guides_enable_on_vim_startup = 1
@@ -656,7 +674,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'jiangmiao/auto-pairs'
     Plug 'tommcdo/vim-exchange'
     " Plug 'davidhalter/jedi-vim'
-    " Plug 'klen/python-mode', { 'for': 'python'}
+    Plug 'klen/python-mode', { 'for': 'python'}
     " Plug 'maralla/completor.vim'
     Plug 'Valloric/YouCompleteMe'
     " Plug 'oblitum/YouCompleteMe'

@@ -19,11 +19,16 @@ if has("gui_running")
     set guiheadroom=0                                     "禁止GTK填充窗口底部为主题背景色，此设置会消除底部的水平滚动条"
     set background=light
     colorscheme onedark
+    syntax on
+    " 下面一行的注释必须放下面，不然就被上面一样的设置给覆盖掉
+    highlight Comment gui=italic
 else
     let g:isGUI = 0
     set t_Co=256                   " 在终端启用256色
     set background=dark
     colorscheme gruvbox
+    syntax on
+    highlight Comment cterm=italic
 endif
 
 if (g:isWin && g:isGUI)
@@ -55,18 +60,20 @@ if has('nvim')
 endif
 
 set termguicolors
-set guifont=Source_Code_Pro_Semibold_for_Powerline:h15
+set guifont=Source_Code_Pro_for_Powerline:h15,Sauce_Code_Pro_Medium_Nerd_Font_Complete_Mono:15
+" set guifont=Source_Code_Variable_Semibold:h14
 
 set nocompatible                                      "禁用 Vi 兼容模式
 set shortmess=atI                                     "去掉欢迎界面
 set guioptions-=m                                     "去掉菜单栏"
-set guioptions-=e                                      "去掉标签栏"
+set guioptions-=e                                     "去掉标签栏"
 set guioptions-=T                                     "去掉工具栏"
 set guioptions-=r                                     "去掉右边的滚动条"
 set guioptions-=L
 set laststatus=2                                      "启用状态栏信息
 set showtabline=2                                     "当只有一个标签时也显示标签行
 set noshowmode                                        " 使用 airline 时不再显示模式状态
+set noshowcmd
 set lazyredraw
 set helplang=cn
 set number                                            "显示行号
@@ -118,7 +125,6 @@ set nobackup                                "设置无备份文件
 set noswapfile                              "设置无临时文件
 set nowritebackup                           "无写入备份
 filetype plugin on
-syntax on
 autocmd! bufwritepost .vimrc source $MYVIMRC
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
 "au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 78 . 'v.\+', -1)
@@ -129,6 +135,10 @@ let mapleader = ";"
 inoremap <ESC> <ESC>:nohl<CR>
 inoremap <C-e> <C-y>
 inoremap <C-y> <C-e>
+" quick movements in Insert-Mode
+inoremap II <Esc>I
+inoremap AA <Esc>A
+inoremap OO <Esc>o
 
 nnoremap <leader><space> :nohl<CR>
 nmap <Up> <Nop>
@@ -161,8 +171,6 @@ nmap tt :tabnew!<CR>
 nmap tn :tabn<CR>
 nmap tp :tabp<CR>
 nmap tw vwP
-nmap te d$"0p
-
 noremap cp ""P
 
 nmap md <S-*>
@@ -193,12 +201,14 @@ nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zO')<CR>
 
 cnoremap <C-a> <Home>
 cnoremap <c-v> <C-r>"
+" allow saving file as sudo when forgot to start vim using sudo
+cmap fw!! w !sudo tee > /dev/null %
 
 " quickly way to move between buffers or tabs
-nmap <C-j> <C-W>j
-nmap <C-k> <C-W>k
-nmap <C-h> <C-W>h
-nmap <C-l> <C-W>l
+nmap <Leader>wj <C-W>j
+nmap <Leader>wk <C-W>k
+nmap <Leader>wh <C-W>h
+nmap <Leader>wl <C-W>l
 
 noremap <leader>1 1gt
 noremap <leader>2 2gt
@@ -298,6 +308,23 @@ fun! StripTrailingWhitespaces()
     call cursor(l, c)
 endfun
 
+" open terminal in specified eatra split window
+if has('nvim')
+    func! OpenTerminal()
+        " open split windows on the topleft
+        topleft split
+        " resize the height of terminal windows to 30
+        resize 15
+        :terminal
+    endf
+else
+    func! OpenTerminal()
+        topleft split
+        resize 15
+        :call term_start('zsh', {'curwin' : 1, 'term_finish' : 'close'})
+    endf
+endif
+nnoremap <Leader>ot :call OpenTerminal()<cr>
 " ==============< Plugins configure >================
 
 " vim easymotion configure:
@@ -317,9 +344,14 @@ endfun
 
 " airline lightline configure:
     let g:airline_theme='wombat'
+    let g:airline_powerline_fonts = 1
     let g:airline_extensions = ['ale', 'obsession']
     let g:airline#extensions#whitespace#symbol = 'WS'
     let b:airline_whitespace_checks = [ 'indent', 'trailing' ]
+    let g:airline_left_sep = '»'
+    let g:airline_left_sep = '▶'
+    let g:airline_right_sep = '«'
+    let g:airline_right_sep = '◀'
     let g:lightline = {
 		\ 'separator': { 'left': '', 'right': '' },
         \ }
@@ -375,6 +407,7 @@ endfun
     let g:NERDSpaceDelims=1
     let g:NERDCompactSexyComs = 1
     let g:NERDAltDelims_python = 1
+    let g:NERDDefaultAlign = 'left'
 
 " nerdtree configure:
     map <leader>st :NERDTreeToggle<CR>
@@ -411,28 +444,25 @@ endfun
 
 " gitgutter configure configure:
     set updatetime=50
+    let g:gitgutter_max_signs = 1000
     let g:gitgutter_sign_added = '✚'
-    let g:gitgutter_sign_modified = '★'
+    " let g:gitgutter_sign_modified = '✎'
+    let g:gitgutter_sign_modified = '☻'
     let g:gitgutter_sign_removed = '✖'
     let g:gitgutter_sign_removed_first_line = '➤'
     let g:gitgutter_sign_modified_removed = '✹'
     let g:easygit_enable_command = 1
 
-" undotree configure:
-    nnoremap <Leader>ut :UndotreeToggle<cr>
-    " let g:undotree_DiffAutoOpen = 0
-    let g:undotree_SetFocusWhenToggle = 1
-    function! g:Undotree_CustomMap()
-        nmap <buffer> J <plug>UndotreeGoNextState
-        nmap <buffer> K <plug>UndotreeGoPreviousState
-        nmap <buffer> r <plug>UndotreeRedo
-    endfunc
+" GundoToggle configure:
+    nnoremap <Leader>ut :GundoToggle<CR>
+    let g:gundo_prefer_python3 = 1
 
 " ale configure:
     let g:ale_fix_on_save = 1
     let g:ale_completion_enabled = 1
     let g:ale_sign_column_always = 1
-    let g:ale_set_highlights = 1
+    " let g:ale_set_highlights = 1
+    let g:ale_set_highlights = 0
     let g:ale_sign_error = '◉'
     let g:ale_sign_warning = '◉'
     highlight! ALEErrorSign ctermfg=9 guifg=#C30500
@@ -441,8 +471,8 @@ endfun
     let g:ale_echo_msg_warning_str = 'W'
     let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
     let g:ale_open_list = 0
-    let g:ale_lint_delay = 1000
-    let g:ale_python_flake8_args="--ignore=E114,E116,E131 --max-line-length=120"
+    let g:ale_lint_delay = 500
+    let g:ale_python_flake8_args="--ignore=E114,E116,E131,E501 --max-line-length=120"
     let g:ale_emit_conflict_warnings = 0
     nmap sn <Plug>(ale_next_wrap)
     nmap sp <Plug>(ale_previous_wrap)
@@ -518,8 +548,10 @@ endfun
     " let g:ycm_add_preview_to_completeopt = 0
     " 离开插入模式后自动关闭预览窗口"
     autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-    nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
-    nnoremap <leader>gd :YcmCompleter GoToDeclaration<CR>
+    nnoremap <leader>gc :YcmCompleter GoToDeclaration<CR>
+    nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
+    nnoremap <leader>gg :YcmCompleter GoTo<CR>
+    nnoremap <leader>gd :YcmCompleter GetDoc<CR>
 
 " Snippets configure:
     let g:UltiSnipsExpandTrigger="<tab>"
@@ -551,8 +583,17 @@ endfun
         let &errorformat = ef
     endfunction
 
+" python-mode Settings {{{
+    let g:pymode_rope = 0
+    let g:pymode_rope_completion = 0
+    let g:pymode_doc = 0
+    let g:pymode_folding = 0
+" }}}
+
 " indentline AutoPairs, configure:
     let g:indent_guides_enable_on_vim_startup = 1
+    let g:indent_guides_guide_size = 3
+    let g:indent_guides_start_level = 2
     let g:AutoPairs = {'<':'>', '(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
 
 " rainbow configure:
@@ -597,6 +638,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'itchyny/lightline.vim'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'vim-airline/vim-airline'
+    " Plug 'ryanoasis/vim-devicons'
     Plug 'wincent/terminus'
     Plug 'easymotion/vim-easymotion'
     Plug 'junegunn/vim-easy-align'
@@ -612,9 +654,12 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
     Plug 'jiangmiao/auto-pairs'
+    Plug 'tommcdo/vim-exchange'
     " Plug 'davidhalter/jedi-vim'
+    " Plug 'klen/python-mode', { 'for': 'python'}
     " Plug 'maralla/completor.vim'
     Plug 'Valloric/YouCompleteMe'
+    " Plug 'oblitum/YouCompleteMe'
     Plug 'sirver/ultisnips'
     Plug 'honza/vim-snippets'
     Plug 'tell-k/vim-autopep8'
@@ -627,7 +672,8 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'scrooloose/nerdtree'
     Plug 'jistr/vim-nerdtree-tabs'
     Plug 'Xuyuanp/nerdtree-git-plugin'
-    Plug 'mbbill/undotree'
+    " Plug 'mbbill/undotree'
+    Plug 'sjl/gundo.vim'
     Plug 'dyng/ctrlsf.vim'
     "Plug 'junegunn/fzf', { 'dir': '$VIM/vimfiles/bundle/fzf', 'do': './install --all'  }
     Plug 'junegunn/fzf.vim'

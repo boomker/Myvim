@@ -158,8 +158,7 @@ nmap gn <Plug>GitGutterNextHunk
 noremap e  w
 noremap w  e
 
-" instead of s and C
-nmap sf :w!<CR>
+nmap sf :w!<CR>:AirlineRefresh<CR>
 nmap sj <C-o>
 nmap sk <C-i>
 nmap su <C-r>
@@ -343,24 +342,17 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     nmap fi <Plug>(easymotion-overwin-line)
     nmap f. <Plug>(easymotion-repeat)
 
-" airline lightline configure:
+" airline configure:
     let g:airline_theme='wombat'
+    let g:airline#extensions#tabline#show_buffers = 0
+    let g:airline#extensions#tabline#show_tab_type = 0
+    let g:airline#extensions#tabline#show_close_button = 0
+    let g:airline#extensions#tabline#right_alt_sep = ''
+    let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
     let g:airline_powerline_fonts = 1
-    let g:airline_extensions = ['ale', 'obsession']
+    let g:airline_extensions = ['tabline', 'ale', 'obsession']
     let g:airline#extensions#whitespace#symbol = 'WS'
     let b:airline_whitespace_checks = [ 'indent', 'trailing' ]
-    let g:airline#extensions#tabline#enabled = 1
-    let g:airline_left_sep = '»'
-    let g:airline_left_sep = '▶'
-    let g:airline_right_sep = '«'
-    let g:airline_right_sep = '◀'
-    let g:lightline = {
-    \ 'separator': { 'left': '', 'right': '' },
-    \ }
-
-    let g:lightline.tabline = {
-        \ 'left': [ [ 'tabs' ] ],
-        \ 'right': [ [ '' ] ] }
 
 " easy_align configure:
     vmap <Enter> <Plug>(EasyAlign)
@@ -653,9 +645,10 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
 "  < Plugin lists >
 call plug#begin('$VIM/vimfiles/bundle')
     Plug 'flazz/vim-colorschemes'
-    Plug 'itchyny/lightline.vim'
+    " Plug 'itchyny/lightline.vim'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'vim-airline/vim-airline'
+    Plug 'troydm/zoomwintab.vim'
     " Plug 'ryanoasis/vim-devicons'
     Plug 'wincent/terminus'
     Plug 'easymotion/vim-easymotion'
@@ -690,7 +683,6 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'scrooloose/nerdtree'
     Plug 'jistr/vim-nerdtree-tabs'
     Plug 'Xuyuanp/nerdtree-git-plugin'
-    " Plug 'mbbill/undotree'
     Plug 'sjl/gundo.vim'
     Plug 'dyng/ctrlsf.vim'
     "Plug 'junegunn/fzf', { 'dir': '$VIM/vimfiles/bundle/fzf', 'do': './install --all'  }

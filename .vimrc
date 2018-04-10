@@ -159,6 +159,7 @@ noremap e  w
 noremap w  e
 
 nmap sf :w!<CR>:AirlineRefresh<CR>
+" refresh airline avoid airline ugly
 nmap sj <C-o>
 nmap sk <C-i>
 nmap su <C-r>
@@ -200,8 +201,9 @@ nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zO')<CR>
 
 cnoremap <C-a> <Home>
 cnoremap <c-v> <C-r>"
+
 " allow saving file as sudo when forgot to start vim using sudo
-cmap fw!! w !sudo tee > /dev/null %
+nmap <Leader>sw :w !sudo tee > /dev/null %<CR>
 
 " quickly way to move between buffers or tabs
 nmap <Leader>wj <C-W>j

@@ -22,11 +22,13 @@ if has("gui_running")
     syntax on
     " 下面一行的注释必须放下面，不然就被上面一样的设置给覆盖掉
     highlight Comment gui=italic
+    " 在 GUIvim 里中文看不到是斜体的，似乎需要斜体中文字体支持
 else
     let g:isGUI = 0
     set t_Co=256                   " 在终端启用256色
     set background=dark
-    colorscheme gruvbox
+    " colorscheme gruvbox
+    colorscheme solarized8_dark_flat
     syntax on
     highlight Comment cterm=italic
 endif
@@ -197,12 +199,11 @@ nnoremap zl <C-w>v
 nnoremap zh <C-w>s
 " space key to toggle whether fold
 nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zO')<CR>
-" nnoremap zo zO
 
 cnoremap <C-a> <Home>
 cnoremap <c-v> <C-r>"
 
-" allow saving file as sudo when forgot to start vim using sudo
+" saving file as sudo when forgot to start vim using sudo
 nmap <Leader>sw :w !sudo tee > /dev/null %<CR>
 
 " quickly way to move between buffers or tabs
@@ -581,25 +582,25 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     endfunction
 
 " python-mode Settings {{{
-    let g:pymode_lint = 0
-    let g:pymode_run = 0
-    let g:pymode_breakpoint = 1
-    let g:pymode_doc = 1
-    let g:pymode_folding = 1
-    let g:pymode_motion = 1
-    let g:pymode_rope = 1
-    let g:pymode_rope_lookup_project = 0
-    let g:pymode_rope_completion = 0
-    "重命名光标下的函数，方法，变量及类名
-    let g:pymode_rope_rename_bind = '<Leader>rr'
-    let g:pymode_rope_show_doc_bind = '<Leader>sd'
-    let g:pymode_rope_rename_module_bind = '<Leader>rm'
-    let g:pymode_rope_goto_definition_bind = '<Leader>pd'
-    let g:pymode_rope_goto_definition_cmd = 'vnew'
-    "重命名光标下的模块或包
-    "开启python所有的语法高亮
-    let g:pymode_syntax = 1
-    let g:pymode_syntax_all = 1
+    " let g:pymode_lint = 0
+    " let g:pymode_run = 0
+    " let g:pymode_breakpoint = 1
+    " let g:pymode_doc = 1
+    " let g:pymode_folding = 1
+    " let g:pymode_motion = 1
+    " let g:pymode_rope = 1
+    " let g:pymode_rope_lookup_project = 0
+    " let g:pymode_rope_completion = 0
+    " "重命名光标下的函数，方法，变量及类名
+    " let g:pymode_rope_rename_bind = '<Leader>rr'
+    " let g:pymode_rope_show_doc_bind = '<Leader>sd'
+    " let g:pymode_rope_rename_module_bind = '<Leader>rm'
+    " let g:pymode_rope_goto_definition_bind = '<Leader>pd'
+    " let g:pymode_rope_goto_definition_cmd = 'vnew'
+    " "重命名光标下的模块或包
+    " "开启python所有的语法高亮
+    " let g:pymode_syntax = 1
+    " let g:pymode_syntax_all = 1
 " 参考：https://blog.csdn.net/demorngel/article/details/71158792 }}}
 
 " indentline AutoPairs, configure:
@@ -648,6 +649,7 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
 call plug#begin('$VIM/vimfiles/bundle')
     Plug 'flazz/vim-colorschemes'
     " Plug 'itchyny/lightline.vim'
+    Plug 'lifepillar/vim-solarized8'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'vim-airline/vim-airline'
     Plug 'troydm/zoomwintab.vim'
@@ -669,7 +671,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'jiangmiao/auto-pairs'
     Plug 'tommcdo/vim-exchange'
     " Plug 'davidhalter/jedi-vim'
-    Plug 'klen/python-mode', { 'for': 'python'}
+    " Plug 'klen/python-mode', { 'for': 'python'}
     " Plug 'maralla/completor.vim'
     Plug 'Valloric/YouCompleteMe'
     " Plug 'oblitum/YouCompleteMe'

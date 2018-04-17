@@ -149,6 +149,8 @@ nmap <Left> <Nop>
 nmap <Right> <Nop>
 noremap <silent> <expr> j (v:count == 0 ? 'gjzz' : 'j')
 noremap <silent> <expr> k (v:count == 0 ? 'gkzz' : 'k')
+vmap j gj
+vmap k gk
 
 nmap J gJ
 nmap gh ^
@@ -157,8 +159,6 @@ noremap gl gu
 noremap gu gU
 nmap gp <Plug>GitGutterPrevHunk
 nmap gn <Plug>GitGutterNextHunk
-noremap e  w
-noremap w  e
 
 nmap sf :w!<CR>:AirlineRefresh<CR>
 " refresh airline avoid airline ugly
@@ -178,6 +178,7 @@ noremap cp ""P
 nmap md <S-*>
 nmap ms <S-#>
 
+nnoremap <CR> :
 " Delete character end of current cursor
 nmap dh d^
 nmap de d$
@@ -203,8 +204,13 @@ nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zO')<CR>
 cnoremap <C-a> <Home>
 cnoremap <c-v> <C-r>"
 
+vnoremap < <gv
+vnoremap > >gv
+vnoremap v <Esc>
+
 " saving file as sudo when forgot to start vim using sudo
 nmap <Leader>sw :w !sudo tee > /dev/null %<CR>
+command! W w !sudo tee % > /dev/null
 
 " quickly way to move between buffers or tabs
 nmap <Leader>wj <C-W>j
@@ -438,7 +444,7 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
     " vim不指定具体文件打开是，自动使用nerdtree
     autocmd StdinReadPre * let s:std_in=1
-    autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree |endif
+    autocmd VimEnter,GUIEnter * if argc() == 0 && !exists("s:std_in") | NERDTree |endif
 
 " gitgutter configure configure:
     set updatetime=50

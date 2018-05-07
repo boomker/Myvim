@@ -149,6 +149,7 @@ nmap <Left> <Nop>
 nmap <Right> <Nop>
 noremap <silent> <expr> j (v:count == 0 ? 'gjzz' : 'j')
 noremap <silent> <expr> k (v:count == 0 ? 'gkzz' : 'k')
+noremap '' ''zz
 vmap j gj
 vmap k gk
 
@@ -157,6 +158,8 @@ nmap gh ^
 nmap ge $
 noremap gl gu
 noremap gu gU
+" select last paste in visual mode
+nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1) . '`]'
 nmap gp <Plug>GitGutterPrevHunk
 nmap gn <Plug>GitGutterNextHunk
 
@@ -204,6 +207,7 @@ nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zO')<CR>
 cnoremap <C-a> <Home>
 cnoremap <c-v> <C-r>"
 
+nnoremap <leader>cp I#<Space><Home><Tab><ESC>
 vnoremap < <gv
 vnoremap > >gv
 vnoremap v <Esc>
@@ -290,9 +294,12 @@ let $author_name = "Shingo"
 let $author_email = "gmboomker@gmail.com"
 func! SetFileHeadInfo()
     if expand("%:e") == 'py'
+        " call setline(1, '#!/usr/local/bin/genv python3')
         call setline(1, '#!/usr/bin/env python3')
     elseif expand("%:e") == 'sh'
-        call setline(1, '#!/usr/bin/env bash')
+        " call setline(1, '#!/usr/bin/env bash')
+        call setline(1, '#!/usr/local/bin/env bash') 
+        " call setline(1, '#!/usr/local/bin/genv bash') 
     endif
     call append(1, '# *************************************************')
     call append(2, '#')
@@ -362,6 +369,7 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     let g:airline_extensions = ['tabline', 'ale', 'obsession']
     let g:airline#extensions#whitespace#symbol = 'WS'
     let b:airline_whitespace_checks = [ 'indent', 'trailing' ]
+    let g:ale_pattern_options = {'python实例手册.py$': {'ale_enabled': 0}}
 
 " easy_align configure:
     vmap <Enter> <Plug>(EasyAlign)
@@ -380,9 +388,10 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
 " Leaderf configure:
     nnoremap <Leader>fh :LeaderfMru<CR>
     nnoremap <Leader>fl :LeaderfLine<CR>
-    let g:Lf_DefaultMode = 'Regex'
     let g:Lf_ShortcutF = '<Leader>ff'
     let g:Lf_ShortcutB = '<Leader>fb'
+    let g:Lf_DefaultMode = 'Regex'
+    let g:Lf_NeedCacheTime = 0.5
     let g:Lf_WildIgnore = {
        \ 'dir': ['.svn','.git','.hg','.DS_Store','*node_modules','*compiled','*dist'],
        \ 'file': ['*.sw?','~$*','*.dat','*.exe','*.o','*.so','*.py[co]']
@@ -496,7 +505,7 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     let g:tagbar_map_prevtag = "K"
     let g:tagbar_map_openallfolds = "ao"
     let g:tagbar_map_closeallfolds = "ac"
-    nmap <Leader>vt :TagbarToggle<CR>
+    nmap <Leader>tb :TagbarToggle<CR>
 
 " markdown configure:
     au bufread,bufnewfile *.md,*.markdown setlocal ft=mkd
@@ -551,11 +560,14 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     set completeopt=longest,menu
     " let g:ycm_add_preview_to_completeopt = 0
     " 离开插入模式后自动关闭预览窗口"
+    let g:ycm_goto_buffer_command = 'horizontal-split'
+    let g:ycm_register_as_syntastic_checker = 0
     autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-    nnoremap <leader>gc :YcmCompleter GoToDeclaration<CR>
+    nnoremap <leader>gd :YcmCompleter GoToDeclaration<CR>
     nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
     nnoremap <leader>gg :YcmCompleter GoTo<CR>
-    nnoremap <leader>gd :YcmCompleter GetDoc<CR>
+    nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+    " nnoremap <leader>gw :YcmCompleter GetDoc<CR>
 
 " Snippets configure:
     let g:UltiSnipsExpandTrigger="<tab>"
@@ -588,32 +600,32 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     endfunction
 
 " python-mode Settings {{{
-    " let g:pymode_lint = 0
-    " let g:pymode_run = 0
-    " let g:pymode_breakpoint = 1
-    " let g:pymode_doc = 1
-    " let g:pymode_folding = 1
-    " let g:pymode_motion = 1
-    " let g:pymode_rope = 1
-    " let g:pymode_rope_lookup_project = 0
-    " let g:pymode_rope_completion = 0
-    " "重命名光标下的函数，方法，变量及类名
-    " let g:pymode_rope_rename_bind = '<Leader>rr'
-    " let g:pymode_rope_show_doc_bind = '<Leader>sd'
-    " let g:pymode_rope_rename_module_bind = '<Leader>rm'
-    " let g:pymode_rope_goto_definition_bind = '<Leader>pd'
-    " let g:pymode_rope_goto_definition_cmd = 'vnew'
-    " "重命名光标下的模块或包
-    " "开启python所有的语法高亮
-    " let g:pymode_syntax = 1
-    " let g:pymode_syntax_all = 1
+    let g:pymode_lint = 0
+    let g:pymode_run = 0
+    let g:pymode_breakpoint = 1
+    let g:pymode_doc = 1
+    let g:pymode_folding = 1
+    let g:pymode_motion = 1
+    let g:pymode_rope = 1
+    let g:pymode_rope_lookup_project = 0
+    let g:pymode_rope_completion = 0
+    " 重命名光标下的函数，方法，变量及类名
+    let g:pymode_rope_rename_bind = '<Leader>rr'
+    let g:pymode_rope_show_doc_bind = '<Leader>sd'
+    let g:pymode_rope_rename_module_bind = '<Leader>rm'
+    let g:pymode_rope_goto_definition_bind = '<Leader>pd'
+    let g:pymode_rope_goto_definition_cmd = 'vnew'
+    " 重命名光标下的模块或包
+    " 开启python所有的语法高亮
+    let g:pymode_syntax = 1
+    let g:pymode_syntax_all = 1
 " 参考：https://blog.csdn.net/demorngel/article/details/71158792 }}}
 
 " indentline AutoPairs, configure:
     let g:indent_guides_enable_on_vim_startup = 1
     let g:indent_guides_guide_size = 3
     let g:indent_guides_start_level = 2
-    let g:AutoPairs = {'<':'>', '(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
+    let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
 
 " rainbow configure:
     let g:rainbow_active = 1
@@ -677,9 +689,11 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'jiangmiao/auto-pairs'
     Plug 'tommcdo/vim-exchange'
     " Plug 'davidhalter/jedi-vim'
-    " Plug 'klen/python-mode', { 'for': 'python'}
+    Plug 'klen/python-mode', { 'for': 'python'}
     " Plug 'maralla/completor.vim'
-    Plug 'Valloric/YouCompleteMe'
+    Plug '~/.vim/YouCompleteMe'
+    " wget -O ~/.vim/YouCompleteMe.tar.gz "http://ohpunyak1.bkt.clouddn.com/YouCompleteMe.tar.gz?v=1234"
+    " Plug 'Valloric/YouCompleteMe'
     " Plug 'oblitum/YouCompleteMe'
     Plug 'sirver/ultisnips'
     Plug 'honza/vim-snippets'

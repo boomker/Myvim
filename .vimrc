@@ -180,6 +180,7 @@ noremap cp ""P
 
 nmap md <S-*>
 nmap ms <S-#>
+nmap mm ``
 
 nnoremap <CR> :
 " Delete character end of current cursor
@@ -535,8 +536,10 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     let g:ycm_max_diagnostics_to_display = 0
     let g:ycm_show_diagnostics_ui = 0
     let g:ycm_key_invoke_completion = '<c-space>'
-    let g:ycm_key_list_select_completion = ['<C-n>', '<C-j>']
-    let g:ycm_key_list_previous_completion = ['<C-p>', '<C-k>']
+    " let g:ycm_key_list_select_completion = ['<C-n>', '<C-j>']
+    " let g:ycm_key_list_previous_completion = ['<C-p>', '<C-k>']
+    let g:ycm_key_list_select_completion = ['<C-n>']
+    let g:ycm_key_list_previous_completion = ['<C-p>']
     let g:ycm_autoclose_preview_window_after_completion = 1
     let g:ycm_autoclose_preview_window_after_insertion = 1
     let g:ycm_filetype_whitelist = { 
@@ -553,7 +556,8 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
         \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{3}'],
         \ 'cs,lua,javascript': ['re!\w{3}'],
         \ }
-    let g:ycm_global_ycm_extra_conf = '$VIMFILES/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+    " let g:ycm_global_ycm_extra_conf = '$VIMFILES/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+    let g:ycm_global_ycm_extra_conf = '~/.vim/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
     let g:ycm_confirm_extr_conf = 0
     " 回车即选中当前项"
     let g:ycm_key_list_stop_completion = ['<CR>']
@@ -591,7 +595,7 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
         let mp = &makeprg
         let ef = &errorformat
         let exeFile = expand("%:t")
-        setlocal makeprg=python\ -u
+        setlocal makeprg=python3\ -u
         set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
         silent make %
         copen
@@ -613,7 +617,7 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     let g:pymode_rope_rename_bind = '<Leader>rr'
     let g:pymode_rope_show_doc_bind = '<Leader>sd'
     let g:pymode_rope_rename_module_bind = '<Leader>rm'
-    let g:pymode_rope_goto_definition_bind = '<Leader>pd'
+    let g:pymode_rope_goto_definition_bind = '<Leader>rd'
     let g:pymode_rope_goto_definition_cmd = 'vnew'
     " 重命名光标下的模块或包
     " 开启python所有的语法高亮
@@ -626,6 +630,8 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     let g:indent_guides_guide_size = 3
     let g:indent_guides_start_level = 2
     let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
+    " let g:AutoPairs = {'[':']', '{':'}', "'":"'", '"':'"', '`':'`'}
+    " inoremap <buffer><silent> ) <C-R>=AutoPairsInsert(')')<CR>
 
 " rainbow configure:
     let g:rainbow_active = 1
@@ -644,6 +650,13 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     map #  <Plug>(incsearch-nohl-#)
     map g* <Plug>(incsearch-nohl-g*)
     map g# <Plug>(incsearch-nohl-g#)
+
+" CompleteParameter configure: 
+    inoremap <silent> <expr> > complete_parameter#pre_complete("()")
+    smap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+    imap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+    smap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+    imap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
 
 " plugins manager autodownload and keymap configure:
     let vim_plug_just_installed = 0
@@ -697,6 +710,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     " Plug 'oblitum/YouCompleteMe'
     Plug 'sirver/ultisnips'
     Plug 'honza/vim-snippets'
+    Plug 'tenfyzhong/CompleteParameter.vim'
     Plug 'tell-k/vim-autopep8'
     Plug 'Chiel92/vim-autoformat'
     Plug 'w0rp/ale'

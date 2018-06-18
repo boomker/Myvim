@@ -451,7 +451,7 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     \ 'Ignored'   : '☒',
     \ "Unknown"   : "?"
     \ }
-    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+    " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
     " vim不指定具体文件打开是，自动使用nerdtree
     autocmd StdinReadPre * let s:std_in=1
     autocmd VimEnter,GUIEnter * if argc() == 0 && !exists("s:std_in") | NERDTree |endif
@@ -486,7 +486,8 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
     let g:ale_open_list = 0
     let g:ale_lint_delay = 500
-    let g:ale_python_flake8_args="--ignore=E114,E116,E131,E501 --max-line-length=120"
+    let g:ale_python_flake8_args="--ignore=E114,E116,E131,E221,E501 --max-line-length=120"
+    " https://blog.csdn.net/zgljl2012/article/details/51907663
     let g:ale_emit_conflict_warnings = 0
     nmap sn <Plug>(ale_next_wrap)
     nmap sp <Plug>(ale_previous_wrap)
@@ -652,11 +653,16 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     map g# <Plug>(incsearch-nohl-g#)
 
 " CompleteParameter configure: 
-    inoremap <silent> <expr> > complete_parameter#pre_complete("()")
+    inoremap <silent> <expr> ) complete_parameter#pre_complete("()")
     smap <c-j> <Plug>(complete_parameter#goto_next_parameter)
     imap <c-j> <Plug>(complete_parameter#goto_next_parameter)
     smap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
     imap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+
+" MarkdownPreview configure:
+let g:mkdp_path_to_chrome = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome"
+nmap <silent> <leader>mp <Plug>MarkdownPreview
+nmap <silent> <leader>mP <Plug>StopMarkdownPreview
 
 " plugins manager autodownload and keymap configure:
     let vim_plug_just_installed = 0
@@ -733,4 +739,5 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'nathanaelkane/vim-indent-guides'
     Plug 'sheerun/vim-polyglot'
     Plug 'rizzatti/dash.vim'
+    Plug 'iamcco/markdown-preview.vim'
 call plug#end()

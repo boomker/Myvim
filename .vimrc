@@ -30,7 +30,7 @@ else
     " colorscheme gruvbox
     colorscheme solarized8_dark_flat
     syntax on
-    highlight Comment cterm=italic
+    " highlight Comment cterm=italic
 endif
 
 if (g:isWin && g:isGUI)
@@ -163,8 +163,7 @@ nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1) . '`]'
 nmap gp <Plug>GitGutterPrevHunk
 nmap gn <Plug>GitGutterNextHunk
 
-nmap sf :w!<CR>:AirlineRefresh<CR>
-" refresh airline avoid airline ugly
+nmap sf :w!<CR>
 nmap sj <C-o>
 nmap sk <C-i>
 nmap su <C-r>
@@ -342,6 +341,7 @@ else
     endf
 endif
 nnoremap <Leader>ot :call OpenTerminal()<cr>
+nnoremap <Leader>zt :ZoomWinTabToggle<cr>
 " ==============< Plugins configure >================
 
 " vim easymotion configure:
@@ -360,17 +360,32 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     nmap f. <Plug>(easymotion-repeat)
 
 " airline configure:
-    let g:airline_theme='wombat'
-    let g:airline#extensions#tabline#show_buffers = 0
-    let g:airline#extensions#tabline#show_tab_type = 0
-    let g:airline#extensions#tabline#show_close_button = 0
-    let g:airline#extensions#tabline#right_alt_sep = ''
-    let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-    let g:airline_powerline_fonts = 1
-    let g:airline_extensions = ['tabline', 'ale', 'obsession']
-    let g:airline#extensions#whitespace#symbol = 'WS'
-    let b:airline_whitespace_checks = [ 'indent', 'trailing' ]
-    let g:ale_pattern_options = {'python实例手册.py$': {'ale_enabled': 0}}
+    " let g:airline_theme='wombat'
+    " let g:airline#extensions#tabline#show_buffers = 0
+    " let g:airline#extensions#tabline#show_tab_type = 0
+    " let g:airline#extensions#tabline#show_close_button = 0
+    " let g:airline#extensions#tabline#right_alt_sep = ''
+    " let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+    " let g:airline_powerline_fonts = 1
+    " let g:airline_extensions = ['tabline', 'ale', 'obsession']
+    " let g:airline#extensions#whitespace#symbol = 'WS'
+    " let b:airline_whitespace_checks = [ 'indent', 'trailing' ]
+    " let g:ale_pattern_options = {'python实例手册.py$': {'ale_enabled': 0}}
+
+" lightline configure:
+	let g:lightline = {
+		\ 'component': {
+		\   'lineinfo': ' %3l:%-2v',
+		\ },
+		\ 'component_function': {
+		\   'readonly': 'LightlineReadonly'
+		\ },
+		\ 'separator': { 'left': '', 'right': '' },
+		\ 'subseparator': { 'left': '', 'right': '' }
+		\ }
+	function! LightlineReadonly()
+		return &readonly ? '' : ''
+	endfunction
 
 " easy_align configure:
     vmap <Enter> <Plug>(EasyAlign)
@@ -486,7 +501,7 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
     let g:ale_open_list = 0
     let g:ale_lint_delay = 500
-    let g:ale_python_flake8_args="--ignore=E114,E116,E131,E221,E501 --max-line-length=120"
+    let g:ale_python_flake8_options="--ignore=E114,E116,E131,E221,E501 --max-line-length=120"
     " https://blog.csdn.net/zgljl2012/article/details/51907663
     let g:ale_emit_conflict_warnings = 0
     nmap sn <Plug>(ale_next_wrap)
@@ -530,6 +545,7 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     let g:ycm_complete_in_comments = 1
     " 在字符串输入中也能补全
     let g:ycm_complete_in_strings = 1
+    let g:ycm_use_ultisnips_completer = 1
     let g:ycm_collect_identifiers_from_tags_files = 1
     let g:ycm_collect_identifiers_from_comments_and_strings = 1
     " 输入第2个字符开始补全
@@ -576,11 +592,20 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
 
 " Snippets configure:
     let g:UltiSnipsExpandTrigger="<tab>"
-    let g:UltiSnipsJumpForwardTrigger="<c-b>"
-    let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-
+    let g:UltiSnipsJumpForwardTrigger  = "<tab>"
+    let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+    " let g:UltiSnipsJumpForwardTrigger="<c-b>"
+    " let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+    let g:UltiSnipsSnippetDirectories  = ['UltiSnips']
     " If you want :UltiSnipsEdit to split your window.
     let g:UltiSnipsEditSplit="vertical"
+
+" CompleteParameter configure: 
+    inoremap <silent> <expr> ) complete_parameter#pre_complete("()")
+    smap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+    imap <c-j> <Plug>(complete_parameter#goto_next_parameter)
+    smap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
+    imap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
 
 " Autopep8 configure:
     autocmd FileType python noremap <buffer> <Leader>ap :w!<CR>:call Autopep8()<CR>
@@ -652,17 +677,10 @@ nnoremap <Leader>ot :call OpenTerminal()<cr>
     map g* <Plug>(incsearch-nohl-g*)
     map g# <Plug>(incsearch-nohl-g#)
 
-" CompleteParameter configure: 
-    inoremap <silent> <expr> ) complete_parameter#pre_complete("()")
-    smap <c-j> <Plug>(complete_parameter#goto_next_parameter)
-    imap <c-j> <Plug>(complete_parameter#goto_next_parameter)
-    smap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
-    imap <c-k> <Plug>(complete_parameter#goto_previous_parameter)
-
 " MarkdownPreview configure:
-let g:mkdp_path_to_chrome = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome"
-nmap <silent> <leader>mp <Plug>MarkdownPreview
-nmap <silent> <leader>mP <Plug>StopMarkdownPreview
+    let g:mkdp_path_to_chrome = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome"
+    nmap <silent> <leader>mp <Plug>MarkdownPreview
+    nmap <silent> <leader>mP <Plug>StopMarkdownPreview
 
 " plugins manager autodownload and keymap configure:
     let vim_plug_just_installed = 0
@@ -685,10 +703,10 @@ nmap <silent> <leader>mP <Plug>StopMarkdownPreview
 "  < Plugin lists >
 call plug#begin('$VIM/vimfiles/bundle')
     Plug 'flazz/vim-colorschemes'
-    " Plug 'itchyny/lightline.vim'
+    Plug 'itchyny/lightline.vim'
     Plug 'lifepillar/vim-solarized8'
-    Plug 'vim-airline/vim-airline-themes'
-    Plug 'vim-airline/vim-airline'
+    " Plug 'vim-airline/vim-airline-themes'
+    " Plug 'vim-airline/vim-airline'
     Plug 'troydm/zoomwintab.vim'
     " Plug 'ryanoasis/vim-devicons'
     Plug 'wincent/terminus'
@@ -711,7 +729,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'klen/python-mode', { 'for': 'python'}
     " Plug 'maralla/completor.vim'
     Plug '~/.vim/YouCompleteMe'
-    " wget -O ~/.vim/YouCompleteMe.tar.gz "http://ohpunyak1.bkt.clouddn.com/YouCompleteMe.tar.gz?v=1234"
+    " wget -O ~/.vim/YouCompleteMe.tar.gz "http://ohpunyak1.bkt.clouddn.com/YouCompleteMe.tar.gz?v=9999"
     " Plug 'Valloric/YouCompleteMe'
     " Plug 'oblitum/YouCompleteMe'
     Plug 'sirver/ultisnips'

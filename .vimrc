@@ -21,7 +21,7 @@ if has("gui_running")
     colorscheme onedark
     syntax on
     " 下面一行的注释必须放下面，不然就被上面一样的设置给覆盖掉
-    highlight Comment gui=italic
+    " highlight Comment gui=italic
     " 在 GUIvim 里中文看不到是斜体的，似乎需要斜体中文字体支持
 else
     let g:isGUI = 0

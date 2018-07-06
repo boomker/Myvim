@@ -295,10 +295,10 @@ let $author_email = "gmboomker@gmail.com"
 func! SetFileHeadInfo()
     if expand("%:e") == 'py'
         " call setline(1, '#!/usr/local/bin/genv python3')
-        call setline(1, '#!/usr/bin/env python3')
+        call setline(1, '# !/usr/bin/env python3')
     elseif expand("%:e") == 'sh'
         " call setline(1, '#!/usr/bin/env bash')
-        call setline(1, '#!/usr/local/bin/env bash') 
+        call setline(1, '# !/usr/local/bin/env bash') 
         " call setline(1, '#!/usr/local/bin/genv bash') 
     endif
     call append(1, '# *************************************************')
@@ -630,6 +630,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     endfunction
 
 " python-mode Settings {{{
+    let g:pymode_python = 'python3'
     let g:pymode_lint = 0
     let g:pymode_run = 0
     let g:pymode_breakpoint = 1
@@ -726,7 +727,8 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'jiangmiao/auto-pairs'
     Plug 'tommcdo/vim-exchange'
     " Plug 'davidhalter/jedi-vim'
-    Plug 'klen/python-mode', { 'for': 'python'}
+    " Plug 'klen/python-mode', { 'for': 'python'}
+    Plug 'python-mode/python-mode', { 'branch': 'develop' }
     " Plug 'maralla/completor.vim'
     Plug '~/.vim/YouCompleteMe'
     " wget -O ~/.vim/YouCompleteMe.tar.gz "http://ohpunyak1.bkt.clouddn.com/YouCompleteMe.tar.gz?v=9999"

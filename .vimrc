@@ -1,3 +1,4 @@
+
 " -----------------------------------------------------------------------------
 "  < 判断操作系统是否是 Windows 还是 Unix >
 " -----------------------------------------------------------------------------
@@ -61,6 +62,28 @@ if has('nvim')
     let g:python_host_prog  = '/usr/local/bin/python'
 endif
 
+if &term =~ '256color'
+  " disable Background Color Erase (BCE) so that color schemes
+  " render properly when inside 256-color tmux and GNU screen.
+  " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
+  set t_ut=
+endif
+
+" 设置标记一列的背景颜色和数字一行颜色一致
+hi! link SignColumn   LineNr
+hi! link ShowMarksHLl DiffAdd
+hi! link ShowMarksHLu DiffChange
+
+" for error highlight，防止错误整行标红导致看不清
+highlight clear SpellBad
+highlight SpellBad term=standout ctermfg=1 term=underline cterm=underline
+highlight clear SpellCap
+highlight SpellCap term=underline cterm=underline
+highlight clear SpellRare
+highlight SpellRare term=underline cterm=underline
+highlight clear SpellLocal
+highlight SpellLocal term=underline cterm=underline
+
 set termguicolors
 set guifont=Source_Code_Pro_for_Powerline:h15,Sauce_Code_Pro_Medium_Nerd_Font_Complete_Mono:15
 " set guifont=Source_Code_Variable_Semibold:h14
@@ -104,8 +127,13 @@ set tabstop=4                                           "设置Tab键的宽度
 set softtabstop=4
 set shiftwidth=4                                        "换行时自动缩进4个空格
 set scrolloff=3                                         "上下滚动时当前行距顶或低保持有3行"
-set cursorline cursorcolumn                             "突出显示当前行
+set cursorcolumn                                        "突出显示当前行
+" set cursorline cursorcolumn                           "突出显示当前行
 set colorcolumn=120
+set selection=inclusive
+set selectmode=mouse,key
+set ttyfast
+
 set foldenable                                          "启用折叠
 " set foldmethod=marker
 set foldmethod=indent                                   "indent 折叠方式
@@ -130,7 +158,7 @@ filetype plugin on
 autocmd! bufwritepost .vimrc source $MYVIMRC
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
 "au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 78 . 'v.\+', -1)
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+" au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " ===============< Hotkey mapping >======================
 let mapleader = ";"
@@ -637,6 +665,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     let g:pymode_doc = 1
     let g:pymode_folding = 1
     let g:pymode_motion = 1
+    let g:pymode_virtualenv = 1
     let g:pymode_rope = 1
     let g:pymode_rope_lookup_project = 0
     let g:pymode_rope_completion = 0
@@ -727,8 +756,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'jiangmiao/auto-pairs'
     Plug 'tommcdo/vim-exchange'
     " Plug 'davidhalter/jedi-vim'
-    " Plug 'klen/python-mode', { 'for': 'python'}
-    Plug 'python-mode/python-mode', { 'branch': 'develop' }
+    " Plug 'python-mode/python-mode', { 'branch': 'develop' }
     " Plug 'maralla/completor.vim'
     Plug '~/.vim/YouCompleteMe'
     " wget -O ~/.vim/YouCompleteMe.tar.gz "http://ohpunyak1.bkt.clouddn.com/YouCompleteMe.tar.gz?v=9999"

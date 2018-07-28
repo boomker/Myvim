@@ -55,7 +55,7 @@ if (g:isUnix)
 endif
 
 if has('nvim')
-    " set runtimepath+=/usr/local/opt/neovim/share/nvim
+    set runtimepath+=~/.nvim/share/nvim/runtime
     let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
     let &packpath = &runtimepath
     let g:python3_host_prog = '/usr/local/bin/python3'
@@ -602,7 +602,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
         \ 'cs,lua,javascript': ['re!\w{3}'],
         \ }
     " let g:ycm_global_ycm_extra_conf = '$VIMFILES/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-    let g:ycm_global_ycm_extra_conf = '~/.vim/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+    let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
     let g:ycm_confirm_extr_conf = 0
     " 回车即选中当前项"
     let g:ycm_key_list_stop_completion = ['<CR>']
@@ -619,6 +619,14 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     " nnoremap <leader>gw :YcmCompleter GetDoc<CR>
 
 " Snippets configure:
+    imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+    smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+    xmap <C-k>     <Plug>(neosnippet_expand_target)
+    imap <expr><TAB>
+    \ pumvisible() ? "\<C-n>" :
+    \ neosnippet#expandable_or_jumpable() ?
+    \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+    let g:deoplete#enable_at_startup = 1
     let g:UltiSnipsExpandTrigger="<tab>"
     let g:UltiSnipsJumpForwardTrigger  = "<tab>"
     let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
@@ -758,12 +766,18 @@ call plug#begin('$VIM/vimfiles/bundle')
     " Plug 'davidhalter/jedi-vim'
     " Plug 'python-mode/python-mode', { 'branch': 'develop' }
     " Plug 'maralla/completor.vim'
-    Plug '~/.vim/YouCompleteMe'
+    Plug '~/.vim/bundle/YouCompleteMe'
     " wget -O ~/.vim/YouCompleteMe.tar.gz "http://ohpunyak1.bkt.clouddn.com/YouCompleteMe.tar.gz?v=9999"
     " Plug 'Valloric/YouCompleteMe'
     " Plug 'oblitum/YouCompleteMe'
-    Plug 'sirver/ultisnips'
-    Plug 'honza/vim-snippets'
+    if has('nvim')
+        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+        Plug 'Shougo/neosnippet.vim'
+        Plug 'Shougo/neosnippet-snippets'
+    else
+        Plug 'sirver/ultisnips'
+        Plug 'honza/vim-snippets'
+    endif
     Plug 'tenfyzhong/CompleteParameter.vim'
     Plug 'tell-k/vim-autopep8'
     Plug 'Chiel92/vim-autoformat'

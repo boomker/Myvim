@@ -86,7 +86,7 @@ highlight clear SpellLocal
 highlight SpellLocal term=underline cterm=underline
 
 set termguicolors
-set guifont=Source_Code_Pro_for_Powerline:h15,Sauce_Code_Pro_Medium_Nerd_Font_Complete_Mono:15
+" set guifont=Source_Code_Pro_for_Powerline:h15,Sauce_Code_Pro_Medium_Nerd_Font_Complete_Mono:15
 " set guifont=Source_Code_Variable_Semibold:h14
 
 set nocompatible                                      "禁用 Vi 兼容模式
@@ -495,10 +495,12 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     \ 'Ignored'   : '☒',
     \ "Unknown"   : "?"
     \ }
-    " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
     " vim不指定具体文件打开是，自动使用nerdtree
     autocmd StdinReadPre * let s:std_in=1
-    " autocmd VimEnter,GUIEnter * if argc() == 0 && !exists("s:std_in") | NERDTree |endif
+    if has('nvim')
+        autocmd VimEnter,GUIEnter * if argc() == 0 && !exists("s:std_in") | NERDTree |endif
+    endif
 
 " gitgutter configure configure:
     set updatetime=50
@@ -740,7 +742,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     nnoremap <Leader>pu :PlugUpdate<Cr>
 
 "  < Plugin lists >
-call plug#begin('$VIM/vimfiles/bundle')
+call plug#begin('~/.nvim/share/nvim/vimfiles/bundle')
     Plug 'flazz/vim-colorschemes'
     Plug 'itchyny/lightline.vim'
     Plug 'lifepillar/vim-solarized8'
@@ -772,10 +774,10 @@ call plug#begin('$VIM/vimfiles/bundle')
     " Plug 'Valloric/YouCompleteMe'
     " Plug 'oblitum/YouCompleteMe'
     if has('nvim')
-        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-        Plug 'Shougo/neosnippet.vim'
-        Plug 'Shougo/neosnippet-snippets'
-    else
+        " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+        " Plug 'Shougo/neosnippet.vim'
+        " Plug 'Shougo/neosnippet-snippets'
+    " else
         Plug 'sirver/ultisnips'
         Plug 'honza/vim-snippets'
     endif

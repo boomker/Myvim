@@ -18,8 +18,10 @@ if has("gui_running")
     set imi=2                                             "搜狗输入法在macvim混乱的解决方法如下:
     set ims=2
     set guiheadroom=0                                     "禁止GTK填充窗口底部为主题背景色，此设置会消除底部的水平滚动条"
-    set background=light
+    set termguicolors
+    " set background=light
     colorscheme onedark
+    " colorscheme solarized8_dark_flat
     syntax on
     " 下面一行的注释必须放下面，不然就被上面一样的设置给覆盖掉
     " highlight Comment gui=italic
@@ -28,8 +30,8 @@ else
     let g:isGUI = 0
     set t_Co=256                   " 在终端启用256色
     set background=dark
-    " colorscheme gruvbox
-    colorscheme solarized8_dark_flat
+    colorscheme gruvbox
+    " colorscheme solarized8_dark_flat
     syntax on
     " highlight Comment cterm=italic
 endif
@@ -55,6 +57,7 @@ if (g:isUnix)
 endif
 
 if has('nvim')
+    colorscheme onedark
     set runtimepath+=~/.nvim/share/nvim/runtime
     let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
     let $XDG_CONFIG_HOME="~/.nvim"
@@ -85,7 +88,6 @@ highlight SpellRare term=underline cterm=underline
 highlight clear SpellLocal
 highlight SpellLocal term=underline cterm=underline
 
-set termguicolors
 set guifont=Source_Code_Pro_for_Powerline:h15,Sauce_Code_Pro_Medium_Nerd_Font_Complete_Mono:15
 " set guifont=Source_Code_Variable_Semibold:h14
 
@@ -156,10 +158,11 @@ set nobackup                                "设置无备份文件
 set noswapfile                              "设置无临时文件
 set nowritebackup                           "无写入备份
 filetype plugin on
-autocmd! bufwritepost .vimrc source $MYVIMRC
+autocmd! bufwritepost .vimrc source ~/.vimrc
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
 "au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 78 . 'v.\+', -1)
 " au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
 
 " ===============< Hotkey mapping >======================
 let mapleader = ";"
@@ -775,10 +778,12 @@ call plug#begin('$VIM/vimfiles/bundle')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
         Plug 'Shougo/neosnippet.vim'
         Plug 'Shougo/neosnippet-snippets'
+        " Plug 'rhysd/nyaovim-popup-tooltip'
     else
         Plug 'sirver/ultisnips'
         Plug 'honza/vim-snippets'
     endif
+    Plug 'rhysd/nyaovim-popup-tooltip'
     Plug 'tenfyzhong/CompleteParameter.vim'
     Plug 'tell-k/vim-autopep8'
     Plug 'Chiel92/vim-autoformat'

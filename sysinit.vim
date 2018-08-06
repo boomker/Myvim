@@ -18,8 +18,10 @@ if has("gui_running")
     set imi=2                                             "搜狗输入法在macvim混乱的解决方法如下:
     set ims=2
     set guiheadroom=0                                     "禁止GTK填充窗口底部为主题背景色，此设置会消除底部的水平滚动条"
-    set background=light
+    set termguicolors
+    " set background=light
     colorscheme onedark
+    " colorscheme solarized8_dark_flat
     syntax on
     " 下面一行的注释必须放下面，不然就被上面一样的设置给覆盖掉
     " highlight Comment gui=italic
@@ -29,7 +31,6 @@ else
     set t_Co=256                   " 在终端启用256色
     set background=dark
     " colorscheme gruvbox
-    colorscheme solarized8_dark_flat
     syntax on
     " highlight Comment cterm=italic
 endif
@@ -55,9 +56,13 @@ if (g:isUnix)
 endif
 
 if has('nvim')
-    set runtimepath+=~/.nvim/share/nvim/runtime
-    let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-    let $XDG_CONFIG_HOME="~/.nvim"
+    colorscheme onedark
+    " set runtimepath+=~/.nvim/share/nvim/runtime
+    set runtimepath+=/usr/local/share/vim/vim80
+    " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+    " let $XDG_CONFIG_HOME="~/.nvim"
+    let VIM="/usr/local/share/vim"
+    let XDG_CONFIG_HOME="/usr/local/share/vim"
     let &packpath = &runtimepath
     let g:python3_host_prog = '/usr/local/bin/python3'
     let g:python_host_prog  = '/usr/local/bin/python'
@@ -85,7 +90,6 @@ highlight SpellRare term=underline cterm=underline
 highlight clear SpellLocal
 highlight SpellLocal term=underline cterm=underline
 
-set termguicolors
 " set guifont=Source_Code_Pro_for_Powerline:h15,Sauce_Code_Pro_Medium_Nerd_Font_Complete_Mono:15
 " set guifont=Source_Code_Variable_Semibold:h14
 
@@ -128,8 +132,8 @@ set tabstop=4                                           "设置Tab键的宽度
 set softtabstop=4
 set shiftwidth=4                                        "换行时自动缩进4个空格
 set scrolloff=3                                         "上下滚动时当前行距顶或低保持有3行"
-set cursorcolumn                                        "突出显示当前行
-" set cursorline cursorcolumn                           "突出显示当前行
+" set cursorcolumn                                        "突出显示当前行
+set cursorline cursorcolumn                           "突出显示当前行
 set colorcolumn=120
 set selection=inclusive
 set selectmode=mouse,key
@@ -156,10 +160,10 @@ set nobackup                                "设置无备份文件
 set noswapfile                              "设置无临时文件
 set nowritebackup                           "无写入备份
 filetype plugin on
-autocmd! bufwritepost .vimrc source $MYVIMRC
+" autocmd! bufwritepost .vimrc source $MYVIMRC
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
 "au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 78 . 'v.\+', -1)
-" au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " ===============< Hotkey mapping >======================
 let mapleader = ";"
@@ -498,7 +502,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
     " vim不指定具体文件打开是，自动使用nerdtree
     autocmd StdinReadPre * let s:std_in=1
-    if has('nvim')
+    if has ('vim')
         autocmd VimEnter,GUIEnter * if argc() == 0 && !exists("s:std_in") | NERDTree |endif
     endif
 
@@ -742,7 +746,8 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     nnoremap <Leader>pu :PlugUpdate<Cr>
 
 "  < Plugin lists >
-call plug#begin('~/.nvim/share/nvim/vimfiles/bundle')
+call plug#begin('/usr/local/share/vim/vimfiles/bundle')
+" call plug#begin('$XDG_CONFIG_HOME/vimfiles/bundle')
     Plug 'flazz/vim-colorschemes'
     Plug 'itchyny/lightline.vim'
     Plug 'lifepillar/vim-solarized8'
@@ -777,7 +782,8 @@ call plug#begin('~/.nvim/share/nvim/vimfiles/bundle')
         " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
         " Plug 'Shougo/neosnippet.vim'
         " Plug 'Shougo/neosnippet-snippets'
-    " else
+        " Plug 'rhysd/nyaovim-popup-tooltip'
+    else
         Plug 'sirver/ultisnips'
         Plug 'honza/vim-snippets'
     endif

@@ -30,8 +30,8 @@ else
     let g:isGUI = 0
     set t_Co=256                   " 在终端启用256色
     set background=dark
-    colorscheme gruvbox
-    " colorscheme solarized8_dark_flat
+    " colorscheme gruvbox
+    colorscheme solarized8_dark_flat
     syntax on
     " highlight Comment cterm=italic
 endif
@@ -605,8 +605,8 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
         \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{3}'],
         \ 'cs,lua,javascript': ['re!\w{3}'],
         \ }
-    " let g:ycm_global_ycm_extra_conf = '$VIMFILES/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-    let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+    let g:ycm_global_ycm_extra_conf = '$VIMFILES/bundle/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'
+    " let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
     let g:ycm_confirm_extr_conf = 0
     " 回车即选中当前项"
     let g:ycm_key_list_stop_completion = ['<CR>']
@@ -626,10 +626,10 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     imap <C-k>     <Plug>(neosnippet_expand_or_jump)
     smap <C-k>     <Plug>(neosnippet_expand_or_jump)
     xmap <C-k>     <Plug>(neosnippet_expand_target)
-    imap <expr><TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ neosnippet#expandable_or_jumpable() ?
-    \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+    " imap <expr><TAB>
+    " \ pumvisible() ? "\<C-n>" :
+    " \ neosnippet#expandable_or_jumpable() ?
+    " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
     let g:deoplete#enable_at_startup = 1
     let g:UltiSnipsExpandTrigger="<tab>"
     let g:UltiSnipsJumpForwardTrigger  = "<tab>"
@@ -770,9 +770,8 @@ call plug#begin('$VIM/vimfiles/bundle')
     " Plug 'davidhalter/jedi-vim'
     " Plug 'python-mode/python-mode', { 'branch': 'develop' }
     " Plug 'maralla/completor.vim'
-    Plug '~/.vim/bundle/YouCompleteMe'
-    " wget -O ~/.vim/YouCompleteMe.tar.gz "http://ohpunyak1.bkt.clouddn.com/YouCompleteMe.tar.gz?v=9999"
-    " Plug 'Valloric/YouCompleteMe'
+    " Plug '~/.vim/bundle/YouCompleteMe'
+    Plug 'Valloric/YouCompleteMe'
     " Plug 'oblitum/YouCompleteMe'
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }

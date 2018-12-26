@@ -30,8 +30,8 @@ else
     let g:isGUI = 0
     set t_Co=256                   " 在终端启用256色
     set background=dark
-    " colorscheme gruvbox
-    colorscheme solarized8_dark_flat
+    colorscheme gruvbox
+    " colorscheme solarized8_dark_flat
     syntax on
     " highlight Comment cterm=italic
 endif
@@ -587,7 +587,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     let g:ycm_key_invoke_completion = '<c-space>'
     " let g:ycm_key_list_select_completion = ['<C-n>', '<C-j>']
     " let g:ycm_key_list_previous_completion = ['<C-p>', '<C-k>']
-    let g:ycm_key_list_select_completion = ['<C-n>']
+    let g:ycm_key_list_select_completion = ['<C-n>', '<Tab>']
     let g:ycm_key_list_previous_completion = ['<C-p>']
     let g:ycm_autoclose_preview_window_after_completion = 1
     let g:ycm_autoclose_preview_window_after_insertion = 1
@@ -605,7 +605,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
         \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{3}'],
         \ 'cs,lua,javascript': ['re!\w{3}'],
         \ }
-    let g:ycm_global_ycm_extra_conf = '$VIMFILES/bundle/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'
+    let g:ycm_global_ycm_extra_conf = '${VIMFILES}/bundle/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'
     " let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
     let g:ycm_confirm_extr_conf = 0
     " 回车即选中当前项"
@@ -656,7 +656,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     let g:autoformat_autoindent = 0
     let g:autoformat_retab = 0
     let g:autoformat_remove_trailing_spaces = 0
-    map <F10> <ESC>:Autoformat<CR>:w<CR>:call RunPython()<CR>
+    map <Leader>rp <ESC>:Autoformat<CR>:w<CR>:call RunPython()<CR>
     function! RunPython()
         let mp = &makeprg
         let ef = &errorformat
@@ -756,8 +756,8 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'junegunn/vim-easy-align'
     Plug 'luochen1990/rainbow'
     Plug 'kshenoy/vim-signature'
-    Plug 'airblade/vim-gitgutter'
-    Plug 'neoclide/vim-easygit'
+    " Plug 'airblade/vim-gitgutter'
+    " Plug 'neoclide/vim-easygit'
     Plug 'Shougo/denite.nvim'
     " Plug 'jreybert/vimagit'
     " Plug 'mhinz/vim-signify' support more vcs

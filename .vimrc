@@ -57,13 +57,16 @@ if (g:isUnix)
 endif
 
 if has('nvim')
-    colorscheme onedark
-    set runtimepath+=~/.nvim/share/nvim/runtime
-    let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+    colorscheme solarized8_light_low
+    set runtimepath+='~/.nvim/share/nvim/runtime'
+    " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
     let $XDG_CONFIG_HOME="~/.nvim"
     let &packpath = &runtimepath
     let g:python3_host_prog = '/usr/local/bin/python3'
     let g:python_host_prog  = '/usr/local/bin/python'
+else
+    set guifont=Source_Code_Pro_for_Powerline:h15,Sauce_Code_Pro_Medium_Nerd_Font_Complete_Mono:15
+    " set guifont=Source_Code_Variable_Semibold:h15
 endif
 
 if &term =~ '256color'
@@ -88,8 +91,6 @@ highlight SpellRare term=underline cterm=underline
 highlight clear SpellLocal
 highlight SpellLocal term=underline cterm=underline
 
-set guifont=Source_Code_Pro_for_Powerline:h15,Sauce_Code_Pro_Medium_Nerd_Font_Complete_Mono:15
-" set guifont=Source_Code_Variable_Semibold:h14
 
 set nocompatible                                      "禁用 Vi 兼容模式
 set shortmess=atI                                     "去掉欢迎界面
@@ -186,8 +187,8 @@ vmap j gj
 vmap k gk
 
 nmap J gJ
-nmap gh ^
-nmap ge $
+nmap H ^
+nmap L $
 noremap gl gu
 noremap gu gU
 " select last paste in visual mode
@@ -604,6 +605,8 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     let g:ycm_semantic_triggers =  {
         \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{3}'],
         \ 'cs,lua,javascript': ['re!\w{3}'],
+        \ 'css': [ 're!^\s{4}', 're!:\s+'],
+        \ 'html': [ '</' ],
         \ }
     let g:ycm_global_ycm_extra_conf = '${VIMFILES}/bundle/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'
     " let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
@@ -724,6 +727,18 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     nmap <silent> <leader>mp <Plug>MarkdownPreview
     nmap <silent> <leader>mP <Plug>StopMarkdownPreview
 
+" emmet-vim configure:
+    let g:user_emmet_install_global = 0
+    let g:user_emmet_mode='inv'
+    let g:user_emmet_leader_key='<C-Z>'
+    let g:user_emmet_settings = {
+ 		\ 'javascript.jsx' : {
+        \ 'extends' : 'jsx',
+    	\ },
+ 		\ }
+    autocmd FileType css setlocal iskeyword+=-
+    autocmd FileType html,css EmmetInstall
+
 " plugins manager autodownload and keymap configure:
     let vim_plug_just_installed = 0
     let vim_plug_path = '${VIMRUNTIME}/autoload/plug.vim'
@@ -745,7 +760,8 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
 "  < Plugin lists >
 call plug#begin('$VIM/vimfiles/bundle')
     Plug 'flazz/vim-colorschemes'
-    Plug 'itchyny/lightline.vim'
+    " Plug 'itchyny/lightline.vim'
+    Plug 'liuchengxu/eleline.vim'
     Plug 'lifepillar/vim-solarized8'
     " Plug 'vim-airline/vim-airline-themes'
     " Plug 'vim-airline/vim-airline'
@@ -770,8 +786,6 @@ call plug#begin('$VIM/vimfiles/bundle')
     " Plug 'davidhalter/jedi-vim'
     " Plug 'python-mode/python-mode', { 'branch': 'develop' }
     " Plug 'maralla/completor.vim'
-    " Plug '~/.vim/bundle/YouCompleteMe'
-    Plug 'Valloric/YouCompleteMe'
     " Plug 'oblitum/YouCompleteMe'
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -781,6 +795,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     else
         Plug 'sirver/ultisnips'
         Plug 'honza/vim-snippets'
+        Plug 'Valloric/YouCompleteMe'
     endif
     Plug 'rhysd/nyaovim-popup-tooltip'
     Plug 'tenfyzhong/CompleteParameter.vim'
@@ -807,4 +822,8 @@ call plug#begin('$VIM/vimfiles/bundle')
     Plug 'sheerun/vim-polyglot'
     Plug 'rizzatti/dash.vim'
     Plug 'iamcco/markdown-preview.vim'
+    Plug 'mattn/emmet-vim'
+    Plug 'othree/html5.vim'
+    Plug 'hail2u/vim-css3-syntax'
+    Plug 'ap/vim-css-color'
 call plug#end()

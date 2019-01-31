@@ -30,8 +30,8 @@ else
     let g:isGUI = 0
     set t_Co=256                   " 在终端启用256色
     set background=dark
-    colorscheme gruvbox
-    " colorscheme solarized8_dark_flat
+    " colorscheme gruvbox
+    colorscheme solarized8_flat
     syntax on
     " highlight Comment cterm=italic
 endif
@@ -728,14 +728,15 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     nmap <silent> <leader>mP <Plug>StopMarkdownPreview
 
 " emmet-vim configure:
-    let g:user_emmet_install_global = 0
+    " let g:user_emmet_install_global = 0
+    " setlocal omnifunc=emmet#completeTag
     let g:user_emmet_mode='inv'
-    let g:user_emmet_leader_key='<C-Z>'
-    let g:user_emmet_settings = {
- 		\ 'javascript.jsx' : {
-        \ 'extends' : 'jsx',
-    	\ },
- 		\ }
+    let g:user_emmet_leader_key='<C-o>'
+    " let g:user_emmet_settings = {
+    "      \ 'javascript.jsx' : {
+    "     \ 'extends' : 'jsx',
+    "     \ },
+    "      \ }
     autocmd FileType css setlocal iskeyword+=-
     autocmd FileType html,css EmmetInstall
 

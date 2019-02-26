@@ -118,6 +118,7 @@ set fileencoding=utf-8                                  "设置此缓冲区所�
 set fileencodings=utf-8,cp936,ucs-bom,gb18030,gb2312    "设置支持打开的文件的编码
 set fileformat=unix
 set fileformats=unix,dos                                "给出文件的<EOL>格式类型
+set noma
 set backspace=indent,eol,start
 set viewoptions=folds,options,cursor,unix,slash         "better unix/Windows compatible
 set virtualedit=onemore                                 "curso可以移动到行尾最后一个字符之后"
@@ -393,17 +394,17 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     nmap f. <Plug>(easymotion-repeat)
 
 " airline configure:
-    " let g:airline_theme='wombat'
-    " let g:airline#extensions#tabline#show_buffers = 0
-    " let g:airline#extensions#tabline#show_tab_type = 0
-    " let g:airline#extensions#tabline#show_close_button = 0
-    " let g:airline#extensions#tabline#right_alt_sep = ''
-    " let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-    " let g:airline_powerline_fonts = 1
-    " let g:airline_extensions = ['tabline', 'ale', 'obsession']
-    " let g:airline#extensions#whitespace#symbol = 'WS'
-    " let b:airline_whitespace_checks = [ 'indent', 'trailing' ]
-    " let g:ale_pattern_options = {'python实例手册.py$': {'ale_enabled': 0}}
+    let g:airline_theme='wombat'
+    let g:airline#extensions#tabline#show_buffers = 0
+    let g:airline#extensions#tabline#show_tab_type = 0
+    let g:airline#extensions#tabline#show_close_button = 0
+    let g:airline#extensions#tabline#right_alt_sep = ''
+    let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+    let g:airline_powerline_fonts = 1
+    let g:airline_extensions = ['tabline', 'ale', 'obsession']
+    let g:airline#extensions#whitespace#symbol = 'WS'
+    let b:airline_whitespace_checks = [ 'indent', 'trailing' ]
+    let g:ale_pattern_options = {'python实例手册.py$': {'ale_enabled': 0}}
 
 " lightline configure:
 	let g:lightline = {
@@ -741,17 +742,10 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     autocmd FileType html,css EmmetInstall
 
 " plugins manager autodownload and keymap configure:
-    let vim_plug_just_installed = 0
-    let vim_plug_path = '${VIMRUNTIME}/autoload/plug.vim'
-    if !empty(glob('${VIMRUNTIME}/autoload/plug.vim'))
-        echo "Installing Vim-plug..."
-        echo ""
-        silent !mkdir -p ${VIMRUNTIME}/autoload
+    let VIM_PLUG_PATH = expand('$VIMRUNTIME/autoload/plug.vim')
+    if empty(glob(expand('$VIMRUNTIME/autoload/plug.vim')))
         silent !curl -fLo ${VIMRUNTIME}/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        let vim_plug_just_installed = 1
-    endif
-    if vim_plug_just_installed
-        :execute 'source '.fnameescape(vim_plug_path)
+        autocmd VimEnter * PlugInstall --sync |source ~/.vimrc
     endif
     " Plug keymap configure:
     nnoremap <Leader>pi :PlugInstall<Cr>
@@ -761,7 +755,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
 "  < Plugin lists >
 call plug#begin('$VIM/vimfiles/bundle')
     Plug 'flazz/vim-colorschemes'
-    " Plug 'itchyny/lightline.vim'
+    Plug 'itchyny/lightline.vim'
     Plug 'liuchengxu/eleline.vim'
     Plug 'lifepillar/vim-solarized8'
     " Plug 'vim-airline/vim-airline-themes'
@@ -796,7 +790,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     else
         Plug 'sirver/ultisnips'
         Plug 'honza/vim-snippets'
-        Plug 'Valloric/YouCompleteMe'
+        " Plug 'Valloric/YouCompleteMe'
     endif
     Plug 'rhysd/nyaovim-popup-tooltip'
     Plug 'tenfyzhong/CompleteParameter.vim'

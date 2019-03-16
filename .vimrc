@@ -118,7 +118,7 @@ set fileencoding=utf-8                                  "设置此缓冲区所�
 set fileencodings=utf-8,cp936,ucs-bom,gb18030,gb2312    "设置支持打开的文件的编码
 set fileformat=unix
 set fileformats=unix,dos                                "给出文件的<EOL>格式类型
-set noma
+set ma
 set backspace=indent,eol,start
 set viewoptions=folds,options,cursor,unix,slash         "better unix/Windows compatible
 set virtualedit=onemore                                 "curso可以移动到行尾最后一个字符之后"
@@ -753,7 +753,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     nnoremap <Leader>pu :PlugUpdate<Cr>
 
 "  < Plugin lists >
-call plug#begin('$VIM/vimfiles/bundle')
+call plug#begin('$VIMFILES/bundle')
     Plug 'flazz/vim-colorschemes'
     Plug 'itchyny/lightline.vim'
     Plug 'liuchengxu/eleline.vim'
@@ -790,7 +790,7 @@ call plug#begin('$VIM/vimfiles/bundle')
     else
         Plug 'sirver/ultisnips'
         Plug 'honza/vim-snippets'
-        " Plug 'Valloric/YouCompleteMe'
+        Plug 'Valloric/YouCompleteMe'
     endif
     Plug 'rhysd/nyaovim-popup-tooltip'
     Plug 'tenfyzhong/CompleteParameter.vim'

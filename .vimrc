@@ -31,7 +31,7 @@ else
     set t_Co=256                   " 在终端启用256色
     set background=dark
     " colorscheme gruvbox
-    colorscheme solarized8_flat
+    colorscheme solarized8_dark_flat
     syntax on
     " highlight Comment cterm=italic
 endif

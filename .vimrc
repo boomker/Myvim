@@ -19,10 +19,9 @@ if has("gui_running")
     set ims=2
     set guiheadroom=0                                     "禁止GTK填充窗口底部为主题背景色，此设置会消除底部的水平滚动条"
     set termguicolors
-    " set background=light
-    colorscheme onedark
-    " colorscheme solarized8_dark_flat
+    set background=dark
     syntax on
+    colorscheme solarized8
     " 下面一行的注释必须放下面，不然就被上面一样的设置给覆盖掉
     " highlight Comment gui=italic
     " 在 GUIvim 里中文看不到是斜体的，似乎需要斜体中文字体支持
@@ -31,25 +30,27 @@ else
     set t_Co=256                   " 在终端启用256色
     set background=dark
     " colorscheme gruvbox
-    colorscheme solarized8_flat
+    colorscheme solarized8_dark_flat
     syntax on
     " highlight Comment cterm=italic
 endif
 
 if (g:isWin && g:isGUI)
-    source ${VIMRUNTIME}/vimrc_example.vim
-    source ${VIMRUNTIME}/mswin.vim
+    source $VIMRUNTIME/vimrc_example.vim
+    source $VIMRUNTIME/mswin.vim
+    source $VIMRUNTIME/delmenu.vim
+    source $VIMRUNTIME/menu.vim
     " behave mswin
     language messages zh_CN.utf-8                           "解决状态信息栏乱码问题
     set iminsert=2                                          "输入法设置"
     set mousef                                              "启用光标激活pane
     set mouse=a                                           " 在任何模式下启用鼠标,但是右键用不了
     au GUIEnter * simalt ~x                                 "窗口启动时自动最大化
-    autocmd bufwritepost .vimrc source $VIM/_vimrc
+    autocmd bufwritepost _vimrc source $VIM/_vimrc
 endif
 
 if (g:isUnix)
-    set rtp+=~/gitrep/fzf
+    " set rtp+=~/gitrepos/fzf
     if exists('$TMUX')
         let &t_8f = "\<ESC>[38;2;%lu;%lu;%lum"
         let &t_8b = "\<ESC>[48;2;%lu;%lu;%lum"
@@ -162,9 +163,6 @@ set nowritebackup                           "无写入备份
 filetype plugin on
 autocmd! bufwritepost .vimrc source ~/.vimrc
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
-"au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 78 . 'v.\+', -1)
-" au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
 
 " ===============< Hotkey mapping >======================
 let mapleader = ";"
@@ -197,7 +195,8 @@ nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1) . '`]'
 nmap gp <Plug>GitGutterPrevHunk
 nmap gn <Plug>GitGutterNextHunk
 
-nmap sf :w!<CR>
+inoremap <c-l> <c-o>:w<cr>
+nnoremap <c-l> :w<cr>
 nmap sj <C-o>
 nmap sk <C-i>
 nmap su <C-r>
@@ -209,11 +208,12 @@ nmap tt :tabnew!<CR>
 nmap tn :tabn<CR>
 nmap tp :tabp<CR>
 nmap tw vwP
-noremap cp ""P
+" noremap cp ""P
 
 nmap md <S-*>
 nmap ms <S-#>
 nmap mm ``
+nmap ml `.
 
 nnoremap <CR> :
 " Delete character end of current cursor
@@ -376,6 +376,7 @@ else
 endif
 nnoremap <Leader>ot :call OpenTerminal()<cr>
 nnoremap <Leader>zt :ZoomWinTabToggle<cr>
+
 " ==============< Plugins configure >================
 
 " vim easymotion configure:
@@ -741,10 +742,13 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     autocmd FileType css setlocal iskeyword+=-
     autocmd FileType html,css EmmetInstall
 
+" pangu configure:
+    autocmd BufWritePre *.markdown,*.md,*.text,*.txt,*.wiki,*.cnx call PanGuSpacing()
+
 " plugins manager autodownload and keymap configure:
     let VIM_PLUG_PATH = expand('$VIMRUNTIME/autoload/plug.vim')
     if empty(glob(expand('$VIMRUNTIME/autoload/plug.vim')))
-        silent !curl -fLo ${VIMRUNTIME}/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        silent !sudo curl -fLo $VIMRUNTIME/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
         autocmd VimEnter * PlugInstall --sync |source ~/.vimrc
     endif
     " Plug keymap configure:
@@ -753,7 +757,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     nnoremap <Leader>pu :PlugUpdate<Cr>
 
 "  < Plugin lists >
-call plug#begin('$VIMFILES/bundle')
+call plug#begin('~/.vim/vimfiles/bundle')
     Plug 'flazz/vim-colorschemes'
     Plug 'itchyny/lightline.vim'
     Plug 'liuchengxu/eleline.vim'
@@ -790,7 +794,7 @@ call plug#begin('$VIMFILES/bundle')
     else
         Plug 'sirver/ultisnips'
         Plug 'honza/vim-snippets'
-        Plug 'Valloric/YouCompleteMe'
+        " Plug 'Valloric/YouCompleteMe'
     endif
     Plug 'rhysd/nyaovim-popup-tooltip'
     Plug 'tenfyzhong/CompleteParameter.vim'
@@ -821,4 +825,6 @@ call plug#begin('$VIMFILES/bundle')
     Plug 'othree/html5.vim'
     Plug 'hail2u/vim-css3-syntax'
     Plug 'ap/vim-css-color'
+    Plug 'hotoo/pangu.vim'
+    Plug 'skywind3000/asyncrun.vim'
 call plug#end()

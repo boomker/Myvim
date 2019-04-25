@@ -67,6 +67,7 @@ if has('nvim')
     let g:python_host_prog  = '/usr/local/bin/python'
 else
     set guifont=Source_Code_Pro_for_Powerline:h15,Sauce_Code_Pro_Medium_Nerd_Font_Complete_Mono:15
+    " set guifont=Source_Code_Pro:h15:cANSI
     " set guifont=Source_Code_Variable_Semibold:h15
 endif
 
@@ -794,7 +795,7 @@ call plug#begin('~/.vim/vimfiles/bundle')
     else
         Plug 'sirver/ultisnips'
         Plug 'honza/vim-snippets'
-        " Plug 'Valloric/YouCompleteMe'
+        Plug 'Valloric/YouCompleteMe'
     endif
     Plug 'rhysd/nyaovim-popup-tooltip'
     Plug 'tenfyzhong/CompleteParameter.vim'
@@ -802,7 +803,7 @@ call plug#begin('~/.vim/vimfiles/bundle')
     Plug 'Chiel92/vim-autoformat'
     Plug 'w0rp/ale'
     " Plug 'neomake/neomake'
-    " Plug 'plytophogy/vim-virtualenv'
+    Plug 'plytophogy/vim-virtualenv'
     Plug 'majutsushi/tagbar'
     Plug 'scrooloose/nerdcommenter'
     Plug 'scrooloose/nerdtree'
@@ -810,9 +811,9 @@ call plug#begin('~/.vim/vimfiles/bundle')
     Plug 'Xuyuanp/nerdtree-git-plugin'
     Plug 'sjl/gundo.vim'
     Plug 'dyng/ctrlsf.vim'
-    "Plug 'junegunn/fzf', { 'dir': '$VIM/vimfiles/bundle/fzf', 'do': './install --all'  }
+    " Plug 'junegunn/fzf', { 'dir': '~/.vim/vimfiles/bundle/fzf', 'do': './install --all'  }
     Plug 'junegunn/fzf.vim'
-    Plug '~/gitrepo/fzf'
+    Plug '~/gitrepos/fzf'
     Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
     Plug 'haya14busa/incsearch.vim'
     Plug 'terryma/vim-multiple-cursors'

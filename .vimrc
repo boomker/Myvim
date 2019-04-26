@@ -164,6 +164,9 @@ set nowritebackup                           "无写入备份
 filetype plugin on
 autocmd! bufwritepost .vimrc source ~/.vimrc
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
+if has("autocmd")
+      au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
 
 " ===============< Hotkey mapping >======================
 let mapleader = ";"
@@ -196,8 +199,8 @@ nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1) . '`]'
 nmap gp <Plug>GitGutterPrevHunk
 nmap gn <Plug>GitGutterNextHunk
 
-inoremap <c-l> <c-o>:w<cr>
-nnoremap <c-l> :w<cr>
+" inoremap <c-l> <c-o>:w<cr>
+" nnoremap <c-l> :w<cr>
 nmap sj <C-o>
 nmap sk <C-i>
 nmap su <C-r>
@@ -332,8 +335,8 @@ func! SetFileHeadInfo()
         " call setline(1, '#!/usr/local/bin/genv python3')
         call setline(1, '# !/usr/bin/env python3')
     elseif expand("%:e") == 'sh'
-        " call setline(1, '#!/usr/bin/env bash')
-        call setline(1, '# !/usr/local/bin/env bash') 
+        call setline(1, '#!/usr/bin/env bash')
+        " call setline(1, '# !/usr/local/bin/env bash') 
         " call setline(1, '#!/usr/local/bin/genv bash') 
     endif
     call append(1, '# *************************************************')
@@ -757,75 +760,74 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     nnoremap <Leader>pc :PlugClean<Cr>
     nnoremap <Leader>pu :PlugUpdate<Cr>
 
-"  < Plugin lists >
+" "  < Plugin lists >
 call plug#begin('~/.vim/vimfiles/bundle')
-    Plug 'flazz/vim-colorschemes'
-    Plug 'itchyny/lightline.vim'
-    Plug 'liuchengxu/eleline.vim'
-    Plug 'lifepillar/vim-solarized8'
-    " Plug 'vim-airline/vim-airline-themes'
-    " Plug 'vim-airline/vim-airline'
-    Plug 'troydm/zoomwintab.vim'
-    " Plug 'ryanoasis/vim-devicons'
-    Plug 'wincent/terminus'
-    Plug 'easymotion/vim-easymotion'
-    Plug 'junegunn/vim-easy-align'
-    Plug 'luochen1990/rainbow'
-    Plug 'kshenoy/vim-signature'
-    " Plug 'airblade/vim-gitgutter'
-    " Plug 'neoclide/vim-easygit'
-    Plug 'Shougo/denite.nvim'
-    " Plug 'jreybert/vimagit'
-    " Plug 'mhinz/vim-signify' support more vcs
-    " Plug 'tpope/vim-fugitive'
-    Plug 'tpope/vim-obsession'
-    Plug 'tpope/vim-repeat'
-    Plug 'tpope/vim-surround'
-    Plug 'jiangmiao/auto-pairs'
-    Plug 'tommcdo/vim-exchange'
-    " Plug 'davidhalter/jedi-vim'
-    " Plug 'python-mode/python-mode', { 'branch': 'develop' }
-    " Plug 'maralla/completor.vim'
-    " Plug 'oblitum/YouCompleteMe'
-    if has('nvim')
-        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-        Plug 'Shougo/neosnippet.vim'
-        Plug 'Shougo/neosnippet-snippets'
-        " Plug 'rhysd/nyaovim-popup-tooltip'
-    else
-        Plug 'sirver/ultisnips'
-        Plug 'honza/vim-snippets'
-        Plug 'Valloric/YouCompleteMe'
-    endif
-    Plug 'rhysd/nyaovim-popup-tooltip'
-    Plug 'tenfyzhong/CompleteParameter.vim'
-    Plug 'tell-k/vim-autopep8'
-    Plug 'Chiel92/vim-autoformat'
-    Plug 'w0rp/ale'
-    " Plug 'neomake/neomake'
-    Plug 'plytophogy/vim-virtualenv'
-    Plug 'majutsushi/tagbar'
-    Plug 'scrooloose/nerdcommenter'
-    Plug 'scrooloose/nerdtree'
-    Plug 'jistr/vim-nerdtree-tabs'
-    Plug 'Xuyuanp/nerdtree-git-plugin'
-    Plug 'sjl/gundo.vim'
-    Plug 'dyng/ctrlsf.vim'
-    " Plug 'junegunn/fzf', { 'dir': '~/.vim/vimfiles/bundle/fzf', 'do': './install --all'  }
-    Plug 'junegunn/fzf.vim'
-    Plug '~/gitrepos/fzf'
-    Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
-    Plug 'haya14busa/incsearch.vim'
-    Plug 'terryma/vim-multiple-cursors'
-    Plug 'yonchu/accelerated-smooth-scroll'
-    Plug 'nathanaelkane/vim-indent-guides'
-    Plug 'sheerun/vim-polyglot'
-    Plug 'rizzatti/dash.vim'
-    Plug 'iamcco/markdown-preview.vim'
-    Plug 'mattn/emmet-vim'
-    Plug 'othree/html5.vim'
-    Plug 'hail2u/vim-css3-syntax'
-    Plug 'ap/vim-css-color'
-    Plug 'hotoo/pangu.vim'
-    Plug 'skywind3000/asyncrun.vim'
+     Plug 'flazz/vim-colorschemes'
+     Plug 'itchyny/lightline.vim'
+"     " Plug 'vim-airline/vim-airline-themes'
+"     " Plug 'vim-airline/vim-airline'
+     Plug 'troydm/zoomwintab.vim'
+     Plug 'easymotion/vim-easymotion'
+     Plug 'junegunn/vim-easy-align'
+     Plug 'luochen1990/rainbow'
+     Plug 'tpope/vim-surround'
+     Plug 'jiangmiao/auto-pairs'
+     Plug 'tommcdo/vim-exchange'
+     " Plug 'ryanoasis/vim-devicons'
+     Plug 'liuchengxu/eleline.vim'
+"     Plug 'lifepillar/vim-solarized8'
+     " Plug 'wincent/terminus'
+"     Plug 'kshenoy/vim-signature'
+"     " Plug 'airblade/vim-gitgutter'
+"     " Plug 'neoclide/vim-easygit'
+"     Plug 'Shougo/denite.nvim'
+"     " Plug 'jreybert/vimagit'
+"     " Plug 'mhinz/vim-signify' support more vcs
+"     " Plug 'tpope/vim-fugitive'
+     "xxx Plug 'tpope/vim-obsession'
+     " Plug 'tpope/vim-repeat'
+"     " Plug 'davidhalter/jedi-vim'
+"     " Plug 'python-mode/python-mode', { 'branch': 'develop' }
+"     " Plug 'maralla/completor.vim'
+"     " Plug 'oblitum/YouCompleteMe'
+"     if has('nvim')
+"         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"         Plug 'Shougo/neosnippet.vim'
+"         Plug 'Shougo/neosnippet-snippets'
+"         " Plug 'rhysd/nyaovim-popup-tooltip'
+"     else
+         Plug 'sirver/ultisnips'
+         Plug 'honza/vim-snippets'
+         Plug 'Valloric/YouCompleteMe'
+"     endif
+     Plug 'tell-k/vim-autopep8'
+     Plug 'Chiel92/vim-autoformat'
+     Plug 'w0rp/ale'
+     Plug 'majutsushi/tagbar'
+     Plug 'scrooloose/nerdcommenter'
+     Plug 'scrooloose/nerdtree'
+     Plug 'sjl/gundo.vim'
+     Plug 'dyng/ctrlsf.vim'
+     Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+     Plug 'junegunn/fzf.vim'
+     Plug 'iamcco/markdown-preview.vim'
+     Plug 'terryma/vim-multiple-cursors'
+     Plug 'yonchu/accelerated-smooth-scroll'
+     Plug 'nathanaelkane/vim-indent-guides'
+     Plug 'sheerun/vim-polyglot'
+     Plug 'hotoo/pangu.vim'
+     Plug 'skywind3000/asyncrun.vim'
+"     " Plug 'junegunn/fzf', { 'dir': '~/.vim/vimfiles/bundle/fzf', 'do': './install --all'  }
+"     Plug 'rhysd/nyaovim-popup-tooltip'
+"     Plug 'tenfyzhong/CompleteParameter.vim'
+     " Plug 'haya14busa/incsearch.vim'
+"     " Plug 'neomake/neomake'
+"     Plug 'plytophogy/vim-virtualenv'
+"     Plug 'jistr/vim-nerdtree-tabs'
+"     Plug 'Xuyuanp/nerdtree-git-plugin'
+"     Plug 'rizzatti/dash.vim'
+"     Plug 'mattn/emmet-vim'
+"     Plug 'othree/html5.vim'
+"     Plug 'hail2u/vim-css3-syntax'
+"     Plug 'ap/vim-css-color'
 call plug#end()

@@ -212,7 +212,6 @@ nmap tt :tabnew!<CR>
 nmap tn :tabn<CR>
 nmap tp :tabp<CR>
 nmap tw vwP
-" noremap cp ""P
 
 nmap md <S-*>
 nmap ms <S-#>
@@ -239,13 +238,14 @@ nnoremap zp <C-w>pZQ
 nnoremap zf <S-z><S-z>
 nnoremap zl <C-w>v
 nnoremap zh <C-w>s
+
 " space key to toggle whether fold
 nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zO')<CR>
 
 cnoremap <C-a> <Home>
 cnoremap <c-v> <C-r>"
 
-nnoremap <leader>cp I#<Space><Home><Tab><ESC>
+nnoremap <leader>cs :colorscheme solarized8_dark_flat<CR>
 vnoremap < <gv
 vnoremap > >gv
 vnoremap v <Esc>
@@ -777,15 +777,15 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'liuchengxu/eleline.vim'
 "     Plug 'lifepillar/vim-solarized8'
      " Plug 'wincent/terminus'
-"     Plug 'kshenoy/vim-signature'
-"     " Plug 'airblade/vim-gitgutter'
+     Plug 'kshenoy/vim-signature'
+     Plug 'airblade/vim-gitgutter'
 "     " Plug 'neoclide/vim-easygit'
 "     Plug 'Shougo/denite.nvim'
 "     " Plug 'jreybert/vimagit'
 "     " Plug 'mhinz/vim-signify' support more vcs
 "     " Plug 'tpope/vim-fugitive'
      Plug 'tpope/vim-obsession'
-     " Plug 'tpope/vim-repeat'
+     Plug 'tpope/vim-repeat'
 "     " Plug 'davidhalter/jedi-vim'
 "     " Plug 'python-mode/python-mode', { 'branch': 'develop' }
 "     " Plug 'maralla/completor.vim'

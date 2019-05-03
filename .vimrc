@@ -29,8 +29,8 @@ else
     let g:isGUI = 0
     set t_Co=256                   " 在终端启用256色
     set background=dark
-    " colorscheme gruvbox
-    colorscheme solarized8_dark_flat
+    colorscheme gruvbox
+    " colorscheme solarized8_dark_flat
     syntax on
     " highlight Comment cterm=italic
 endif
@@ -58,17 +58,17 @@ if (g:isUnix)
 endif
 
 if has('nvim')
-    colorscheme solarized8_light_low
+    colorscheme gruvbox
     set runtimepath+='~/.nvim/share/nvim/runtime'
-    " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-    let $XDG_CONFIG_HOME="~/.nvim"
     let &packpath = &runtimepath
+    " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+    " let $XDG_CONFIG_HOME="~/.nvim"
     let g:python3_host_prog = '/usr/local/bin/python3'
-    let g:python_host_prog  = '/usr/local/bin/python'
+    " let g:python_host_prog  = '/usr/local/bin/python'
 else
-    set guifont=Source_Code_Pro_for_Powerline:h15,Sauce_Code_Pro_Medium_Nerd_Font_Complete_Mono:15
+    " set guifont=Source_Code_Pro_for_Powerline:h15
+    set guifont=Fura_Code_Retina_Nerd_Font_Complete:h16
     " set guifont=Source_Code_Pro:h15:cANSI
-    " set guifont=Source_Code_Variable_Semibold:h15
 endif
 
 if &term =~ '256color'
@@ -102,6 +102,7 @@ set guioptions-=T                                     "去掉工具栏"
 set guioptions-=r                                     "去掉右边的滚动条"
 set guioptions-=L
 set laststatus=2                                      "启用状态栏信息
+set cmdheight=2
 set showtabline=2                                     "当只有一个标签时也显示标签行
 set noshowmode                                        " 使用 airline 时不再显示模式状态
 set noshowcmd
@@ -153,6 +154,7 @@ set incsearch                               "在输入要搜索的文字时，�
 set ignorecase                              "搜索模式里忽略大小写
 set smartcase                               "搜索模式包含大写字符，忽略上一行设置
 set matchtime=3                             "匹配括号光标停留时间"
+set updatetime=300
 set showmatch
 set matchpairs+=<:>                         " specially for html"
 set history=500                             "保存更多的history"
@@ -449,14 +451,14 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     let g:Lf_NeedCacheTime = 0.5
     let g:Lf_WildIgnore = {
        \ 'dir': ['.svn','.git','.hg','.DS_Store','*node_modules','*compiled','*dist'],
-       \ 'file': ['*.sw?','~$*','*.dat','*.exe','*.o','*.so','*.py[co]']
+       \ 'file': ['*.sw?','~$*','*.zip','*.dat','*.exe','*.o','*.so','*.py[co]']
        \}
 
 " ctrsf configure:
-    nmap <leader>sf :CtrlSF<space>-smartcase -R<space>
-    nmap <leader>fw <Plug>CtrlSFCCwordExec
-    let g:ctrlsf_default_view_mode = 'compact'
-    let g:ctrlsf_regex_pattern = 1
+    " nmap <leader>sf :CtrlSF<space>-smartcase -R<space>
+    " nmap <leader>fw <Plug>CtrlSFCCwordExec
+    " let g:ctrlsf_default_view_mode = 'compact'
+    " let g:ctrlsf_regex_pattern = 1
 
 " fzf configure:
     command! -bang -nargs=* Ag
@@ -493,18 +495,18 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     let NERDTreeDirArrows=0
     let NERDTreeAutoDeleteBuffer=1
     let NERDTreeHijackNetrw=1
-    let g:NERDTreeIndicatorMapCustom = {
-    \ "Modified"  : "✹",
-    \ "Staged"    : "✚",
-    \ "Untracked" : "✭",
-    \ "Renamed"   : "➜",
-    \ "Unmerged"  : "═",
-    \ "Deleted"   : "✖",
-    \ "Dirty"     : "✗",
-    \ "Clean"     : "✔︎",
-    \ 'Ignored'   : '☒',
-    \ "Unknown"   : "?"
-    \ }
+    " let g:NERDTreeIndicatorMapCustom = {
+    " \ "Modified"  : "✹",
+    " \ "Staged"    : "✚",
+    " \ "Untracked" : "✭",
+    " \ "Renamed"   : "➜",
+    " \ "Unmerged"  : "═",
+    " \ "Deleted"   : "✖",
+    " \ "Dirty"     : "✗",
+    " \ "Clean"     : "✔︎",
+    " \ 'Ignored'   : '☒',
+    " \ "Unknown"   : "?"
+    " \ }
     " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
     " vim不指定具体文件打开是，自动使用nerdtree
     autocmd StdinReadPre * let s:std_in=1
@@ -597,7 +599,9 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     let g:ycm_key_list_select_completion = ['<C-n>', '<Tab>']
     let g:ycm_key_list_previous_completion = ['<C-p>']
     let g:ycm_autoclose_preview_window_after_completion = 1
+    " 离开插入模式后自动关闭预览窗口"
     let g:ycm_autoclose_preview_window_after_insertion = 1
+    " let g:ycm_add_preview_to_completeopt = 0
     let g:ycm_filetype_whitelist = { 
         \ 'sh': 1,
         \ 'python': 1,
@@ -607,7 +611,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
         \ 'nerdtree' : 1,
         \ 'gitcommit' : 1,
         \ }
-    " 如果配置下面输入两个字符来自动触发语义补全，会导致utilsnap的补全不在补全窗口里面显示
+    " 如果配置下面输入两个字符来自动触发语义补全，会导致UltiSnips的补全不在补全窗口里面显示
     let g:ycm_semantic_triggers =  {
         \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{3}'],
         \ 'cs,lua,javascript': ['re!\w{3}'],
@@ -620,15 +624,13 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     " 回车即选中当前项"
     let g:ycm_key_list_stop_completion = ['<CR>']
     set completeopt=longest,menu
-    " let g:ycm_add_preview_to_completeopt = 0
-    " 离开插入模式后自动关闭预览窗口"
     let g:ycm_goto_buffer_command = 'horizontal-split'
     let g:ycm_register_as_syntastic_checker = 0
     autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-    nnoremap <leader>gd :YcmCompleter GoToDeclaration<CR>
-    nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
+    nnoremap <leader>gs :YcmCompleter GoToDeclaration<CR>
+    nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
     nnoremap <leader>gg :YcmCompleter GoTo<CR>
-    nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+    nnoremap <leader>gt :YcmCompleter GoToDefinitionElseDeclaration<CR>
     " nnoremap <leader>gw :YcmCompleter GetDoc<CR>
 
 " Snippets configure:
@@ -744,10 +746,60 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     "     \ },
     "      \ }
     autocmd FileType css setlocal iskeyword+=-
-    autocmd FileType html,css EmmetInstall
+    " autocmd FileType html,css EmmetInstall
 
 " pangu configure:
     autocmd BufWritePre *.markdown,*.md,*.text,*.txt,*.wiki,*.cnx call PanGuSpacing()
+
+" vim-devicons configure:
+    " loading the plugin
+    let g:webdevicons_enable = 1
+    " adding the flags to NERDTree
+    let g:webdevicons_enable_nerdtree = 1
+
+    " let g:webdevicons_enable_airline_tabline = 1
+    " let g:webdevicons_enable_airline_statusline = 1
+    " adding to flagship's statusline
+    let g:webdevicons_enable_flagship_statusline = 1
+    " Force extra padding in NERDTree so that the filetype icons line up vertically
+    let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
+
+" winresizer configure:
+    let g:winresizer_gui_enable = 1
+    " If you want to start window resize mode by `Ctrl+T`
+    let g:winresizer_start_key = '<Leader>ws'
+    " If you cancel and quit window resize mode by `z` (keycode 122)
+    let g:winresizer_keycode_cancel = 122
+
+" vista configure:
+    " let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
+    " " See all the avaliable executives via `:echo g:vista#executives`.
+    " let g:vista_default_executive = 'ctags'
+    " let g:vista_ctags_cmd = {
+    "   \ 'haskell': 'hasktags -x -o - -c',
+    "   \ }
+    " let g:vista#renderer#enable_icon = 1
+
+    " " The default icons can't be suitable for all the filetypes, you can extend it as you wish.
+    " let g:vista#renderer#icons = {
+    " \   "function": "\uf794",
+    " \   "variable": "\uf71b",
+    " \  }
+
+" coc configure:
+    inoremap <silent><expr> <TAB>
+        \ pumvisible() ? "\<C-n>" :
+        \ <SID>check_back_space() ? "\<TAB>" :
+        \ coc#refresh()
+    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+    function! s:check_back_space() abort
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
+    inoremap <silent><expr> <c-space> coc#refresh()
+    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " plugins manager autodownload and keymap configure:
     let VIM_PLUG_PATH = expand('$VIMRUNTIME/autoload/plug.vim')
@@ -764,8 +816,11 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
 call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'flazz/vim-colorschemes'
      Plug 'itchyny/lightline.vim'
-"     " Plug 'vim-airline/vim-airline-themes'
-"     " Plug 'vim-airline/vim-airline'
+     Plug 'liuchengxu/eleline.vim'
+     Plug 'ryanoasis/vim-devicons'
+"     Plug 'lifepillar/vim-solarized8'
+     " Plug 'vim-airline/vim-airline-themes'
+     " Plug 'vim-airline/vim-airline'
      Plug 'troydm/zoomwintab.vim'
      Plug 'easymotion/vim-easymotion'
      Plug 'junegunn/vim-easy-align'
@@ -773,9 +828,6 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'tpope/vim-surround'
      Plug 'jiangmiao/auto-pairs'
      Plug 'tommcdo/vim-exchange'
-     Plug 'ryanoasis/vim-devicons'
-     Plug 'liuchengxu/eleline.vim'
-"     Plug 'lifepillar/vim-solarized8'
      " Plug 'wincent/terminus'
      Plug 'kshenoy/vim-signature'
      Plug 'airblade/vim-gitgutter'
@@ -789,25 +841,25 @@ call plug#begin('~/.vim/vimfiles/bundle')
 "     " Plug 'davidhalter/jedi-vim'
 "     " Plug 'python-mode/python-mode', { 'branch': 'develop' }
 "     " Plug 'maralla/completor.vim'
-"     " Plug 'oblitum/YouCompleteMe'
-"     if has('nvim')
-"         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-"         Plug 'Shougo/neosnippet.vim'
-"         Plug 'Shougo/neosnippet-snippets'
-"         " Plug 'rhysd/nyaovim-popup-tooltip'
-"     else
+    if has('nvim')
+        " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+        Plug 'Shougo/neosnippet.vim'
+        Plug 'Shougo/neosnippet-snippets'
+        " Plug 'rhysd/nyaovim-popup-tooltip'
+    else
          Plug 'sirver/ultisnips'
          Plug 'honza/vim-snippets'
-         Plug 'Valloric/YouCompleteMe'
-"     endif
+         " Plug 'Valloric/YouCompleteMe'
+    endif
      Plug 'tell-k/vim-autopep8'
      Plug 'Chiel92/vim-autoformat'
      Plug 'w0rp/ale'
      Plug 'majutsushi/tagbar'
+     " Plug 'liuchengxu/vista.vim'
      Plug 'scrooloose/nerdcommenter'
      Plug 'scrooloose/nerdtree'
      Plug 'sjl/gundo.vim'
-     Plug 'dyng/ctrlsf.vim'
+     " Plug 'dyng/ctrlsf.vim'
      Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
      Plug 'junegunn/fzf.vim'
      Plug 'iamcco/markdown-preview.vim'
@@ -829,5 +881,7 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'Xuyuanp/nerdtree-git-plugin'
      Plug 'othree/html5.vim'
      Plug 'hail2u/vim-css3-syntax'
-    Plug 'ap/vim-css-color'
+     Plug 'ap/vim-css-color'
+     Plug 'simeji/winresizer'
+     Plug 'neoclide/coc.nvim', {'do': './install.sh nightly'}
 call plug#end()

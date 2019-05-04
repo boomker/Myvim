@@ -18,19 +18,18 @@ if has("gui_running")
     set imi=2                                             "搜狗输入法在macvim混乱的解决方法如下:
     set ims=2
     set guiheadroom=0                                     "禁止GTK填充窗口底部为主题背景色，此设置会消除底部的水平滚动条"
-    set termguicolors
     set background=dark
     syntax on
-    colorscheme solarized8
+    " colorscheme solarized8
+    colorscheme onedark
     " 下面一行的注释必须放下面，不然就被上面一样的设置给覆盖掉
     " highlight Comment gui=italic
     " 在 GUIvim 里中文看不到是斜体的，似乎需要斜体中文字体支持
 else
     let g:isGUI = 0
-    set t_Co=256                   " 在终端启用256色
+    " set t_Co=256                   " 在终端启用256色
     set background=dark
-    colorscheme gruvbox
-    " colorscheme solarized8_dark_flat
+    colorscheme onedark
     syntax on
     " highlight Comment cterm=italic
 endif
@@ -49,13 +48,6 @@ if (g:isWin && g:isGUI)
     autocmd bufwritepost _vimrc source $VIM/_vimrc
 endif
 
-if (g:isUnix)
-    " set rtp+=~/gitrepos/fzf
-    if exists('$TMUX')
-        let &t_8f = "\<ESC>[38;2;%lu;%lu;%lum"
-        let &t_8b = "\<ESC>[48;2;%lu;%lu;%lum"
-    endif
-endif
 
 if has('nvim')
     colorscheme gruvbox
@@ -64,6 +56,7 @@ if has('nvim')
     " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
     " let $XDG_CONFIG_HOME="~/.nvim"
     let g:python3_host_prog = '/usr/local/bin/python3'
+    let g:node_host_prog = '/usr/local/bin/neovim-node-host'
     " let g:python_host_prog  = '/usr/local/bin/python'
 else
     " set guifont=Source_Code_Pro_for_Powerline:h15
@@ -72,26 +65,33 @@ else
 endif
 
 if &term =~ '256color'
-  " disable Background Color Erase (BCE) so that color schemes
-  " render properly when inside 256-color tmux and GNU screen.
-  " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
-  set t_ut=
+    " disable Background Color Erase (BCE) so that color schemes
+    " render properly when inside 256-color tmux and GNU screen.
+    " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
+    set t_ut=
+elseif has("termguicolors")
+    " fix bug for vim
+    set t_8f=^[[38;2;%lu;%lu;%lum
+    set t_8b=^[[48;2;%lu;%lu;%lum
+
+    " enable true color
+    set termguicolors
 endif
 
 " 设置标记一列的背景颜色和数字一行颜色一致
-hi! link SignColumn   LineNr
-hi! link ShowMarksHLl DiffAdd
-hi! link ShowMarksHLu DiffChange
+    hi! link SignColumn   LineNr
+    hi! link ShowMarksHLl DiffAdd
+    hi! link ShowMarksHLu DiffChange
 
 " for error highlight，防止错误整行标红导致看不清
-highlight clear SpellBad
-highlight SpellBad term=standout ctermfg=1 term=underline cterm=underline
-highlight clear SpellCap
-highlight SpellCap term=underline cterm=underline
-highlight clear SpellRare
-highlight SpellRare term=underline cterm=underline
-highlight clear SpellLocal
-highlight SpellLocal term=underline cterm=underline
+    highlight clear SpellBad
+    highlight SpellBad term=standout ctermfg=1 term=underline cterm=underline
+    highlight clear SpellCap
+    highlight SpellCap term=underline cterm=underline
+    highlight clear SpellRare
+    highlight SpellRare term=underline cterm=underline
+    highlight clear SpellLocal
+    highlight SpellLocal term=underline cterm=underline
 
 
 set nocompatible                                      "禁用 Vi 兼容模式
@@ -148,7 +148,8 @@ set foldmethod=indent                                   "indent 折叠方式
 " set foldopen=all                                        "光标移到折叠时自动打开
 " set foldclose=all
 set autoread                                            "当文件在外部被修改，自动更新该文件
-set clipboard=unnamed                                   "与其他应用共享剪贴板,抽出和粘贴选择内容,而无须在这些命令前面附加"*.
+" set clipboard=unnamed                                   "与其他应用共享剪贴板,抽出和粘贴选择内容,而无须在这些命令前面附加"*.
+set clipboard+=unnamedplus
 set hlsearch                                "高亮搜索
 set incsearch                               "在输入要搜索的文字时，实时匹配
 set ignorecase                              "搜索模式里忽略大小写
@@ -414,15 +415,16 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     let g:ale_pattern_options = {'python实例手册.py$': {'ale_enabled': 0}}
 
 " lightline configure:
+    " let g:lightline.colorscheme = 'onedark'
 	let g:lightline = {
-		\ 'component': {
-		\   'lineinfo': ' %3l:%-2v',
-		\ },
-		\ 'component_function': {
-		\   'readonly': 'LightlineReadonly'
-		\ },
-		\ 'separator': { 'left': '', 'right': '' },
-		\ 'subseparator': { 'left': '', 'right': '' }
+        \ 'component': {
+        \   'lineinfo': ' %3l:%-2v',
+        \ },
+        \ 'component_function': {
+        \   'readonly': 'LightlineReadonly'
+        \ },
+        \ 'separator': { 'left': '', 'right': '' },
+        \ 'subseparator': { 'left': '', 'right': '' }
 		\ }
 	function! LightlineReadonly()
 		return &readonly ? '' : ''
@@ -816,7 +818,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
 call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'flazz/vim-colorschemes'
      Plug 'itchyny/lightline.vim'
-     Plug 'liuchengxu/eleline.vim'
+     " Plug 'liuchengxu/eleline.vim'
      Plug 'ryanoasis/vim-devicons'
 "     Plug 'lifepillar/vim-solarized8'
      " Plug 'vim-airline/vim-airline-themes'
@@ -884,4 +886,5 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'ap/vim-css-color'
      Plug 'simeji/winresizer'
      Plug 'neoclide/coc.nvim', {'do': './install.sh nightly'}
+     Plug 'joshdick/onedark.vim'
 call plug#end()

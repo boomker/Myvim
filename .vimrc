@@ -463,17 +463,21 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     " let g:ctrlsf_regex_pattern = 1
 
 " fzf configure:
-    command! -bang -nargs=* Ag
-        \ call fzf#vim#ag(<q-args>,
-        \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-        \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
-        \                 <bang>0)
+    command! -bang -nargs=* Rg
+        \ call fzf#vim#grep(
+        \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+        \   <bang>0 ? fzf#vim#with_preview('up:60%')
+        \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+        \   <bang>0)
+
     command! -bang Colors
         \ call fzf#vim#colors({'left': '15%', 'options': '--reverse --margin 30%,0'}, <bang>0)
+
     command! -bang -nargs=? -complete=dir Files
         \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
     nmap <leader>fs :Files<CR>
-    nmap <leader>fa :Ag<CR>
+    nmap <leader>fr :Rg<CR>
 
 " nerdcommenter configure:
     let g:NERDSpaceDelims=1
@@ -863,6 +867,7 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'sjl/gundo.vim'
      " Plug 'dyng/ctrlsf.vim'
      Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+     Plug 'junegunn/fzf', { 'dir': '~/.vim/vimfiles/bundle/fzf', 'do': './install --all'  }
      Plug 'junegunn/fzf.vim'
      Plug 'iamcco/markdown-preview.vim'
      Plug 'terryma/vim-multiple-cursors'
@@ -871,7 +876,6 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'sheerun/vim-polyglot'
      Plug 'hotoo/pangu.vim'
      Plug 'skywind3000/asyncrun.vim'
-"     " Plug 'junegunn/fzf', { 'dir': '~/.vim/vimfiles/bundle/fzf', 'do': './install --all'  }
 "     Plug 'rhysd/nyaovim-popup-tooltip'
 "     Plug 'tenfyzhong/CompleteParameter.vim'
 "     " Plug 'neomake/neomake'

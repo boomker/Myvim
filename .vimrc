@@ -15,22 +15,13 @@ endif
 " -----------------------------------------------------------------------------
 if has("gui_running")
     let g:isGUI = 1
-    set imi=2                                             "搜狗输入法在macvim混乱的解决方法如下:
+    set imi=2                                       " 搜狗输入法在macvim混乱的解决方法如下:
     set ims=2
-    set guiheadroom=0                                     "禁止GTK填充窗口底部为主题背景色，此设置会消除底部的水平滚动条"
-    set background=dark
-    syntax on
-    " colorscheme solarized8
-    colorscheme onedark
-    " 下面一行的注释必须放下面，不然就被上面一样的设置给覆盖掉
-    " highlight Comment gui=italic
-    " 在 GUIvim 里中文看不到是斜体的，似乎需要斜体中文字体支持
+    set guiheadroom=0                               " 禁止GTK填充窗口底部为主题背景色，此设置会消除底部的水平滚动条"
+    highlight Comment gui=italic
 else
     let g:isGUI = 0
     " set t_Co=256                   " 在终端启用256色
-    set background=dark
-    colorscheme onedark
-    syntax on
     " highlight Comment cterm=italic
 endif
 
@@ -44,25 +35,32 @@ if (g:isWin && g:isGUI)
     set iminsert=2                                          "输入法设置"
     set mousef                                              "启用光标激活pane
     set mouse=a                                           " 在任何模式下启用鼠标,但是右键用不了
+    " set guifont=Source_Code_Pro:h15:cANSI
     au GUIEnter * simalt ~x                                 "窗口启动时自动最大化
     autocmd bufwritepost _vimrc source $VIM/_vimrc
 endif
 
 
 if has('nvim')
-    colorscheme gruvbox
+    " set inccommand=split
     set runtimepath+='~/.nvim/share/nvim/runtime'
     let &packpath = &runtimepath
+    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
     " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
     " let $XDG_CONFIG_HOME="~/.nvim"
     let g:python3_host_prog = '/usr/local/bin/python3'
-    let g:node_host_prog = '/usr/local/bin/neovim-node-host'
+    " let g:python3_host_prog = '/usr/bin/python3'
     " let g:python_host_prog  = '/usr/local/bin/python'
-else
-    " set guifont=Source_Code_Pro_for_Powerline:h15
-    set guifont=Fura_Code_Retina_Nerd_Font_Complete:h16
-    " set guifont=Source_Code_Pro:h15:cANSI
+    let g:node_host_prog = '/usr/local/bin/neovim-node-host'
+" else
 endif
+
+" for common UI Settings:
+    " colorscheme gruvbox
+    colorscheme onedark
+    let g:onedark_terminal_italics=1
+    let g:onedark_hide_endofbuffer=1
+    set background=dark
 
 if &term =~ '256color'
     " disable Background Color Erase (BCE) so that color schemes
@@ -104,7 +102,7 @@ set guioptions-=L
 set laststatus=2                                      "启用状态栏信息
 set cmdheight=2
 set showtabline=2                                     "当只有一个标签时也显示标签行
-set noshowmode                                        " 使用 airline 时不再显示模式状态
+set noshowmode                                        " 不再显示模式状态
 set noshowcmd
 set lazyredraw
 set helplang=cn
@@ -115,13 +113,13 @@ set formatoptions+=j
 set magic                                             "打开正则匹配模式
 set noimd                                             "关闭输入法
 set nobomb                                            " 禁止UTF-8 BOM
+set ma
 set termencoding=utf-8
 set encoding=utf-8                                      "设置gvim内部编码
 set fileencoding=utf-8                                  "设置此缓冲区所在文件的字符编码
 set fileencodings=utf-8,cp936,ucs-bom,gb18030,gb2312    "设置支持打开的文件的编码
 set fileformat=unix
 set fileformats=unix,dos                                "给出文件的<EOL>格式类型
-set ma
 set backspace=indent,eol,start
 set viewoptions=folds,options,cursor,unix,slash         "better unix/Windows compatible
 set virtualedit=onemore                                 "curso可以移动到行尾最后一个字符之后"
@@ -165,6 +163,7 @@ set nobackup                                "设置无备份文件
 set noswapfile                              "设置无临时文件
 set nowritebackup                           "无写入备份
 filetype plugin on
+syntax on
 autocmd! bufwritepost .vimrc source ~/.vimrc
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
 if has("autocmd")
@@ -193,8 +192,8 @@ vmap j gj
 vmap k gk
 
 nmap J gJ
-nmap H ^
-nmap L $
+map H ^
+map L $
 noremap gl gu
 noremap gu gU
 " select last paste in visual mode
@@ -209,30 +208,22 @@ nmap sk <C-i>
 nmap su <C-r>
 
 " like o or O, but not change cursor position and mode
-nmap tj mQo<esc>`Qm<space>
-nmap tk mQ<S-o><esc>`Qm<space>
 nmap tt :tabnew!<CR>
 nmap tn :tabn<CR>
 nmap tp :tabp<CR>
 nmap tw vwP
 
-nmap md <S-*>
-nmap ms <S-#>
 nmap mm ``
 nmap ml `.
 
 nnoremap <CR> :
 " Delete character end of current cursor
-nmap dh d^
-nmap de d$
 nmap d<CR> dG
 nmap dj 2dd
 nmap dk k2dd
 nmap y<CR> yG
 nmap yj 2yy
 nmap yk k2yy
-nmap yh y^
-nmap ye y$
 nmap yp yyp
 nmap ysiw{ ysiw}
 
@@ -248,7 +239,7 @@ nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zO')<CR>
 cnoremap <C-a> <Home>
 cnoremap <c-v> <C-r>"
 
-nnoremap <leader>cs :colorscheme solarized8_dark_flat<CR>
+nnoremap <leader>sc :colorscheme solarized8_dark_flat<CR>
 vnoremap < <gv
 vnoremap > >gv
 vnoremap v <Esc>
@@ -390,7 +381,10 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     let g:EasyMotion_smartcase = 1
     let g:EasyMotion_leader_key = 'f'
     let g:EasyMotion_startofline = '0'
-    nmap fu <Plug>(easymotion-N)
+    " let g:EasyMotion_do_mapping = 0
+    let g:EasyMotion_prompt = 'Jump to {n}→ '
+    " let g:EasyMotion_keys = 'fjdkswbeoavn'
+    let g:EasyMotion_use_smartsign_us = 1
     nmap f/ <Plug>(easymotion-fn)
     " support multi keyword used expr to find
     nmap f? <Plug>(easymotion-Fn)
@@ -401,34 +395,16 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     nmap fi <Plug>(easymotion-overwin-line)
     nmap f. <Plug>(easymotion-repeat)
 
-" airline configure:
-    let g:airline_theme='wombat'
-    let g:airline#extensions#tabline#show_buffers = 0
-    let g:airline#extensions#tabline#show_tab_type = 0
-    let g:airline#extensions#tabline#show_close_button = 0
-    let g:airline#extensions#tabline#right_alt_sep = ''
-    let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-    let g:airline_powerline_fonts = 1
-    let g:airline_extensions = ['tabline', 'ale', 'obsession']
-    let g:airline#extensions#whitespace#symbol = 'WS'
-    let b:airline_whitespace_checks = [ 'indent', 'trailing' ]
-    let g:ale_pattern_options = {'python实例手册.py$': {'ale_enabled': 0}}
-
 " lightline configure:
-    " let g:lightline.colorscheme = 'onedark'
-	let g:lightline = {
-        \ 'component': {
-        \   'lineinfo': ' %3l:%-2v',
-        \ },
-        \ 'component_function': {
-        \   'readonly': 'LightlineReadonly'
-        \ },
-        \ 'separator': { 'left': '', 'right': '' },
-        \ 'subseparator': { 'left': '', 'right': '' }
-		\ }
-	function! LightlineReadonly()
-		return &readonly ? '' : ''
-	endfunction
+    function! LightlineReadonly()
+        return &readonly ? '' : ''
+    endfunction
+    let g:lightline = {
+      \ 'component_function': {
+      \   'readonly': 'LightlineReadonly'
+      \ },
+      \ 'separator': { 'left': '', 'right': '' }
+      \ }
 
 " easy_align configure:
     vmap <Enter> <Plug>(EasyAlign)
@@ -436,19 +412,12 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     xmap <Leader>ga <Plug>(EasyAlign)
 
 " multiplecursors configure:
-    let g:multi_cursor_use_default_mapping=0
-    " Default mapping
-    let g:multi_cursor_start_key='<C-n>'
-    let g:multi_cursor_next_key='<C-n>'
-    let g:multi_cursor_prev_key='<C-p>'
-    let g:multi_cursor_skip_key='<C-x>'
-    let g:multi_cursor_quit_key='<Esc>'
 
 " Leaderf configure:
     nnoremap <Leader>fh :LeaderfMru<CR>
-    nnoremap <Leader>fl :LeaderfLine<CR>
-    let g:Lf_ShortcutF = '<Leader>ff'
-    let g:Lf_ShortcutB = '<Leader>fb'
+    " nnoremap <Leader>fl :LeaderfLine<CR>
+    " let g:Lf_ShortcutF = '<Leader>ff'
+    " let g:Lf_ShortcutB = '<Leader>fb'
     let g:Lf_DefaultMode = 'Regex'
     let g:Lf_NeedCacheTime = 0.5
     let g:Lf_WildIgnore = {
@@ -456,7 +425,7 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
        \ 'file': ['*.sw?','~$*','*.zip','*.dat','*.exe','*.o','*.so','*.py[co]']
        \}
 
-" ctrsf configure:
+" ctrlsf configure:
     " nmap <leader>sf :CtrlSF<space>-smartcase -R<space>
     " nmap <leader>fw <Plug>CtrlSFCCwordExec
     " let g:ctrlsf_default_view_mode = 'compact'
@@ -476,8 +445,10 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     command! -bang -nargs=? -complete=dir Files
         \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
-    nmap <leader>fs :Files<CR>
+    nmap <leader>ff :Files<CR>
     nmap <leader>fr :Rg<CR>
+    nmap <leader>fb :Buffers<CR>
+    nmap <leader>fl :BLines<CR>
 
 " nerdcommenter configure:
     let g:NERDSpaceDelims=1
@@ -485,53 +456,72 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     let g:NERDAltDelims_python = 1
     let g:NERDDefaultAlign = 'left'
 
-" nerdtree configure:
-    map <leader>st :NERDTreeToggle<CR>
-    let NERDTreeIgnore=['\.pyc','\~$','\.swp','__pycache__','\.git$','\.DS_Store']
-    let g:nerdtree_tabs_open_on_gui_startup=0
-    let g:NERDTreeMapToggleBookmarks="b"
-    let g:NERDTreeMapChangeRoot="c"
-    let g:NERDTreeMapChdir="C"
-    let g:NERDTreeMapCWD="w"
-    let g:NERDTreeMapToggleFiles=";f"
-    let g:NERDTreeMapToggleFilters="F"
-    let g:NERDTreeMapToggleZoom="zm"
-    let NERDTreeQuitOnOpen=1
-    let NERDTreeShowHidden=1
-    let NERDTreeDirArrows=0
-    let NERDTreeAutoDeleteBuffer=1
-    let NERDTreeHijackNetrw=1
-    " let g:NERDTreeIndicatorMapCustom = {
-    " \ "Modified"  : "✹",
-    " \ "Staged"    : "✚",
-    " \ "Untracked" : "✭",
-    " \ "Renamed"   : "➜",
-    " \ "Unmerged"  : "═",
-    " \ "Deleted"   : "✖",
-    " \ "Dirty"     : "✗",
-    " \ "Clean"     : "✔︎",
-    " \ 'Ignored'   : '☒',
-    " \ "Unknown"   : "?"
-    " \ }
-    " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-    " vim不指定具体文件打开是，自动使用nerdtree
-    autocmd StdinReadPre * let s:std_in=1
-    " autocmd VimEnter,GUIEnter * if argc() == 0 && !exists("s:std_in") | NERDTree |endif
+" defx configure:
+    map <silent> <Leader>st :Defx `expand('%:p:h')` -search=`expand('%:p')`<CR>
+    autocmd VimEnter * call defx#custom#option('_', {
+        \ 'auto_cd': 1,
+        \ 'columns': 'indent:git:icons:mark:filename:type',
+        \ 'winwidth': 40,
+        \ 'split': 'vertical',
+        \ 'direction': 'topleft',
+        \ 'show_ignored_files': 0,
+        \ 'ignored_files': '.git*,.*dump*',
+        \ })
+
+    " Define mappings
+    autocmd FileType defx call s:defx_my_settings()
+    function! s:defx_my_settings() abort
+        setl nospell
+        setl signcolumn=no
+        setl nonumber
+        nnoremap <silent><buffer><expr> <CR>
+            \ defx#is_directory() ?
+            \ defx#do_action('open') :
+            \ defx#do_action('multi', ['drop', 'quit'])
+        nmap <silent><buffer><expr> <2-LeftMouse>
+            \ defx#is_directory() ?
+            \ defx#do_action('open_or_close_tree') :
+            \ defx#do_action('drop',)
+        nnoremap <silent><buffer><expr> o
+            \ defx#is_directory() ?
+            \ defx#do_action('open_or_close_tree') :
+            \ defx#do_action('drop',)
+        nnoremap <silent><buffer><expr> s defx#do_action('drop', 'split')
+        nnoremap <silent><buffer><expr> v defx#do_action('drop', 'vsplit')
+        nnoremap <silent><buffer><expr> t defx#do_action('drop', 'tabe')
+        nnoremap <silent><buffer><expr> O defx#do_action('open_tree_recursive')
+        nnoremap <silent><buffer><expr> c defx#do_action('copy')
+        nnoremap <silent><buffer><expr> p defx#do_action('paste')
+        nnoremap <silent><buffer><expr> r defx#do_action('rename')
+        nnoremap <silent><buffer><expr> x defx#do_action('remove_trash')
+        nnoremap <silent><buffer><expr> N defx#do_action('new_multiple_files')
+        nnoremap <silent><buffer><expr> u defx#do_action('cd', ['..'])
+        nnoremap <silent><buffer><expr> . defx#do_action('toggle_ignored_files')
+        nnoremap <silent><buffer><expr> R defx#do_action('redraw')
+        nnoremap <silent><buffer><expr> q defx#do_action('quit')
+        nnoremap <silent><buffer><expr> <Space> defx#do_action('toggle_select')
+    endfunction
+
+    " Defx git and Defx icons
+    let g:defx_git#column_length = 0
+
+    let g:defx_icons_enable_syntax_highlight = 1
 
 " gitgutter configure configure:
     set updatetime=50
     let g:gitgutter_max_signs = 1000
     let g:gitgutter_sign_added = '✚'
-    " let g:gitgutter_sign_modified = '✎'
-    let g:gitgutter_sign_modified = '☻'
+    let g:gitgutter_sign_modified = '✎'
+    " let g:gitgutter_sign_modified = '☻'
     let g:gitgutter_sign_removed = '✖'
     let g:gitgutter_sign_removed_first_line = '➤'
     let g:gitgutter_sign_modified_removed = '✹'
     let g:easygit_enable_command = 1
 
-" GundoToggle configure:
-    nnoremap <Leader>ut :GundoToggle<CR>
-    let g:gundo_prefer_python3 = 1
+" MundoToggle configure:
+    set undofile
+    set undodir=~/.vim/undo
+    nnoremap <Leader>ut :MundoToggle<CR>
 
 " ale configure:
     let g:ale_fix_on_save = 1
@@ -554,108 +544,104 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     nmap sn <Plug>(ale_next_wrap)
     nmap sp <Plug>(ale_previous_wrap)
 
-" tagbar configure:
-    let g:tagbar_sort=0
-    let g:tagbar_compact=1
-    let g:tagbar_indent = 1
-    let g:tagbar_autoshowtag=1
-    let g:tagbar_autoclose = 1
-    let g:tagbar_autofocus = 1
-    let g:tagbar_autopreview = 1
-    let g:tagbar_singleclick = 1
-    let g:tagbar_width = 35
-    let g:tagbar_systemenc = 'utf-8'
-    let g:tagbar_map_nexttag = "J"
-    let g:tagbar_map_prevtag = "K"
-    let g:tagbar_map_openallfolds = "ao"
-    let g:tagbar_map_closeallfolds = "ac"
-    nmap <Leader>tb :TagbarToggle<CR>
-
-" markdown configure:
-    au bufread,bufnewfile *.md,*.markdown setlocal ft=mkd
-    let g:vim_markdown_folding_disabled=1
-    let g:vim_markdown_no_default_key_mappings=1
-    let g:vim_markdown_math=1
-    let g:vim_markdown_frontmatter=1
-
 " YouCompleteMe configure:
-    " completor和YCM一样都是补全插件, 但是和YCM有冲突
-    " let g:completor_python_binary = '/usr/local/bin/python3' 
-    " completor 是基于标签补全的, 同时还可以模糊匹配Snippets的key
-    let g:ycm_python_binary_path = 'python3'
-    let g:ycm_path_to_python3_interpreter = '/usr/local/bin/python3'
-    " 禁止缓存匹配项,每次都重新生成匹配项
-    let g:ycm_cache_omnifunc = 0
-    " 开启语义补全
-    let g:ycm_seed_identifiers_with_syntax = 1
-    " 在注释输入中也能补全
-    let g:ycm_complete_in_comments = 1
-    " 在字符串输入中也能补全
-    let g:ycm_complete_in_strings = 1
-    let g:ycm_use_ultisnips_completer = 1
-    let g:ycm_collect_identifiers_from_tags_files = 1
-    let g:ycm_collect_identifiers_from_comments_and_strings = 1
-    " 输入第2个字符开始补全
-    let g:ycm_min_num_of_chars_for_completion = 2
-    let g:ycm_max_diagnostics_to_display = 0
-    let g:ycm_show_diagnostics_ui = 0
-    let g:ycm_key_invoke_completion = '<c-space>'
-    " let g:ycm_key_list_select_completion = ['<C-n>', '<C-j>']
-    " let g:ycm_key_list_previous_completion = ['<C-p>', '<C-k>']
-    let g:ycm_key_list_select_completion = ['<C-n>', '<Tab>']
-    let g:ycm_key_list_previous_completion = ['<C-p>']
-    let g:ycm_autoclose_preview_window_after_completion = 1
-    " 离开插入模式后自动关闭预览窗口"
-    let g:ycm_autoclose_preview_window_after_insertion = 1
-    " let g:ycm_add_preview_to_completeopt = 0
-    let g:ycm_filetype_whitelist = { 
-        \ 'sh': 1,
-        \ 'python': 1,
-        \ }
-    let g:ycm_filetype_blacklist = { 
-        \ 'tagbar' : 1,
-        \ 'nerdtree' : 1,
-        \ 'gitcommit' : 1,
-        \ }
-    " 如果配置下面输入两个字符来自动触发语义补全，会导致UltiSnips的补全不在补全窗口里面显示
-    let g:ycm_semantic_triggers =  {
-        \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{3}'],
-        \ 'cs,lua,javascript': ['re!\w{3}'],
-        \ 'css': [ 're!^\s{4}', 're!:\s+'],
-        \ 'html': [ '</' ],
-        \ }
-    let g:ycm_global_ycm_extra_conf = '${VIMFILES}/bundle/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'
-    " let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-    let g:ycm_confirm_extr_conf = 0
-    " 回车即选中当前项"
-    let g:ycm_key_list_stop_completion = ['<CR>']
-    set completeopt=longest,menu
-    let g:ycm_goto_buffer_command = 'horizontal-split'
-    let g:ycm_register_as_syntastic_checker = 0
-    autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-    nnoremap <leader>gs :YcmCompleter GoToDeclaration<CR>
-    nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
-    nnoremap <leader>gg :YcmCompleter GoTo<CR>
-    nnoremap <leader>gt :YcmCompleter GoToDefinitionElseDeclaration<CR>
-    " nnoremap <leader>gw :YcmCompleter GetDoc<CR>
+    " " let g:completor_python_binary = '/usr/local/bin/python3' 
+    " let g:ycm_python_binary_path = 'python3'
+    " let g:ycm_path_to_python3_interpreter = '/usr/local/bin/python3'
+    " " 禁止缓存匹配项,每次都重新生成匹配项
+    " let g:ycm_cache_omnifunc = 0
+    " " 开启语义补全
+    " let g:ycm_seed_identifiers_with_syntax = 1
+    " " 在注释输入中也能补全
+    " let g:ycm_complete_in_comments = 1
+    " " 在字符串输入中也能补全
+    " let g:ycm_complete_in_strings = 1
+    " let g:ycm_use_ultisnips_completer = 1
+    " let g:ycm_collect_identifiers_from_tags_files = 1
+    " let g:ycm_collect_identifiers_from_comments_and_strings = 1
+    " " 输入第2个字符开始补全
+    " let g:ycm_min_num_of_chars_for_completion = 2
+    " let g:ycm_max_diagnostics_to_display = 0
+    " let g:ycm_show_diagnostics_ui = 0
+    " let g:ycm_key_invoke_completion = '<c-space>'
+    " " let g:ycm_key_list_select_completion = ['<C-n>', '<C-j>']
+    " " let g:ycm_key_list_previous_completion = ['<C-p>', '<C-k>']
+    " let g:ycm_key_list_select_completion = ['<C-n>', '<Tab>']
+    " let g:ycm_key_list_previous_completion = ['<C-p>']
+    " let g:ycm_autoclose_preview_window_after_completion = 1
+    " " 离开插入模式后自动关闭预览窗口"
+    " let g:ycm_autoclose_preview_window_after_insertion = 1
+    " " let g:ycm_add_preview_to_completeopt = 0
+    " let g:ycm_filetype_whitelist = { 
+    "     \ 'sh': 1,
+    "     \ 'python': 1,
+    "     \ }
+    " let g:ycm_filetype_blacklist = { 
+    "     \ 'gitcommit' : 1,
+    "     \ }
+    " " 如果配置下面输入两个字符来自动触发语义补全，会导致UltiSnips的补全不在补全窗口里面显示
+    " let g:ycm_semantic_triggers =  {
+    "     \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{3}'],
+    "     \ 'cs,lua,javascript': ['re!\w{3}'],
+    "     \ 'css': [ 're!^\s{4}', 're!:\s+'],
+    "     \ 'html': [ '</' ],
+    "     \ }
+    " let g:ycm_global_ycm_extra_conf = '${VIMFILES}/bundle/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'
+    " " let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+    " let g:ycm_confirm_extr_conf = 0
+    " " 回车即选中当前项"
+    " let g:ycm_key_list_stop_completion = ['<CR>']
+    " set completeopt=longest,menu
+    " let g:ycm_goto_buffer_command = 'horizontal-split'
+    " let g:ycm_register_as_syntastic_checker = 0
+    " autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+    " nnoremap <leader>gs :YcmCompleter GoToDeclaration<CR>
+    " nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
+    " nnoremap <leader>gg :YcmCompleter GoTo<CR>
+    " nnoremap <leader>gt :YcmCompleter GoToDefinitionElseDeclaration<CR>
+    " " nnoremap <leader>gw :YcmCompleter GetDoc<CR>
 
-" Snippets configure:
-    imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-    smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-    xmap <C-k>     <Plug>(neosnippet_expand_target)
-    " imap <expr><TAB>
-    " \ pumvisible() ? "\<C-n>" :
-    " \ neosnippet#expandable_or_jumpable() ?
-    " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-    let g:deoplete#enable_at_startup = 1
-    let g:UltiSnipsExpandTrigger="<tab>"
-    let g:UltiSnipsJumpForwardTrigger  = "<tab>"
-    let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+" coc configure:
+    inoremap <silent><expr> <TAB>
+        \ pumvisible() ? "\<C-n>" :
+        \ <SID>check_back_space() ? "\<TAB>" :
+        \ coc#refresh()
+    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+    function! s:check_back_space() abort
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
+    inoremap <silent><expr> <c-space> coc#refresh()
+    inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Remap keys for gotos
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)
+    " Use K for show documentation in preview window
+    nnoremap <silent> K :call <sid>show_documentation()<cr>
+    " use <c-space> for trigger completion.
+    inoremap <silent><expr> <c-space> coc#refresh()
+    nmap [g <Plug>(coc-git-prevchunk)
+    nmap ]g <Plug>(coc-git-nextchunk)
+    " " show chunk diff at current position
+    " nmap gs <Plug>(coc-git-chunkinfo)
+    " nnoremap <silent> <leader>cg  :<C-u>CocList --normal gstatus<CR>
+    " float window scroll
+    nnoremap <expr><C-f> coc#util#has_float() ? coc#util#float_scroll(1) : "\<C-f>"
+    nnoremap <expr><C-b> coc#util#has_float() ? coc#util#float_scroll(0) : "\<C-b>"
+
+" Snippets or ultisnips configure:
+    " Trigger configuration. Do not use <tab> if you use deoplete and YCM
+    " let g:UltiSnipsExpandTrigger="<tab>"
+    " let g:UltiSnipsJumpForwardTrigger  = "<tab>"
+    " let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
     " let g:UltiSnipsJumpForwardTrigger="<c-b>"
     " let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-    let g:UltiSnipsSnippetDirectories  = ['UltiSnips']
-    " If you want :UltiSnipsEdit to split your window.
-    let g:UltiSnipsEditSplit="vertical"
+    " let g:UltiSnipsEditSplit="vertical"
 
 " CompleteParameter configure: 
     inoremap <silent> <expr> ) complete_parameter#pre_complete("()")
@@ -687,35 +673,34 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     endfunction
 
 " python-mode Settings {{{
-    let g:pymode_python = 'python3'
-    let g:pymode_lint = 0
-    let g:pymode_run = 0
-    let g:pymode_breakpoint = 1
-    let g:pymode_doc = 1
-    let g:pymode_folding = 1
-    let g:pymode_motion = 1
-    let g:pymode_virtualenv = 1
-    let g:pymode_rope = 1
-    let g:pymode_rope_lookup_project = 0
-    let g:pymode_rope_completion = 0
-    " 重命名光标下的函数，方法，变量及类名
-    let g:pymode_rope_rename_bind = '<Leader>rr'
-    let g:pymode_rope_show_doc_bind = '<Leader>sd'
-    let g:pymode_rope_rename_module_bind = '<Leader>rm'
-    let g:pymode_rope_goto_definition_bind = '<Leader>rd'
-    let g:pymode_rope_goto_definition_cmd = 'vnew'
-    " 重命名光标下的模块或包
-    " 开启python所有的语法高亮
-    let g:pymode_syntax = 1
-    let g:pymode_syntax_all = 1
+    " let g:pymode_python = 'python3'
+    " let g:pymode_lint = 0
+    " let g:pymode_run = 0
+    " let g:pymode_breakpoint = 1
+    " let g:pymode_doc = 1
+    " let g:pymode_folding = 1
+    " let g:pymode_motion = 1
+    " let g:pymode_virtualenv = 1
+    " let g:pymode_rope = 1
+    " let g:pymode_rope_lookup_project = 0
+    " let g:pymode_rope_completion = 0
+    " " 重命名光标下的函数，方法，变量及类名
+    " let g:pymode_rope_rename_bind = '<Leader>rr'
+    " let g:pymode_rope_show_doc_bind = '<Leader>sd'
+    " let g:pymode_rope_rename_module_bind = '<Leader>rm'
+    " let g:pymode_rope_goto_definition_bind = '<Leader>rd'
+    " let g:pymode_rope_goto_definition_cmd = 'vnew'
+    " " 重命名光标下的模块或包
+    " " 开启python所有的语法高亮
+    " let g:pymode_syntax = 1
+    " let g:pymode_syntax_all = 1
 " 参考：https://blog.csdn.net/demorngel/article/details/71158792 }}}
 
 " indentline AutoPairs, configure:
     let g:indent_guides_enable_on_vim_startup = 1
     let g:indent_guides_guide_size = 3
     let g:indent_guides_start_level = 2
-    let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
-    " let g:AutoPairs = {'[':']', '{':'}', "'":"'", '"':'"', '`':'`'}
+    let g:AutoPairs = {'<':'>','(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
     " inoremap <buffer><silent> ) <C-R>=AutoPairsInsert(')')<CR>
 
 " rainbow configure:
@@ -726,17 +711,24 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
         \   }
 
 " incsearch configure:
+    nnoremap <Esc><Esc> :<C-u>nohlsearch<CR>
+    map *   <Plug>(asterisk-*)
+    map #   <Plug>(asterisk-#)
+    map g*  <Plug>(asterisk-g*)
+    map g#  <Plug>(asterisk-g#)
+
     map /  <Plug>(incsearch-forward)
     map ?  <Plug>(incsearch-backward)
-    map g/ <Plug>(incsearch-stay)
-    map n  <Plug>(incsearch-nohl-n)
-    map N  <Plug>(incsearch-nohl-N)
-    map *  <Plug>(incsearch-nohl-*)
-    map #  <Plug>(incsearch-nohl-#)
-    map g* <Plug>(incsearch-nohl-g*)
-    map g# <Plug>(incsearch-nohl-g#)
+    " map *  <Plug>(incsearch-nohl-*)
+    " map #  <Plug>(incsearch-nohl-#)
 
-" MarkdownPreview configure:
+" MarkdownPreview & markdown configure:
+    au bufread,bufnewfile *.md,*.markdown setlocal ft=mkd
+    let g:vim_markdown_folding_disabled=1
+    let g:vim_markdown_no_default_key_mappings=1
+    let g:vim_markdown_math=1
+    let g:vim_markdown_frontmatter=1
+
     let g:mkdp_path_to_chrome = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome"
     nmap <silent> <leader>mp <Plug>MarkdownPreview
     nmap <silent> <leader>mP <Plug>StopMarkdownPreview
@@ -744,31 +736,21 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
 " emmet-vim configure:
     " let g:user_emmet_install_global = 0
     " setlocal omnifunc=emmet#completeTag
-    let g:user_emmet_mode='inv'
-    let g:user_emmet_leader_key='<C-o>'
+    " let g:user_emmet_mode='inv'
+    " let g:user_emmet_leader_key='<C-o>'
     " let g:user_emmet_settings = {
     "      \ 'javascript.jsx' : {
     "     \ 'extends' : 'jsx',
     "     \ },
     "      \ }
-    autocmd FileType css setlocal iskeyword+=-
+    " autocmd FileType css setlocal iskeyword+=-
     " autocmd FileType html,css EmmetInstall
 
 " pangu configure:
     autocmd BufWritePre *.markdown,*.md,*.text,*.txt,*.wiki,*.cnx call PanGuSpacing()
 
 " vim-devicons configure:
-    " loading the plugin
     let g:webdevicons_enable = 1
-    " adding the flags to NERDTree
-    let g:webdevicons_enable_nerdtree = 1
-
-    " let g:webdevicons_enable_airline_tabline = 1
-    " let g:webdevicons_enable_airline_statusline = 1
-    " adding to flagship's statusline
-    let g:webdevicons_enable_flagship_statusline = 1
-    " Force extra padding in NERDTree so that the filetype icons line up vertically
-    let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
 
 " winresizer configure:
     let g:winresizer_gui_enable = 1
@@ -778,117 +760,101 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     let g:winresizer_keycode_cancel = 122
 
 " vista configure:
-    " let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
-    " " See all the avaliable executives via `:echo g:vista#executives`.
-    " let g:vista_default_executive = 'ctags'
+    nmap <leader>vt :Vista!!<CR>
+    let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
+    let g:vista_default_executive = 'ctags'
     " let g:vista_ctags_cmd = {
     "   \ 'haskell': 'hasktags -x -o - -c',
     "   \ }
-    " let g:vista#renderer#enable_icon = 1
 
-    " " The default icons can't be suitable for all the filetypes, you can extend it as you wish.
-    " let g:vista#renderer#icons = {
-    " \   "function": "\uf794",
-    " \   "variable": "\uf71b",
-    " \  }
+    " let g:vista_fzf_preview = ['right:50%']
 
-" coc configure:
-    inoremap <silent><expr> <TAB>
-        \ pumvisible() ? "\<C-n>" :
-        \ <SID>check_back_space() ? "\<TAB>" :
-        \ coc#refresh()
-    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+    let g:vista_executive_for = {
+        \ 'go': 'ctags',
+        \ 'javascript': 'coc',
+        \ 'javascript.jsx': 'coc',
+        \ 'python': 'ctags',
+        \ }
+    let g:vista#renderer#enable_icon = 1
 
-    function! s:check_back_space() abort
-        let col = col('.') - 1
-        return !col || getline('.')[col - 1]  =~# '\s'
-    endfunction
-
-    inoremap <silent><expr> <c-space> coc#refresh()
-    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+    " The default icons can't be suitable for all the filetypes, you can extend it as you wish.
+    let g:vista#renderer#icons = {
+    \   "function": "\uf794",
+    \   "variable": "\uf71b",
+    \  }
 
 " plugins manager autodownload and keymap configure:
-    let VIM_PLUG_PATH = expand('$VIMRUNTIME/autoload/plug.vim')
     if empty(glob(expand('$VIMRUNTIME/autoload/plug.vim')))
-        silent !sudo curl -fLo $VIMRUNTIME/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall --sync |source ~/.vimrc
+        silent !curl -fLo $VIMRUNTIME/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        autocmd VimEnter * PlugUpdate --sync |source ~/.vimrc
     endif
     " Plug keymap configure:
     nnoremap <Leader>pi :PlugInstall<Cr>
     nnoremap <Leader>pc :PlugClean<Cr>
     nnoremap <Leader>pu :PlugUpdate<Cr>
 
-" "  < Plugin lists >
+"  < Plugin lists >
 call plug#begin('~/.vim/vimfiles/bundle')
+     Plug 'mhinz/vim-startify'
      Plug 'flazz/vim-colorschemes'
      Plug 'itchyny/lightline.vim'
-     " Plug 'liuchengxu/eleline.vim'
-     Plug 'ryanoasis/vim-devicons'
-"     Plug 'lifepillar/vim-solarized8'
-     " Plug 'vim-airline/vim-airline-themes'
-     " Plug 'vim-airline/vim-airline'
-     Plug 'troydm/zoomwintab.vim'
+     Plug 'joshdick/onedark.vim'
+     Plug 'sheerun/vim-polyglot'
      Plug 'easymotion/vim-easymotion'
      Plug 'junegunn/vim-easy-align'
-     Plug 'luochen1990/rainbow'
      Plug 'tpope/vim-surround'
      Plug 'jiangmiao/auto-pairs'
      Plug 'tommcdo/vim-exchange'
-     " Plug 'wincent/terminus'
+     Plug 'https://github.com/mg979/vim-visual-multi.git'
+     Plug 'tpope/vim-repeat'
+     Plug 'scrooloose/nerdcommenter'
+     Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
+     Plug 'kristijanhusak/defx-icons'
+     Plug 'kristijanhusak/defx-git'
+     Plug 'ryanoasis/vim-devicons'
+     Plug 'luochen1990/rainbow'
      Plug 'kshenoy/vim-signature'
      Plug 'airblade/vim-gitgutter'
-"     " Plug 'neoclide/vim-easygit'
-"     Plug 'Shougo/denite.nvim'
-"     " Plug 'jreybert/vimagit'
-"     " Plug 'mhinz/vim-signify' support more vcs
-"     " Plug 'tpope/vim-fugitive'
-     Plug 'tpope/vim-obsession'
-     Plug 'tpope/vim-repeat'
-"     " Plug 'davidhalter/jedi-vim'
-"     " Plug 'python-mode/python-mode', { 'branch': 'develop' }
-"     " Plug 'maralla/completor.vim'
-    if has('nvim')
-        " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+     Plug 'neoclide/vim-easygit'
+     " Plug 'mhinz/vim-signify' support more vcs
+     " Plug 'tpope/vim-fugitive'
+     " Plug 'python-mode/python-mode', { 'branch': 'develop' }
+     Plug 'tenfyzhong/CompleteParameter.vim'
+    " if has('nvim')
+     Plug 'neoclide/coc.nvim', {'do': './install.sh nightly'}
+     " Plug 'davidhalter/jedi-vim'
+     " Plug 'maralla/completor.vim'
         Plug 'Shougo/neosnippet.vim'
         Plug 'Shougo/neosnippet-snippets'
-        " Plug 'rhysd/nyaovim-popup-tooltip'
-    else
-         Plug 'sirver/ultisnips'
-         Plug 'honza/vim-snippets'
+    " else
+         " Plug 'sirver/ultisnips'
+         " Plug 'honza/vim-snippets'
          " Plug 'Valloric/YouCompleteMe'
-    endif
+    " endif
      Plug 'tell-k/vim-autopep8'
      Plug 'Chiel92/vim-autoformat'
      Plug 'w0rp/ale'
-     Plug 'majutsushi/tagbar'
-     " Plug 'liuchengxu/vista.vim'
-     Plug 'scrooloose/nerdcommenter'
-     Plug 'scrooloose/nerdtree'
-     Plug 'sjl/gundo.vim'
-     " Plug 'dyng/ctrlsf.vim'
+     " Plug 'neomake/neomake'
+     Plug 'liuchengxu/vista.vim'
+     Plug 'https://github.com/simnalamburt/vim-mundo.git'
      Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
-     Plug 'junegunn/fzf', { 'dir': '~/.vim/vimfiles/bundle/fzf', 'do': './install --all'  }
+     Plug 'haya14busa/incsearch.vim'
+     Plug 'haya14busa/vim-asterisk'
+     Plug 'markonm/traces.vim'
+     Plug '/usr/local/opt/fzf'
      Plug 'junegunn/fzf.vim'
-     Plug 'iamcco/markdown-preview.vim'
-     Plug 'terryma/vim-multiple-cursors'
+     Plug 'simeji/winresizer'
      Plug 'yonchu/accelerated-smooth-scroll'
      Plug 'nathanaelkane/vim-indent-guides'
-     Plug 'sheerun/vim-polyglot'
+     " Plug 'tmhedberg/SimpylFold'
      Plug 'hotoo/pangu.vim'
+     Plug 'iamcco/markdown-preview.vim'
      Plug 'skywind3000/asyncrun.vim'
-"     Plug 'rhysd/nyaovim-popup-tooltip'
-"     Plug 'tenfyzhong/CompleteParameter.vim'
-"     " Plug 'neomake/neomake'
-     Plug 'plytophogy/vim-virtualenv'
-"     Plug 'rizzatti/dash.vim'
-"     Plug 'mattn/emmet-vim'
-     Plug 'haya14busa/incsearch.vim'
-     Plug 'jistr/vim-nerdtree-tabs'
-     Plug 'Xuyuanp/nerdtree-git-plugin'
-     Plug 'othree/html5.vim'
-     Plug 'hail2u/vim-css3-syntax'
+     " Plug 'sillybun/vim-repl'
+     " Plug 'plytophogy/vim-virtualenv'
+     " Plug 'rizzatti/dash.vim'
+     " Plug 'mattn/emmet-vim'
+     " Plug 'othree/html5.vim'
+     " Plug 'hail2u/vim-css3-syntax'
      Plug 'ap/vim-css-color'
-     Plug 'simeji/winresizer'
-     Plug 'neoclide/coc.nvim', {'do': './install.sh nightly'}
-     Plug 'joshdick/onedark.vim'
 call plug#end()

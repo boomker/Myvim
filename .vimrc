@@ -146,7 +146,6 @@ set foldmethod=indent                                   "indent 折叠方式
 " set foldopen=all                                        "光标移到折叠时自动打开
 " set foldclose=all
 set autoread                                            "当文件在外部被修改，自动更新该文件
-" set clipboard=unnamed                                   "与其他应用共享剪贴板,抽出和粘贴选择内容,而无须在这些命令前面附加"*.
 set clipboard+=unnamedplus
 set hlsearch                                "高亮搜索
 set incsearch                               "在输入要搜索的文字时，实时匹配
@@ -173,36 +172,38 @@ endif
 " ===============< Hotkey mapping >======================
 let mapleader = ";"
 inoremap <ESC> <ESC>:nohl<CR>
-inoremap <C-e> <C-y>
-inoremap <C-y> <C-e>
-" quick movements in Insert-Mode
-inoremap II <Esc>I
-inoremap AA <Esc>A
-inoremap OO <Esc>o
-
 nnoremap <leader><space> :nohl<CR>
 nmap <Up> <Nop>
 nmap <Down> <Nop>
 nmap <Left> <Nop>
 nmap <Right> <Nop>
-noremap <silent> <expr> j (v:count == 0 ? 'gjzz' : 'j')
-noremap <silent> <expr> k (v:count == 0 ? 'gkzz' : 'k')
-noremap '' ''zz
-vmap j gj
-vmap k gk
 
 nmap J gJ
+vmap j gj
+vmap k gk
+noremap <silent> <expr> j (v:count == 0 ? 'gjzz' : 'j')
+noremap <silent> <expr> k (v:count == 0 ? 'gkzz' : 'k')
+noremap '' ``zz
+noremap mm `.
+nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
+nnoremap ]<space>  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
 map H ^
 map L $
+map Y y$
 noremap gl gu
 noremap gu gU
+
+" quick movements in Insert-Mode
+inoremap II <Esc>I
+inoremap AA <Esc>A
+inoremap OO <Esc>o
+
 " select last paste in visual mode
 nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1) . '`]'
 nmap gp <Plug>GitGutterPrevHunk
 nmap gn <Plug>GitGutterNextHunk
 
 " inoremap <c-l> <c-o>:w<cr>
-" nnoremap <c-l> :w<cr>
 nmap sj <C-o>
 nmap sk <C-i>
 nmap su <C-r>
@@ -213,9 +214,6 @@ nmap tn :tabn<CR>
 nmap tp :tabp<CR>
 nmap tw vwP
 
-nmap mm ``
-nmap ml `.
-
 nnoremap <CR> :
 " Delete character end of current cursor
 nmap d<CR> dG
@@ -225,11 +223,7 @@ nmap y<CR> yG
 nmap yj 2yy
 nmap yk k2yy
 nmap yp yyp
-nmap ysiw{ ysiw}
 
-nnoremap zg :q!<CR>
-nnoremap zp <C-w>pZQ
-nnoremap zf <S-z><S-z>
 nnoremap zl <C-w>v
 nnoremap zh <C-w>s
 
@@ -373,7 +367,16 @@ else
     endf
 endif
 nnoremap <Leader>ot :call OpenTerminal()<cr>
-nnoremap <Leader>zt :ZoomWinTabToggle<cr>
+" nnoremap <Leader>zt :ZoomWinTabToggle<cr>
+
+" Copy_search_matches func
+function! CopyMatches(reg)
+    let hits = []
+    %s//\=len(add(hits, submatch(0))) ? submatch(0) : ''/gne
+    let reg = empty(a:reg) ? '+' : a:reg
+    execute 'let @'.reg.' = join(hits, "\n") . "\n"'
+endfunction
+command! -register CopyMatches call CopyMatches(<q-reg>)
 
 " ==============< Plugins configure >================
 
@@ -412,6 +415,12 @@ nnoremap <Leader>zt :ZoomWinTabToggle<cr>
     xmap <Leader>ga <Plug>(EasyAlign)
 
 " multiplecursors configure:
+    let g:VM_maps = {}
+    let g:VM_leader = ','
+    " let g:VM_maps['Find Under']         = '<C-d>'           " replace C-n
+    " let g:VM_maps['Find Subword Under'] = '<C-d>'           " replace visual C-n
+    let g:VM_maps["Undo"] = 'u'
+    let g:VM_maps["Redo"] = '<C-r>'
 
 " Leaderf configure:
     nnoremap <Leader>fh :LeaderfMru<CR>
@@ -840,7 +849,8 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
      Plug 'haya14busa/incsearch.vim'
      Plug 'haya14busa/vim-asterisk'
-     Plug 'markonm/traces.vim'
+     Plug 'wellle/targets.vim'
+     Plug 'markonm/traces.vim'                          " It also provides live preview for the following Ex commands
      Plug '/usr/local/opt/fzf'
      Plug 'junegunn/fzf.vim'
      Plug 'simeji/winresizer'
@@ -853,6 +863,7 @@ call plug#begin('~/.vim/vimfiles/bundle')
      " Plug 'sillybun/vim-repl'
      " Plug 'plytophogy/vim-virtualenv'
      " Plug 'rizzatti/dash.vim'
+     Plug 'dbeniamine/cheat.sh-vim'
      " Plug 'mattn/emmet-vim'
      " Plug 'othree/html5.vim'
      " Plug 'hail2u/vim-css3-syntax'

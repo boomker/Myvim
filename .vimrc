@@ -161,15 +161,17 @@ set vb t_vb=                                "关闭提示音
 set nobackup                                "设置无备份文件
 set noswapfile                              "设置无临时文件
 set nowritebackup                           "无写入备份
-filetype plugin on
 syntax on
-autocmd! bufwritepost .vimrc source ~/.vimrc
+filetype plugin on
+
+" autocmd! bufwritepost .vimrc :source ~/.vimrc
 au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
 if has("autocmd")
       au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
 " ===============< Hotkey mapping >======================
+nmap <leader>rc :source ~/.vimrc<CR>
 let mapleader = ";"
 inoremap <ESC> <ESC>:nohl<CR>
 nnoremap <leader><space> :nohl<CR>
@@ -378,6 +380,37 @@ function! CopyMatches(reg)
 endfunction
 command! -register CopyMatches call CopyMatches(<q-reg>)
 
+function! OpenFloatingWin()
+    let height = &lines - 1
+    let width = float2nr(&columns - (&columns * 2 / 10))
+    let col = float2nr((&columns - width) / 6)
+
+    " 设置浮动窗口打开的位置，大小等。
+    " 这里的大小配置可能不是那么的 flexible 有继续改进的空间
+    let opts = {
+            \ 'relative': 'editor',
+            \ 'row': height * 0.1,
+            \ 'col': col + 30,
+            \ 'width': width * 4 / 5,
+            \ 'height': height * 4 / 5
+            \ }
+
+    let buf = nvim_create_buf(v:false, v:true)
+    let win = nvim_open_win(buf, v:true, opts)
+
+    " 设置浮动窗口高亮
+    call setwinvar(win, '&winhl', 'Normal:Pmenu')
+
+    setlocal
+        \ buftype=nofile
+        \ nobuflisted
+        \ bufhidden=hide
+        \ nonumber
+        \ norelativenumber
+        \ signcolumn=no
+endfunction
+
+
 " ==============< Plugins configure >================
 
 " vim easymotion configure:
@@ -458,6 +491,12 @@ command! -register CopyMatches call CopyMatches(<q-reg>)
     nmap <leader>fr :Rg<CR>
     nmap <leader>fb :Buffers<CR>
     nmap <leader>fl :BLines<CR>
+
+      " 让输入上方，搜索列表在下方
+    let $FZF_DEFAULT_OPTS = '--layout=reverse'
+
+    " 打开 fzf 的方式选择 floating window
+    let g:fzf_layout = { 'window': 'call OpenFloatingWin()' }
 
 " nerdcommenter configure:
     let g:NERDSpaceDelims=1
@@ -652,7 +691,7 @@ command! -register CopyMatches call CopyMatches(<q-reg>)
     " let g:UltiSnipsJumpBackwardTrigger="<c-z>"
     " let g:UltiSnipsEditSplit="vertical"
 
-" CompleteParameter configure: 
+" CompleteParameter configure:
     inoremap <silent> <expr> ) complete_parameter#pre_complete("()")
     smap <c-j> <Plug>(complete_parameter#goto_next_parameter)
     imap <c-j> <Plug>(complete_parameter#goto_next_parameter)
@@ -680,6 +719,15 @@ command! -register CopyMatches call CopyMatches(<q-reg>)
         let &makeprg = mp
         let &errorformat = ef
     endfunction
+
+" slime configure:
+    let g:slime_target = "tmux"
+    let g:slime_default_config = {"socket_name": "default", "target_pane": "{right-of}"}
+    let g:slime_dont_ask_default = 1
+    let g:slime_python_ipython = 1
+    " nmap <c-c><c-c> <Plug>SlimeParagraphSend
+    xmap <leader>si <Plug>SlimeRegionSend
+    nmap <leader>sp <Plug>SlimeParagraphSend
 
 " python-mode Settings {{{
     " let g:pymode_python = 'python3'
@@ -733,12 +781,7 @@ command! -register CopyMatches call CopyMatches(<q-reg>)
 
 " MarkdownPreview & markdown configure:
     au bufread,bufnewfile *.md,*.markdown setlocal ft=mkd
-    let g:vim_markdown_folding_disabled=1
-    let g:vim_markdown_no_default_key_mappings=1
-    let g:vim_markdown_math=1
-    let g:vim_markdown_frontmatter=1
 
-    let g:mkdp_path_to_chrome = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome"
     nmap <silent> <leader>mp <Plug>MarkdownPreview
     nmap <silent> <leader>mP <Plug>StopMarkdownPreview
 
@@ -761,7 +804,7 @@ command! -register CopyMatches call CopyMatches(<q-reg>)
 " vim-devicons configure:
     let g:webdevicons_enable = 1
 
-" winresizer configure:
+"" winresizer configure:
     let g:winresizer_gui_enable = 1
     " If you want to start window resize mode by `Ctrl+T`
     let g:winresizer_start_key = '<Leader>ws'
@@ -777,6 +820,19 @@ command! -register CopyMatches call CopyMatches(<q-reg>)
     "   \ }
 
     " let g:vista_fzf_preview = ['right:50%']
+    let g:vista_echo_cursor_strategy ='floating_win'
+    " 侧边栏宽度.
+    let g:vista_sidebar_width = 30
+    " 设置为0，以禁用光标移动时的回显.
+    let g:vista_echo_cursor = 1
+    " 当前游标上显示详细符号信息的时间延迟.
+    let g:vista_cursor_delay = 400
+    " 跳转到一个符号时，自动关闭vista窗口.
+    let g:vista_close_on_jump = 0
+    "打开vista窗口后移动到它.
+    let g:vista_stay_on_open = 1
+    " 跳转到标记后闪烁光标2次，间隔100ms.
+    let g:vista_blink = [2, 100]
 
     let g:vista_executive_for = {
         \ 'go': 'ctags',
@@ -833,21 +889,17 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'neoclide/coc.nvim', {'do': './install.sh nightly'}
      " Plug 'davidhalter/jedi-vim'
      " Plug 'maralla/completor.vim'
-        Plug 'Shougo/neosnippet.vim'
-        Plug 'Shougo/neosnippet-snippets'
-    " else
-         " Plug 'sirver/ultisnips'
-         " Plug 'honza/vim-snippets'
-         " Plug 'Valloric/YouCompleteMe'
-    " endif
+     Plug 'Shougo/neosnippet.vim'
+     Plug 'Shougo/neosnippet-snippets'
      Plug 'tell-k/vim-autopep8'
      Plug 'Chiel92/vim-autoformat'
-     Plug 'w0rp/ale'
+     Plug 'dense-analysis/ale'
      " Plug 'neomake/neomake'
      Plug 'liuchengxu/vista.vim'
      Plug 'https://github.com/simnalamburt/vim-mundo.git'
      Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
      Plug 'haya14busa/incsearch.vim'
+     Plug 'https://github.com/jpalardy/vim-slime'
      Plug 'haya14busa/vim-asterisk'
      Plug 'wellle/targets.vim'
      Plug 'markonm/traces.vim'                          " It also provides live preview for the following Ex commands
@@ -858,7 +910,7 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'nathanaelkane/vim-indent-guides'
      " Plug 'tmhedberg/SimpylFold'
      Plug 'hotoo/pangu.vim'
-     Plug 'iamcco/markdown-preview.vim'
+     Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
      Plug 'skywind3000/asyncrun.vim'
      " Plug 'sillybun/vim-repl'
      " Plug 'plytophogy/vim-virtualenv'

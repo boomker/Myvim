@@ -183,17 +183,24 @@ nmap <Right> <Nop>
 nmap J gJ
 vmap j gj
 vmap k gk
-noremap <silent> <expr> j (v:count == 0 ? 'gjzz' : 'j')
-noremap <silent> <expr> k (v:count == 0 ? 'gkzz' : 'k')
-noremap '' ``zz
-noremap mm `.
-nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
-nnoremap ]<space>  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
-map H ^
-map L $
-map Y y$
+nmap H ^
+nmap L $
+nmap d<CR> dG
+nmap dj 2dd
+nmap dk k2dd
+nmap Y y$
+nmap y<CR> yG
+nmap yj 2yy
+nmap yk k2yy
+nmap yp yyp
 noremap gl gu
 noremap gu gU
+noremap '' ``zz
+noremap mm `.
+noremap <silent> <expr> j (v:count == 0 ? 'gjzz' : 'j')
+noremap <silent> <expr> k (v:count == 0 ? 'gkzz' : 'k')
+nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
+nnoremap ]<space>  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
 
 " quick movements in Insert-Mode
 inoremap II <Esc>I
@@ -217,14 +224,6 @@ nmap tp :tabp<CR>
 nmap tw vwP
 
 nnoremap <CR> :
-" Delete character end of current cursor
-nmap d<CR> dG
-nmap dj 2dd
-nmap dk k2dd
-nmap y<CR> yG
-nmap yj 2yy
-nmap yk k2yy
-nmap yp yyp
 
 nnoremap zl <C-w>v
 nnoremap zh <C-w>s

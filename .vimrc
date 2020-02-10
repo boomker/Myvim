@@ -554,7 +554,7 @@ endfunction
     let g:defx_git#column_length = 0
 
     let g:defx_icons_enable_syntax_highlight = 1
-
+    " let g:defx#_python_version_check
 " gitgutter configure configure:
     set updatetime=50
     let g:gitgutter_max_signs = 1000
@@ -912,12 +912,14 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'hotoo/pangu.vim'
      Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
      Plug 'skywind3000/asyncrun.vim'
-     " Plug 'sillybun/vim-repl'
+     Plug 'sillybun/vim-repl'
      " Plug 'plytophogy/vim-virtualenv'
      " Plug 'rizzatti/dash.vim'
      Plug 'dbeniamine/cheat.sh-vim'
-     " Plug 'mattn/emmet-vim'
-     " Plug 'othree/html5.vim'
-     " Plug 'hail2u/vim-css3-syntax'
+     Plug 'mattn/emmet-vim'
+     Plug 'othree/html5.vim'
+     Plug 'hail2u/vim-css3-syntax'
      Plug 'ap/vim-css-color'
+     Plug 'tpope/vim-obsession'
+     Plug 'tpope/vim-abolish'
 call plug#end()

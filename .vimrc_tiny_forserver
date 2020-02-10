@@ -32,9 +32,17 @@ set nocompatible                " don't bother with vi compatibility
 set autoread                    " reload files when changed on disk, i.e. via `git checkout`
 set shortmess=atI
 
+"  in the normal mode autoset relative_number
+augroup relative_numbser
+    autocmd!
+    autocmd InsertEnter * :set norelativenumber
+    autocmd InsertLeave * :set relativenumber
+augroup END
+
 set magic                       " For regular expressions turn magic on
 set title                       " change the terminal's title
 set nobackup                    " do not keep a backup file
+set noswapfile
 
 set novisualbell                " turn off visual bell
 set noerrorbells                " don't beep

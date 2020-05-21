@@ -15,9 +15,6 @@ endif
 " -----------------------------------------------------------------------------
 if has("gui_running")
     let g:isGUI = 1
-    set imi=2                                       " 搜狗输入法在macvim混乱的解决方法如下:
-    set ims=2
-    set guiheadroom=0                               " 禁止GTK填充窗口底部为主题背景色，此设置会消除底部的水平滚动条"
     highlight Comment gui=italic
 else
     let g:isGUI = 0
@@ -35,6 +32,9 @@ if (g:isWin && g:isGUI)
     set iminsert=2                                          "输入法设置"
     set mousef                                              "启用光标激活pane
     set mouse=a                                           " 在任何模式下启用鼠标,但是右键用不了
+    set imi=2                                       " 搜狗输入法在macvim混乱的解决方法如下:
+    set ims=2
+    set guiheadroom=0                               " 禁止GTK填充窗口底部为主题背景色，此设置会消除底部的水平滚动条"
     " set guifont=Source_Code_Pro:h15:cANSI
     au GUIEnter * simalt ~x                                 "窗口启动时自动最大化
     autocmd bufwritepost _vimrc source $VIM/_vimrc
@@ -586,13 +586,21 @@ endfunction
     let g:ale_open_list = 0
     let g:ale_lint_delay = 500
     let g:ale_python_flake8_options="--ignore=E114,E116,E131,E221,E501 --max-line-length=120"
+    let g:ale_linters = {'python': 'flake8'}
     " https://blog.csdn.net/zgljl2012/article/details/51907663
     let g:ale_emit_conflict_warnings = 0
     nmap sn <Plug>(ale_next_wrap)
     nmap sp <Plug>(ale_previous_wrap)
 
+
+" deoplete configure:
+    let g:deoplete#enable_at_startup = 1
+    inoremap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+
 " YouCompleteMe configure:
-    " " let g:completor_python_binary = '/usr/local/bin/python3' 
+    " let g:completor_python_binary = '/usr/local/bin/python3'
     " let g:ycm_python_binary_path = 'python3'
     " let g:ycm_path_to_python3_interpreter = '/usr/local/bin/python3'
     " " 禁止缓存匹配项,每次都重新生成匹配项
@@ -648,44 +656,11 @@ endfunction
     " nnoremap <leader>gt :YcmCompleter GoToDefinitionElseDeclaration<CR>
     " " nnoremap <leader>gw :YcmCompleter GetDoc<CR>
 
-" coc configure:
-    inoremap <silent><expr> <TAB>
-        \ pumvisible() ? "\<C-n>" :
-        \ <SID>check_back_space() ? "\<TAB>" :
-        \ coc#refresh()
-    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-    function! s:check_back_space() abort
-        let col = col('.') - 1
-        return !col || getline('.')[col - 1]  =~# '\s'
-    endfunction
-
-    inoremap <silent><expr> <c-space> coc#refresh()
-    inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-" Remap keys for gotos
-    nmap <silent> gd <Plug>(coc-definition)
-    nmap <silent> gy <Plug>(coc-type-definition)
-    nmap <silent> gi <Plug>(coc-implementation)
-    nmap <silent> gr <Plug>(coc-references)
-    " Use K for show documentation in preview window
-    nnoremap <silent> K :call <sid>show_documentation()<cr>
-    " use <c-space> for trigger completion.
-    inoremap <silent><expr> <c-space> coc#refresh()
-    nmap [g <Plug>(coc-git-prevchunk)
-    nmap ]g <Plug>(coc-git-nextchunk)
-    " " show chunk diff at current position
-    " nmap gs <Plug>(coc-git-chunkinfo)
-    " nnoremap <silent> <leader>cg  :<C-u>CocList --normal gstatus<CR>
-    " float window scroll
-    nnoremap <expr><C-f> coc#util#has_float() ? coc#util#float_scroll(1) : "\<C-f>"
-    nnoremap <expr><C-b> coc#util#has_float() ? coc#util#float_scroll(0) : "\<C-b>"
-
 " Snippets or ultisnips configure:
     " Trigger configuration. Do not use <tab> if you use deoplete and YCM
-    " let g:UltiSnipsExpandTrigger="<tab>"
-    " let g:UltiSnipsJumpForwardTrigger  = "<tab>"
-    " let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+    let g:UltiSnipsExpandTrigger="<tab>"
+    let g:UltiSnipsJumpForwardTrigger  = "<tab>"
+    let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
     " let g:UltiSnipsJumpForwardTrigger="<c-b>"
     " let g:UltiSnipsJumpBackwardTrigger="<c-z>"
     " let g:UltiSnipsEditSplit="vertical"
@@ -883,9 +858,11 @@ call plug#begin('~/.vim/vimfiles/bundle')
      " Plug 'mhinz/vim-signify' support more vcs
      " Plug 'tpope/vim-fugitive'
      " Plug 'python-mode/python-mode', { 'branch': 'develop' }
+     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+     Plug 'deoplete-plugins/deoplete-jedi'
+     Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
      Plug 'tenfyzhong/CompleteParameter.vim'
     " if has('nvim')
-     Plug 'neoclide/coc.nvim', {'do': './install.sh nightly'}
      " Plug 'davidhalter/jedi-vim'
      " Plug 'maralla/completor.vim'
      Plug 'Shougo/neosnippet.vim'

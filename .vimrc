@@ -133,7 +133,7 @@ set tabstop=4                                           "设置Tab键的宽度
 set softtabstop=4
 set shiftwidth=4                                        "换行时自动缩进4个空格
 set scrolloff=3                                         "上下滚动时当前行距顶或低保持有3行"
-set cursorcolumn                                        "突出显示当前行
+set cursorline
 " set cursorline cursorcolumn                           "突出显示当前行
 set colorcolumn=120
 set selection=inclusive
@@ -554,12 +554,12 @@ endfunction
 
     let g:defx_icons_enable_syntax_highlight = 1
     " let g:defx#_python_version_check
+
 " gitgutter configure configure:
     set updatetime=50
     let g:gitgutter_max_signs = 1000
     let g:gitgutter_sign_added = '✚'
     let g:gitgutter_sign_modified = '✎'
-    " let g:gitgutter_sign_modified = '☻'
     let g:gitgutter_sign_removed = '✖'
     let g:gitgutter_sign_removed_first_line = '➤'
     let g:gitgutter_sign_modified_removed = '✹'
@@ -585,7 +585,7 @@ endfunction
     let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
     let g:ale_open_list = 0
     let g:ale_lint_delay = 500
-    let g:ale_python_flake8_options="--ignore=E114,E116,E131,E221,E501 --max-line-length=120"
+    let g:ale_python_flake8_options="--ignore=E114,E116,E131,E221,E501,E701 --max-line-length=120"
     let g:ale_linters = {'python': 'flake8'}
     " https://blog.csdn.net/zgljl2012/article/details/51907663
     let g:ale_emit_conflict_warnings = 0
@@ -778,7 +778,7 @@ endfunction
 " vim-devicons configure:
     let g:webdevicons_enable = 1
 
-"" winresizer configure:
+" winresizer configure:
     let g:winresizer_gui_enable = 1
     " If you want to start window resize mode by `Ctrl+T`
     let g:winresizer_start_key = '<Leader>ws'

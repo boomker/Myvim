@@ -165,7 +165,6 @@ syntax on
 filetype plugin on
 
 " autocmd! bufwritepost .vimrc :source ~/.vimrc
-au BufRead,BufNewFile,BufEnter * cd %:p:h               "自动切换到正在编辑文件所在的目录
 if has("autocmd")
       au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
@@ -282,16 +281,6 @@ if has("autocmd")
       endif
 endif
 
-" 以下是让 insert mode 的光标成为下划线, 一个终极的解决办法就是安装terminus plugin
-" if exists('$ITERM_PROFILE')
-    " if exists('$TMUX') 
-        " let &t_SI = "\<Esc>[3 q"
-        " let &t_EI = "\<Esc>[0 q"
-    " else
-        " let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-        " let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-    " endif
-" endif
 
 " 设置在 tmux & xterm 里粘贴系统剪贴板里的字符时保持原有排版格式
 function! WrapForTmux(s)
@@ -379,38 +368,19 @@ function! CopyMatches(reg)
 endfunction
 command! -register CopyMatches call CopyMatches(<q-reg>)
 
-function! OpenFloatingWin()
-    let height = &lines - 1
-    let width = float2nr(&columns - (&columns * 2 / 10))
-    let col = float2nr((&columns - width) / 6)
-
-    " 设置浮动窗口打开的位置，大小等。
-    " 这里的大小配置可能不是那么的 flexible 有继续改进的空间
-    let opts = {
-            \ 'relative': 'editor',
-            \ 'row': height * 0.1,
-            \ 'col': col + 30,
-            \ 'width': width * 4 / 5,
-            \ 'height': height * 4 / 5
-            \ }
-
-    let buf = nvim_create_buf(v:false, v:true)
-    let win = nvim_open_win(buf, v:true, opts)
-
-    " 设置浮动窗口高亮
-    call setwinvar(win, '&winhl', 'Normal:Pmenu')
-
-    setlocal
-        \ buftype=nofile
-        \ nobuflisted
-        \ bufhidden=hide
-        \ nonumber
-        \ norelativenumber
-        \ signcolumn=no
-endfunction
-
 
 " ==============< Plugins configure >================
+
+" lightline configure:
+    function! LightlineReadonly()
+        return &readonly ? '' : ''
+    endfunction
+    let g:lightline = {
+      \ 'component_function': {
+      \   'readonly': 'LightlineReadonly'
+      \ },
+      \ 'separator': { 'left': '', 'right': '' }
+      \ }
 
 " vim easymotion configure:
     let g:EasyMotion_smartcase = 1
@@ -430,16 +400,17 @@ endfunction
     nmap fi <Plug>(easymotion-overwin-line)
     nmap f. <Plug>(easymotion-repeat)
 
-" lightline configure:
-    function! LightlineReadonly()
-        return &readonly ? '' : ''
-    endfunction
-    let g:lightline = {
-      \ 'component_function': {
-      \   'readonly': 'LightlineReadonly'
-      \ },
-      \ 'separator': { 'left': '', 'right': '' }
-      \ }
+" incsearch configure:
+    nnoremap <Esc><Esc> :<C-u>nohlsearch<CR>
+    map *   <Plug>(asterisk-*)
+    map #   <Plug>(asterisk-#)
+    map g*  <Plug>(asterisk-g*)
+    map g#  <Plug>(asterisk-g#)
+
+    map /  <Plug>(incsearch-forward)
+    map ?  <Plug>(incsearch-backward)
+    " map *  <Plug>(incsearch-nohl-*)
+    " map #  <Plug>(incsearch-nohl-#)
 
 " easy_align configure:
     vmap <Enter> <Plug>(EasyAlign)
@@ -454,48 +425,30 @@ endfunction
     let g:VM_maps["Undo"] = 'u'
     let g:VM_maps["Redo"] = '<C-r>'
 
-" Leaderf configure:
-    nnoremap <Leader>fh :LeaderfMru<CR>
-    " nnoremap <Leader>fl :LeaderfLine<CR>
-    " let g:Lf_ShortcutF = '<Leader>ff'
-    " let g:Lf_ShortcutB = '<Leader>fb'
-    let g:Lf_DefaultMode = 'Regex'
-    let g:Lf_NeedCacheTime = 0.5
-    let g:Lf_WildIgnore = {
-       \ 'dir': ['.svn','.git','.hg','.DS_Store','*node_modules','*compiled','*dist'],
-       \ 'file': ['*.sw?','~$*','*.zip','*.dat','*.exe','*.o','*.so','*.py[co]']
-       \}
-
-" ctrlsf configure:
-    " nmap <leader>sf :CtrlSF<space>-smartcase -R<space>
-    " nmap <leader>fw <Plug>CtrlSFCCwordExec
-    " let g:ctrlsf_default_view_mode = 'compact'
-    " let g:ctrlsf_regex_pattern = 1
-
 " fzf configure:
-    command! -bang -nargs=* Rg
-        \ call fzf#vim#grep(
-        \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-        \   <bang>0 ? fzf#vim#with_preview('up:60%')
-        \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-        \   <bang>0)
 
-    command! -bang Colors
-        \ call fzf#vim#colors({'left': '15%', 'options': '--reverse --margin 30%,0'}, <bang>0)
+    nmap <leader>f [fzf-p]
+    nnoremap <silent> [fzf-p]o     :<C-u>FzfPreviewDirectoryFiles<CR>
+    nnoremap <silent> [fzf-p]h     :<C-u>FzfPreviewMruFiles<CR>
+    nnoremap <silent> [fzf-p]f     :<C-u>FzfPreviewProjectFiles<CR>
+    nnoremap <silent> [fzf-p]b     :<C-u>FzfPreviewBuffers<CR>
+    nnoremap <silent> [fzf-p]t     :<C-u>FzfPreviewBufferTags<CR>
+    nnoremap <silent> [fzf-p]l     :<C-u>FzfPreviewBufferLines<CR>
 
-    command! -bang -nargs=? -complete=dir Files
-        \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
-    nmap <leader>ff :Files<CR>
-    nmap <leader>fr :Rg<CR>
-    nmap <leader>fb :Buffers<CR>
-    nmap <leader>fl :BLines<CR>
-
-      " 让输入上方，搜索列表在下方
-    let $FZF_DEFAULT_OPTS = '--layout=reverse'
+    " let $FD_DEFAULT_OPTS = '--follow --exclude .git --exclude .idea --exclude node_modules --exclude venv'
 
     " 打开 fzf 的方式选择 floating window
-    let g:fzf_layout = { 'window': 'call OpenFloatingWin()' }
+    let g:fzf_preview_quit_map = 1
+
+    " Use floating window (for neovim)
+    let g:fzf_preview_use_floating_window = 1
+
+    " floating window size ratio
+    let g:fzf_preview_floating_window_rate = 0.9
+
+    " floating window winblend value
+    let g:fzf_preview_floating_window_winblend = 15
+    let g:fzf_preview_directory_files_command = 'fd --type f --type l --follow --exclude venv'
 
 " nerdcommenter configure:
     let g:NERDSpaceDelims=1
@@ -599,63 +552,6 @@ endfunction
     inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 
-" YouCompleteMe configure:
-    " let g:completor_python_binary = '/usr/local/bin/python3'
-    " let g:ycm_python_binary_path = 'python3'
-    " let g:ycm_path_to_python3_interpreter = '/usr/local/bin/python3'
-    " " 禁止缓存匹配项,每次都重新生成匹配项
-    " let g:ycm_cache_omnifunc = 0
-    " " 开启语义补全
-    " let g:ycm_seed_identifiers_with_syntax = 1
-    " " 在注释输入中也能补全
-    " let g:ycm_complete_in_comments = 1
-    " " 在字符串输入中也能补全
-    " let g:ycm_complete_in_strings = 1
-    " let g:ycm_use_ultisnips_completer = 1
-    " let g:ycm_collect_identifiers_from_tags_files = 1
-    " let g:ycm_collect_identifiers_from_comments_and_strings = 1
-    " " 输入第2个字符开始补全
-    " let g:ycm_min_num_of_chars_for_completion = 2
-    " let g:ycm_max_diagnostics_to_display = 0
-    " let g:ycm_show_diagnostics_ui = 0
-    " let g:ycm_key_invoke_completion = '<c-space>'
-    " " let g:ycm_key_list_select_completion = ['<C-n>', '<C-j>']
-    " " let g:ycm_key_list_previous_completion = ['<C-p>', '<C-k>']
-    " let g:ycm_key_list_select_completion = ['<C-n>', '<Tab>']
-    " let g:ycm_key_list_previous_completion = ['<C-p>']
-    " let g:ycm_autoclose_preview_window_after_completion = 1
-    " " 离开插入模式后自动关闭预览窗口"
-    " let g:ycm_autoclose_preview_window_after_insertion = 1
-    " " let g:ycm_add_preview_to_completeopt = 0
-    " let g:ycm_filetype_whitelist = { 
-    "     \ 'sh': 1,
-    "     \ 'python': 1,
-    "     \ }
-    " let g:ycm_filetype_blacklist = { 
-    "     \ 'gitcommit' : 1,
-    "     \ }
-    " " 如果配置下面输入两个字符来自动触发语义补全，会导致UltiSnips的补全不在补全窗口里面显示
-    " let g:ycm_semantic_triggers =  {
-    "     \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{3}'],
-    "     \ 'cs,lua,javascript': ['re!\w{3}'],
-    "     \ 'css': [ 're!^\s{4}', 're!:\s+'],
-    "     \ 'html': [ '</' ],
-    "     \ }
-    " let g:ycm_global_ycm_extra_conf = '${VIMFILES}/bundle/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'
-    " " let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-    " let g:ycm_confirm_extr_conf = 0
-    " " 回车即选中当前项"
-    " let g:ycm_key_list_stop_completion = ['<CR>']
-    " set completeopt=longest,menu
-    " let g:ycm_goto_buffer_command = 'horizontal-split'
-    " let g:ycm_register_as_syntastic_checker = 0
-    " autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-    " nnoremap <leader>gs :YcmCompleter GoToDeclaration<CR>
-    " nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
-    " nnoremap <leader>gg :YcmCompleter GoTo<CR>
-    " nnoremap <leader>gt :YcmCompleter GoToDefinitionElseDeclaration<CR>
-    " " nnoremap <leader>gw :YcmCompleter GetDoc<CR>
-
 " Snippets or ultisnips configure:
     " Trigger configuration. Do not use <tab> if you use deoplete and YCM
     let g:UltiSnipsExpandTrigger="<tab>"
@@ -703,30 +599,6 @@ endfunction
     xmap <leader>si <Plug>SlimeRegionSend
     nmap <leader>sp <Plug>SlimeParagraphSend
 
-" python-mode Settings {{{
-    " let g:pymode_python = 'python3'
-    " let g:pymode_lint = 0
-    " let g:pymode_run = 0
-    " let g:pymode_breakpoint = 1
-    " let g:pymode_doc = 1
-    " let g:pymode_folding = 1
-    " let g:pymode_motion = 1
-    " let g:pymode_virtualenv = 1
-    " let g:pymode_rope = 1
-    " let g:pymode_rope_lookup_project = 0
-    " let g:pymode_rope_completion = 0
-    " " 重命名光标下的函数，方法，变量及类名
-    " let g:pymode_rope_rename_bind = '<Leader>rr'
-    " let g:pymode_rope_show_doc_bind = '<Leader>sd'
-    " let g:pymode_rope_rename_module_bind = '<Leader>rm'
-    " let g:pymode_rope_goto_definition_bind = '<Leader>rd'
-    " let g:pymode_rope_goto_definition_cmd = 'vnew'
-    " " 重命名光标下的模块或包
-    " " 开启python所有的语法高亮
-    " let g:pymode_syntax = 1
-    " let g:pymode_syntax_all = 1
-" 参考：https://blog.csdn.net/demorngel/article/details/71158792 }}}
-
 " indentline AutoPairs, configure:
     let g:indent_guides_enable_on_vim_startup = 1
     let g:indent_guides_guide_size = 3
@@ -740,18 +612,6 @@ endfunction
         \	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
         \	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
         \   }
-
-" incsearch configure:
-    nnoremap <Esc><Esc> :<C-u>nohlsearch<CR>
-    map *   <Plug>(asterisk-*)
-    map #   <Plug>(asterisk-#)
-    map g*  <Plug>(asterisk-g*)
-    map g#  <Plug>(asterisk-g#)
-
-    map /  <Plug>(incsearch-forward)
-    map ?  <Plug>(incsearch-backward)
-    " map *  <Plug>(incsearch-nohl-*)
-    " map #  <Plug>(incsearch-nohl-#)
 
 " MarkdownPreview & markdown configure:
     au bufread,bufnewfile *.md,*.markdown setlocal ft=mkd
@@ -785,42 +645,6 @@ endfunction
     " If you cancel and quit window resize mode by `z` (keycode 122)
     let g:winresizer_keycode_cancel = 122
 
-" vista configure:
-    nmap <leader>vt :Vista!!<CR>
-    let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
-    let g:vista_default_executive = 'ctags'
-    " let g:vista_ctags_cmd = {
-    "   \ 'haskell': 'hasktags -x -o - -c',
-    "   \ }
-
-    " let g:vista_fzf_preview = ['right:50%']
-    let g:vista_echo_cursor_strategy ='floating_win'
-    " 侧边栏宽度.
-    let g:vista_sidebar_width = 30
-    " 设置为0，以禁用光标移动时的回显.
-    let g:vista_echo_cursor = 1
-    " 当前游标上显示详细符号信息的时间延迟.
-    let g:vista_cursor_delay = 400
-    " 跳转到一个符号时，自动关闭vista窗口.
-    let g:vista_close_on_jump = 0
-    "打开vista窗口后移动到它.
-    let g:vista_stay_on_open = 1
-    " 跳转到标记后闪烁光标2次，间隔100ms.
-    let g:vista_blink = [2, 100]
-
-    let g:vista_executive_for = {
-        \ 'go': 'ctags',
-        \ 'javascript': 'coc',
-        \ 'javascript.jsx': 'coc',
-        \ 'python': 'ctags',
-        \ }
-    let g:vista#renderer#enable_icon = 1
-
-    " The default icons can't be suitable for all the filetypes, you can extend it as you wish.
-    let g:vista#renderer#icons = {
-    \   "function": "\uf794",
-    \   "variable": "\uf71b",
-    \  }
 
 " plugins manager autodownload and keymap configure:
     if empty(glob(expand('$VIMRUNTIME/autoload/plug.vim')))
@@ -839,7 +663,6 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'itchyny/lightline.vim'
      Plug 'joshdick/onedark.vim'
      Plug 'sheerun/vim-polyglot'
-     Plug 'easymotion/vim-easymotion'
      Plug 'junegunn/vim-easy-align'
      Plug 'tpope/vim-surround'
      Plug 'jiangmiao/auto-pairs'
@@ -871,16 +694,15 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'Chiel92/vim-autoformat'
      Plug 'dense-analysis/ale'
      " Plug 'neomake/neomake'
-     Plug 'liuchengxu/vista.vim'
      Plug 'https://github.com/simnalamburt/vim-mundo.git'
-     Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+     Plug 'jpalardy/vim-slime'
+     Plug 'easymotion/vim-easymotion'
      Plug 'haya14busa/incsearch.vim'
-     Plug 'https://github.com/jpalardy/vim-slime'
      Plug 'haya14busa/vim-asterisk'
      Plug 'wellle/targets.vim'
      Plug 'markonm/traces.vim'                          " It also provides live preview for the following Ex commands
      Plug '/usr/local/opt/fzf'
-     Plug 'junegunn/fzf.vim'
+     Plug 'yuki-ycino/fzf-preview.vim'
      Plug 'simeji/winresizer'
      Plug 'yonchu/accelerated-smooth-scroll'
      Plug 'nathanaelkane/vim-indent-guides'

@@ -65,6 +65,7 @@ nmap dk k2dd
 nmap Y y$
 nmap y<CR> yG
 nmap yj 2yy
+noremap zv zC
 nmap <leader>bn gt
 nmap <leader>bb gT
 nmap <Leader>t <C-]>

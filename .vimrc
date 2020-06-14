@@ -50,7 +50,6 @@ if has('nvim')
     " let $XDG_CONFIG_HOME="~/.nvim"
     let g:python3_host_prog = '/usr/local/bin/python3'
     " let g:python3_host_prog = '/usr/bin/python3'
-    " let g:python_host_prog  = '/usr/local/bin/python'
     let g:node_host_prog = '/usr/local/bin/neovim-node-host'
 " else
 endif
@@ -310,25 +309,24 @@ let $author_name = "Shingo"
 let $author_email = "gmboomker@gmail.com"
 func! SetFileHeadInfo()
     if expand("%:e") == 'py'
-        " call setline(1, '#!/usr/local/bin/genv python3')
-        call setline(1, '# !/usr/bin/env python3')
+        " call setline(1, '#!/usr/bin/env python3')
+        call setline(1, '# !/usr/local/bin/env python3')
     elseif expand("%:e") == 'sh'
         call setline(1, '#!/usr/bin/env bash')
-        " call setline(1, '# !/usr/local/bin/env bash') 
-        " call setline(1, '#!/usr/local/bin/genv bash') 
+        " call setline(1, '# !/usr/local/bin/env bash')
     endif
-    call append(1, '# *************************************************')
-    call append(2, '#')
-    call append(3, '#       Filename: '.expand("%"))
-    call append(4, '#         Author: '.$author_name)
-    call append(5, '#          Email: '.$author_email)
-    call append(6, '#         Create: '.strftime("%Y-%m-%d %H:%M:%S"))
-    call append(7, '#       Description: -')
-    call append(8, '#')
-    call append(9, '# *************************************************')
+    call append(2, '# *************************************************')
+    call append(3, '#')
+    call append(4, '#       Filename: '.expand("%"))
+    call append(5, '#         Author: '.$author_name)
+    call append(6, '#          Email: '.$author_email)
+    call append(7, '#         Create: '.strftime("%Y-%m-%d %H:%M:%S"))
+    call append(8, '#       Description: -')
+    call append(9, '#')
+    call append(10, '# *************************************************')
     normal Go
 endfunc
-map <Leader>sh <ESC>ggO<ESC>:call SetFileHeadInfo()<CR>
+nnoremap <Leader>sh <ESC>ggO<ESC>:call SetFileHeadInfo()<CR>
 
 " Delete trailing whitespace
 autocmd FileType python,go,php,javascript,yml,txt,sh autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()

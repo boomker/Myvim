@@ -446,7 +446,7 @@ command! -register CopyMatches call CopyMatches(<q-reg>)
 
     " floating window winblend value
     let g:fzf_preview_floating_window_winblend = 15
-    let g:fzf_preview_directory_files_command = 'fd --type f --type l --follow --exclude venv'
+    let g:fzf_preview_directory_files_command = 'fd --type f --type l --follow --exclude venv --exclude .idea'
 
 " nerdcommenter configure:
     let g:NERDSpaceDelims=1

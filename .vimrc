@@ -545,7 +545,7 @@ command! -register CopyMatches call CopyMatches(<q-reg>)
 
 
 " deoplete configure:
-    let g:deoplete#enable_at_startup = 1
+    " let g:deoplete#enable_at_startup = 1
     inoremap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
     inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
@@ -679,13 +679,13 @@ call plug#begin('~/.vim/vimfiles/bundle')
      " Plug 'mhinz/vim-signify' support more vcs
      " Plug 'tpope/vim-fugitive'
      " Plug 'python-mode/python-mode', { 'branch': 'develop' }
-     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-     Plug 'deoplete-plugins/deoplete-jedi'
-     Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
+
+     " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+     " Plug 'deoplete-plugins/deoplete-jedi'
+     " Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
+     "
+     Plug 'neoclide/coc.nvim', { 'branch': 'release' }
      Plug 'tenfyzhong/CompleteParameter.vim'
-    " if has('nvim')
-     " Plug 'davidhalter/jedi-vim'
-     " Plug 'maralla/completor.vim'
      Plug 'Shougo/neosnippet.vim'
      Plug 'Shougo/neosnippet-snippets'
      Plug 'tell-k/vim-autopep8'
@@ -700,7 +700,7 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'wellle/targets.vim'
      Plug 'markonm/traces.vim'                          " It also provides live preview for the following Ex commands
      Plug '/usr/local/opt/fzf'
-     Plug 'yuki-ycino/fzf-preview.vim'
+     Plug 'yuki-ycino/fzf-preview.vim', { 'branch': 'release', 'do': ':UpdateRemotePlugins' }
      Plug 'simeji/winresizer'
      Plug 'yonchu/accelerated-smooth-scroll'
      Plug 'nathanaelkane/vim-indent-guides'

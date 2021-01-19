@@ -1,3 +1,4 @@
+" Pycharm IDE for vim conf
 let mapleader=";"
 set easymotion
 set surround

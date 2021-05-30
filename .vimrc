@@ -43,7 +43,7 @@ endif
 
 if has('nvim')
     " set inccommand=split
-    set runtimepath+='~/.nvim/share/nvim/runtime'
+    set runtimepath+='~/.nvim/runtime'
     let &packpath = &runtimepath
     let $NVIM_TUI_ENABLE_TRUE_COLOR=1
     " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
@@ -51,7 +51,7 @@ if has('nvim')
     let g:python3_host_prog = '/usr/local/bin/python3'
     " let g:python3_host_prog = '/usr/bin/python3'
     let g:node_host_prog = '/usr/local/bin/neovim-node-host'
-" else
+    set termguicolors
 endif
 
 " for common UI Settings:
@@ -60,20 +60,6 @@ endif
     let g:onedark_terminal_italics=1
     let g:onedark_hide_endofbuffer=1
     set background=dark
-
-if &term =~ '256color'
-    " disable Background Color Erase (BCE) so that color schemes
-    " render properly when inside 256-color tmux and GNU screen.
-    " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
-    set t_ut=
-elseif has("termguicolors")
-    " fix bug for vim
-    set t_8f=^[[38;2;%lu;%lu;%lum
-    set t_8b=^[[48;2;%lu;%lu;%lum
-
-    " enable true color
-    set termguicolors
-endif
 
 " 设置标记一列的背景颜色和数字一行颜色一致
     hi! link SignColumn   LineNr
@@ -163,13 +149,7 @@ set nowritebackup                           "无写入备份
 syntax on
 filetype plugin on
 
-" autocmd! bufwritepost .vimrc :source ~/.vimrc
-if has("autocmd")
-      au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
-
 " ===============< Hotkey mapping >======================
-nmap <leader>rc :source ~/.vimrc<CR>
 let mapleader = ";"
 inoremap <ESC> <ESC>:nohl<CR>
 nnoremap <leader><space> :nohl<CR>
@@ -200,15 +180,10 @@ noremap <silent> <expr> k (v:count == 0 ? 'gkzz' : 'k')
 nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
 nnoremap ]<space>  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
 
-" quick movements in Insert-Mode
-inoremap II <Esc>I
-inoremap AA <Esc>A
-inoremap OO <Esc>o
-
 " select last paste in visual mode
 nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1) . '`]'
-nmap gp <Plug>GitGutterPrevHunk
-nmap gn <Plug>GitGutterNextHunk
+nmap gp <Plug>(GitGutterPrevHunk)
+nmap gn <Plug>(GitGutterNextHunk)
 
 " inoremap <c-l> <c-o>:w<cr>
 nmap sj <C-o>
@@ -217,9 +192,6 @@ nmap su <C-r>
 
 " like o or O, but not change cursor position and mode
 nmap tt :tabnew!<CR>
-nmap tn :tabn<CR>
-nmap tp :tabp<CR>
-nmap tw vwP
 
 nnoremap <CR> :
 
@@ -230,9 +202,8 @@ nnoremap zh <C-w>s
 nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zO')<CR>
 
 cnoremap <C-a> <Home>
-cnoremap <c-v> <C-r>"
+cnoremap <c-v> <C-r>+
 
-nnoremap <leader>sc :colorscheme solarized8_dark_flat<CR>
 vnoremap < <gv
 vnoremap > >gv
 vnoremap v <Esc>
@@ -242,28 +213,35 @@ nmap <Leader>sw :w !sudo tee > /dev/null %<CR>
 command! W w !sudo tee % > /dev/null
 
 " quickly way to move between buffers or tabs
-nmap <Leader>wj <C-W>j
-nmap <Leader>wk <C-W>k
-nmap <Leader>wh <C-W>h
-nmap <Leader>wl <C-W>l
+    nmap <Leader>wj <C-W>j
+    nmap <Leader>wk <C-W>k
+    nmap <Leader>wh <C-W>h
+    nmap <Leader>wl <C-W>l
 
-noremap <leader>1 1gt
-noremap <leader>2 2gt
-noremap <leader>3 3gt
-noremap <leader>4 4gt
-noremap <leader>5 5gt
-noremap <leader>6 6gt
-noremap <leader>7 7gt
-noremap <leader>8 8gt
-noremap <leader>9 9gt
-noremap <leader>0 :tablast<cr>
-noremap <leader>bf :tabfirst<cr>
-noremap <leader>bl :tablast<cr>
-noremap <leader>bb :tabprev<cr>
-noremap <leader>bn :tabnext<cr>
-noremap <leader>bm :tabmove
+    noremap <leader>1 1gt
+    noremap <leader>2 2gt
+    noremap <leader>3 3gt
+    noremap <leader>4 4gt
+    noremap <leader>5 5gt
+    noremap <leader>6 6gt
+    noremap <leader>7 7gt
+    noremap <leader>8 8gt
+    noremap <leader>9 9gt
+    noremap <leader>0 :tablast<cr>
+    noremap <leader>bf :tabfirst<cr>
+    noremap <leader>bl :tablast<cr>
+    noremap <leader>bb :tabprev<cr>
+    noremap <leader>bn :tabnext<cr>
+    noremap <leader>bm :tabmove
 
 " ------------------------------------< Complex configure >------------------------------------
+"
+if has("autocmd")
+      au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+" autocmd! bufwritepost .vimrc :source ~/.vimrc
+nmap <leader>rc :source ~/.vimrc<CR>
+
 "  in the normal mode autoset relative_number
 augroup relative_numbser
     autocmd!
@@ -664,7 +642,7 @@ command! -register CopyMatches call CopyMatches(<q-reg>)
     nnoremap <Leader>pu :PlugUpdate<Cr>
 
 "  < Plugin lists >
-call plug#begin('~/.vim/vimfiles/bundle')
+call plug#begin('~/.nvim/vimfiles/bundle')
      Plug 'mhinz/vim-startify'
      Plug 'flazz/vim-colorschemes'
      Plug 'itchyny/lightline.vim'
@@ -695,6 +673,8 @@ call plug#begin('~/.vim/vimfiles/bundle')
      "
      Plug 'neoclide/coc.nvim', { 'branch': 'release' }
      Plug 'tenfyzhong/CompleteParameter.vim'
+     " Plug 'davidhalter/jedi-vim'
+     " Plug 'maralla/completor.vim'
      Plug 'Shougo/neosnippet.vim'
      Plug 'Shougo/neosnippet-snippets'
      Plug 'tell-k/vim-autopep8'
@@ -710,6 +690,7 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'markonm/traces.vim'                          " It also provides live preview for the following Ex commands
      Plug '/usr/local/opt/fzf'
      Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/remote', 'do': ':UpdateRemotePlugins' }
+     Plug 'junegunn/fzf.vim'
      Plug 'simeji/winresizer'
      Plug 'yonchu/accelerated-smooth-scroll'
      Plug 'nathanaelkane/vim-indent-guides'

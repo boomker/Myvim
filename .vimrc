@@ -433,7 +433,7 @@ command! -register CopyMatches call CopyMatches(<q-reg>)
     nnoremap <silent> [fzf-p]t     :<C-u>FzfPreviewBufferTags<CR>
     nnoremap <silent> [fzf-p]l     :<C-u>FzfPreviewBufferLines<CR>
 
-    " let $FD_DEFAULT_OPTS = '--follow --exclude .git --exclude .idea --exclude node_modules --exclude venv'
+    let $FD_DEFAULT_OPTS = '--follow --exclude **/.pyc --exclude .git --exclude .idea --exclude node_modules --exclude venv'
 
     " 打开 fzf 的方式选择 floating window
     let g:fzf_preview_quit_map = 1
@@ -446,7 +446,16 @@ command! -register CopyMatches call CopyMatches(<q-reg>)
 
     " floating window winblend value
     let g:fzf_preview_floating_window_winblend = 15
-    let g:fzf_preview_directory_files_command = 'fd --type f --type l --follow --exclude venv'
+    let g:fzf_preview_directory_files_command = 'fd --type f --type l "${FD_DEFAULT_OPTS}"'
+
+    " Commands used to get the file list from git repository
+    let g:fzf_preview_git_files_command = 'git ls-files --exclude-standard'
+
+    " Commands used to get the file list from current directory
+    let g:fzf_preview_directory_files_command = 'rg --files --hidden --follow --no-messages -g \!"* *"'
+
+    " Commands used for project grep
+    let g:fzf_preview_grep_cmd = 'rg --line-number --no-heading --color=never'
 
 " nerdcommenter configure:
     let g:NERDSpaceDelims=1
@@ -700,7 +709,7 @@ call plug#begin('~/.vim/vimfiles/bundle')
      Plug 'wellle/targets.vim'
      Plug 'markonm/traces.vim'                          " It also provides live preview for the following Ex commands
      Plug '/usr/local/opt/fzf'
-     Plug 'yuki-ycino/fzf-preview.vim', { 'branch': 'release', 'do': ':UpdateRemotePlugins' }
+     Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/remote', 'do': ':UpdateRemotePlugins' }
      Plug 'simeji/winresizer'
      Plug 'yonchu/accelerated-smooth-scroll'
      Plug 'nathanaelkane/vim-indent-guides'

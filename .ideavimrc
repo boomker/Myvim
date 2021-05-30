@@ -55,6 +55,8 @@ set foldmethod=syntax
 " 启动 vim 时关闭折叠代码
 set nofoldenable
 
+map <Leader> <Plug>(easymotion-prefix)
+map <Leader>fl <Plug>(easymotion-lineanywhere)
 nnoremap <silent> <Leader><space> :<C-u>nohlsearch<CR><C-l>
 nnoremap <CR> :
 nmap H ^
